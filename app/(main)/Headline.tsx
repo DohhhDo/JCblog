@@ -80,9 +80,7 @@ export function Headline() {
         }}
       >
         <Balancer>
-          我是 Cali，
-          <PeekabooLink href="https://zolplay.com">佐玩</PeekabooLink>
-          创始人，目前带领着佐玩致力于创造一个充满创造力的工作环境，同时鼓励团队创造影响世界的产品。
+          我是 Jcyf1987，
           我热爱开发，设计，创新，享受生活，以及在未知领域中探索。
         </Balancer>
       </motion.p>
@@ -99,7 +97,7 @@ export function Headline() {
         }}
       >
         <SocialLink
-          href="https://cali.so/twitter"
+          href="https://x.com/DvorakZhou"
           aria-label="我的推特"
           platform="twitter"
         />
@@ -120,7 +118,7 @@ export function Headline() {
         />
         <SocialLink href="/feed.xml" platform="rss" aria-label="RSS 订阅" />
         <SocialLink
-          href="https://space.bilibili.com/484401034?spm_id_from=333.1387.0.0"
+          href="mailto:dvorakzhou@gmail.com"
           aria-label="我的邮箱"
           platform="mail"
         />
