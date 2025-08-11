@@ -19,14 +19,36 @@ export default function BlogLayout({
 
       <div className="fixed inset-0 flex justify-center sm:px-8">
         <div className="flex w-full max-w-7xl lg:px-8">
-          <div className="w-full bg-zinc-50/90 ring-1 ring-zinc-100 dark:bg-zinc-900/80 dark:ring-zinc-400/20" />
+          {/* Left Sidebar */}
+          <div className="hidden xl:block w-64 bg-zinc-50/90 ring-1 ring-zinc-100 dark:bg-zinc-900/80 dark:ring-zinc-400/20" />
+          
+          {/* Center Content Area */}
+          <div className="flex-1 bg-zinc-50/90 ring-1 ring-zinc-100 dark:bg-zinc-900/80 dark:ring-zinc-400/20" />
+          
+          {/* Right Sidebar */}
+          <div className="hidden xl:block w-64 bg-zinc-50/90 ring-1 ring-zinc-100 dark:bg-zinc-900/80 dark:ring-zinc-400/20" />
         </div>
       </div>
 
       <QueryProvider>
         <div className="relative text-zinc-800 dark:text-zinc-200">
           <Header />
-          <main>{children}</main>
+          <main className="relative z-10">
+            {/* Left Sidebar Content */}
+            <div className="hidden xl:block fixed left-8 top-32 w-64 h-[calc(100vh-8rem)] pointer-events-none">
+              <div className="w-full h-full bg-transparent" />
+            </div>
+            
+            {/* Main Content */}
+            <div className="relative z-20">
+              {children}
+            </div>
+            
+            {/* Right Sidebar Content */}
+            <div className="hidden xl:block fixed right-8 top-32 w-64 h-[calc(100vh-8rem)] pointer-events-none">
+              <div className="w-full h-full bg-transparent" />
+            </div>
+          </main>
           <Suspense>
             <Footer />
           </Suspense>
