@@ -3,8 +3,6 @@ import { clsxm } from '@zolplay/utils'
 import Image from 'next/image'
 import Link, { type LinkProps } from 'next/link'
 
-import portraitAltImage from '~/assets/PortraitAlt.jpg'
-
 function AvatarContainer({ className, ...props }: ComponentProps) {
   return (
     <div
@@ -38,7 +36,7 @@ function AvatarImage({
       {...props}
     >
       <Image
-        src={alt ? portraitAltImage : 'https://github.com/DohhhDo/public/blob/main/myblog/Jc2.png?raw=true'}
+        src="https://youke1.picui.cn/s1/2025/08/11/6899cf9fa495f.jpg"
         alt=""
         sizes={large ? '4rem' : '2.25rem'}
         className={clsxm(
