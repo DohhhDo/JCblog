@@ -1,0 +1,89 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+import React from 'react'
+
+interface SidebarWaterfallProps {
+  position: 'left' | 'right'
+}
+
+export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
+
+  // 使用一些示例图片来展示瀑布流效果
+  // 在实际使用中，这些图片应该从主页面传递过来
+  const samplePhotos = [
+    '/apps/arc.png',
+    '/apps/craft.png',
+    '/apps/cron.png',
+    '/apps/discord.png',
+    '/apps/figma.png',
+    '/apps/finder.png',
+    '/apps/linear.png',
+    '/apps/live.png',
+    '/apps/mail.png',
+    '/apps/messages.png',
+    '/apps/music.png',
+    '/apps/resolve.png',
+    '/apps/safari.png',
+    '/apps/screenflow.png',
+    '/apps/slack.png',
+    '/apps/telegram.png',
+    '/apps/tower.png',
+    '/apps/vscode.png',
+    '/apps/warp.png',
+    '/apps/webstorm.png',
+    '/apps/wechat.png',
+  ]
+
+  // 将图片分成两列，实现瀑布流效果
+  const leftColumn = samplePhotos.filter((_, index) => index % 2 === 0)
+  const rightColumn = samplePhotos.filter((_, index) => index % 2 === 1)
+
+  const renderColumn = (columnPhotos: string[], delay: number) => (
+    <div className="flex flex-col gap-3">
+      {columnPhotos.map((photo, index) => (
+        <motion.div
+          key={`${position}-${index}`}
+          className="relative w-full aspect-square overflow-hidden rounded-xl bg-zinc-100 ring-1 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700/50 shadow-sm"
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{
+            delay: delay + index * 0.1,
+            duration: 0.6,
+            type: 'spring',
+            damping: 20,
+            stiffness: 100,
+          }}
+          whileHover={{
+            scale: 1.05,
+            transition: { duration: 0.2 }
+          }}
+        >
+          <Image
+            src={photo}
+            alt=""
+            width={100}
+            height={100}
+            className="h-full w-full object-cover"
+            priority={index < 2}
+          />
+        </motion.div>
+      ))}
+    </div>
+  )
+
+  return (
+    <div className="flex gap-3 px-3 pt-32">
+      {renderColumn(leftColumn, 0)}
+      {renderColumn(rightColumn, 0.1)}
+    </div>
+  )
+}
