@@ -5,7 +5,7 @@ import Link, { type LinkProps } from 'next/link'
 
 import portraitAltImage from '~/assets/PortraitAlt.jpg'
 
-const portraitImage = 'https://youke1.picui.cn/s1/2025/08/11/6899cf9fa495f.jpg'
+const portraitImage = 'https://gitee.com/jcyf1987/picgo/raw/master/avator.png'
 
 function AvatarContainer({ className, ...props }: ComponentProps) {
   return (

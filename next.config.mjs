@@ -19,6 +19,12 @@ const nextConfig = {
         hostname: 'youke1.picui.cn',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'gitee.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
