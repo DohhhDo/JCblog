@@ -43,8 +43,8 @@ export const metadata: Metadata = {
     url: 'https://cali.so',
   },
   twitter: {
-    site: '@thecalicastle',
-    creator: '@thecalicastle',
+    site: '@DvorakZhou',
+    creator: '@DvorakZhou',
     card: 'summary_large_image',
     title: seo.title,
     description: seo.description,
