@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { pictureList } from '../lib/pictureList';
 
@@ -34,14 +34,18 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     return position === 'left' ? [firstColumn, secondColumn] : [secondColumn, firstColumn];
   });
 
+  // 用于存储当前偏移量的ref
+  const offsetRef = useRef(scrollPosition);
+
   // 无限滚动动画
   useEffect(() => {
     if (!containerRef.current) return;
 
     let frame: number;
-    // 使用 ref 来存储当前偏移量，避免闭包问题
-    const offsetRef = useRef(scrollPosition);
     const container = containerRef.current;
+    
+    // 重置偏移量
+    offsetRef.current = scrollPosition;
     
     const animate = () => {
       if (!paused) {
@@ -61,9 +65,11 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
           });
           // 重置滚动位置
           offsetRef.current = 0;
+          setScrollPosition(0);
+        } else {
+          setScrollPosition(offsetRef.current);
         }
         
-        setScrollPosition(offsetRef.current);
         container.style.transform = `translateY(-${offsetRef.current}px)`;
       }
       frame = requestAnimationFrame(animate);
@@ -71,7 +77,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
 
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [paused, position, onImageLeave]);
+  }, [paused, position, onImageLeave, scrollPosition]);
 
   return (
     <div 
