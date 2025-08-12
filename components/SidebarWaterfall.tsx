@@ -6,7 +6,7 @@ interface SidebarWaterfallProps {
   position: 'left' | 'right'
 }
 
-export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
+export function SidebarWaterfall({ position: _position }: SidebarWaterfallProps) {
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
