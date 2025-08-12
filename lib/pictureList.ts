@@ -1,8 +1,24 @@
 // lib/pictureList.ts
-// 请将你的图片文件名补充完整
 export const pictureList = [
-  "/picture/1.jpg",
-  "/picture/2.jpg",
-  "/picture/3.jpg",
-  // ...更多图片路径
+  "/apps/arc.png",
+  "/apps/craft.png",
+  "/apps/cron.png",
+  "/apps/discord.png",
+  "/apps/figma.png",
+  "/apps/finder.png",
+  "/apps/linear.png",
+  "/apps/live.png",
+  "/apps/mail.png",
+  "/apps/messages.png",
+  "/apps/music.png",
+  "/apps/resolve.png",
+  "/apps/safari.png",
+  "/apps/screenflow.png",
+  "/apps/slack.png",
+  "/apps/telegram.png",
+  "/apps/tower.png",
+  "/apps/vscode.png",
+  "/apps/warp.png",
+  "/apps/webstorm.png",
+  "/apps/wechat.png",
 ];

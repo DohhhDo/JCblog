@@ -76,13 +76,15 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
           {[...col, ...col].map((src, i) => (
             <Image
               key={i}
-              width={300}
-              height={200}
+              width={64}
+              height={64}
               src={src}
               priority={i < 4} // 优先加载前4张图片
-              alt={`waterfall-${i}`}
-              className="mb-4 rounded-lg object-cover w-full h-auto"
-              style={{ maxHeight: containerHeight / col.length - 16 }}
+              alt={`app-icon-${i}`}
+              className="mb-6 rounded-xl w-16 h-16 transition-all duration-300 hover:scale-110"
+              style={{
+                filter: 'grayscale(0.2) brightness(0.95)',
+              }}
             />
           ))}
         </div>
