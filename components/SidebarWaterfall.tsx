@@ -67,7 +67,7 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
 
   return (
     <div
-      className={`flex gap-4 ${position === 'left' ? 'justify-start' : 'justify-end'} px-3 pt-32 overflow-hidden relative`}
+      className={`flex gap-3 ${position === 'left' ? 'justify-start' : 'justify-end'} pt-32 overflow-hidden relative`}
       style={{ height: "100vh" }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -83,12 +83,12 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
           {[...col, ...col].map((src, i) => (
             <Image
               key={i}
-              width={64}
-              height={64}
+              width={120}
+              height={120}
               src={src}
               priority={i < 4} // 优先加载前4张图片
               alt={`app-icon-${i}`}
-              className="mb-6 rounded-xl w-16 h-16 transition-transform duration-300 hover:scale-110 hover:rotate-3"
+              className="mb-8 rounded-2xl w-28 h-28 transition-transform duration-300 hover:scale-110 hover:rotate-3"
               style={{
                 filter: 'grayscale(0.2) brightness(0.95)',
               }}
