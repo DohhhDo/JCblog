@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { pictureList } from '../lib/pictureList';
 
@@ -24,12 +24,15 @@ function splitColumns(list: string[], columns: number) {
 export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const containerRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
-  const [containerHeight, setContainerHeight] = useState(800);
+  
+  // 使用 useMemo 缓存 refs 数组，避免每次渲染都创建新数组
+  const containerRefs = useMemo(
+    () => [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)],
+    []
+  );
 
   useEffect(() => {
     setMounted(true);
-    setContainerHeight(window.innerHeight);
   }, []);
 
   // 拆分图片到两列
@@ -81,10 +84,11 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
               src={src}
               priority={i < 4} // 优先加载前4张图片
               alt={`app-icon-${i}`}
-              className="mb-6 rounded-xl w-16 h-16 transition-all duration-300 hover:scale-110"
+              className="mb-6 rounded-xl w-16 h-16 transition-transform duration-300 hover:scale-110 hover:rotate-3"
               style={{
                 filter: 'grayscale(0.2) brightness(0.95)',
               }}
+              unoptimized
             />
           ))}
         </div>
