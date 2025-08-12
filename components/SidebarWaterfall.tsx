@@ -81,19 +81,19 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
         >
           {/* 两次渲染图片以实现无缝循环 */}
           {[...col, ...col].map((src, i) => (
-            <Image
-              key={i}
-              width={120}
-              height={120}
-              src={src}
-              priority={i < 4} // 优先加载前4张图片
-              alt={`app-icon-${i}`}
-              className="rounded-2xl w-28 h-28 transition-transform duration-300 hover:scale-110 hover:rotate-3"
-              style={{
-                filter: 'grayscale(0.2) brightness(0.95)',
-              }}
-              unoptimized
-            />
+            <div key={i} className="relative w-28 h-28">
+              <Image
+                src={src}
+                alt={`app-icon-${i}`}
+                fill
+                sizes="112px"
+                className="rounded-2xl object-contain p-2 transition-transform duration-300 hover:scale-110 hover:rotate-3"
+                style={{
+                  filter: 'grayscale(0.2) brightness(0.95)',
+                }}
+                priority={i < 8} // 优先加载更多图片
+              />
+            </div>
           ))}
         </div>
       ))}
