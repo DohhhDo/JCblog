@@ -77,50 +77,51 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
 
     let frame: number;
     const container = containerRef.current;
-    
-    // 重置偏移量
-    offsetRef.current = scrollPosition;
+    const startPosition = scrollPosition;
+    offsetRef.current = startPosition;
     
     const animate = () => {
       if (!paused) {
         offsetRef.current += SCROLL_SPEED;
         
-        // 当一个图片完全滚动出可视区域时
-        if (offsetRef.current >= IMAGE_HEIGHT) {
-          // 标记即将进行过渡
-          transitionRef.current = true;
-          
-          // 通知父组件需要将图片移到另一侧
-          onImageLeave?.(position === 'left' ? 'right' : 'left');
-          
-          // 循环图片
-          setImageColumns(prev => {
-            const [col1, col2] = prev;
-            return [
-              [...col1.slice(1), col1[0]],
-              [...col2.slice(1), col2[0]]
-            ];
-          });
-          
-          // 重置滚动位置
-          offsetRef.current = 0;
-          setScrollPosition(0);
-          
-          // 200ms 后重置过渡标记
-          setTimeout(() => {
-            transitionRef.current = false;
-          }, 200);
+        // 当一个图片即将完全滚出可视区域时
+        if (offsetRef.current >= IMAGE_HEIGHT - 10) { // 提前开始过渡
+          // 标记开始过渡
+          if (!transitionRef.current) {
+            transitionRef.current = true;
+            
+            // 通知父组件需要将图片移到另一侧
+            onImageLeave?.(position === 'left' ? 'right' : 'left');
+            
+            // 准备下一组图片
+            requestAnimationFrame(() => {
+              setImageColumns(prev => {
+                const [col1, col2] = prev;
+                return [
+                  [...col1.slice(1), col1[0]],
+                  [...col2.slice(1), col2[0]]
+                ];
+              });
+            });
+
+            // 在过渡结束后重置状态
+            setTimeout(() => {
+              offsetRef.current = 0;
+              setScrollPosition(0);
+              transitionRef.current = false;
+            }, 300);
+          }
         } else {
           setScrollPosition(offsetRef.current);
         }
-        
-        container.style.transform = `translateY(-${offsetRef.current}px)`;
       }
       frame = requestAnimationFrame(animate);
     };
 
     frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+    };
   }, [paused, position, onImageLeave]);
 
   return (
@@ -130,9 +131,17 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
+      <div className="absolute inset-0">
+        <div className="absolute top-0 w-full h-12 bg-gradient-to-b from-white to-transparent z-10" />
+        <div className="absolute bottom-0 w-full h-12 bg-gradient-to-t from-white to-transparent z-10" />
+      </div>
       <div
         ref={containerRef}
         className="flex flex-col items-center gap-6 will-change-transform"
+        style={{
+          transform: `translateY(-${scrollPosition}px)`,
+          clipPath: 'inset(1px 0)',
+        }}
       >
         <div className="flex flex-row gap-4 w-full justify-center">
           {imageColumns.map((column, colIndex) => (
@@ -142,6 +151,11 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                   key={`${colIndex}-${imgIndex}`} 
                   className="relative w-24 h-24"
                 >
+                  <div className="absolute inset-0 rounded-xl" style={{ 
+                    background: 'linear-gradient(to bottom, transparent, white 50%, transparent)',
+                    opacity: transitionRef.current ? 0.1 : 0,
+                    transition: 'opacity 0.3s ease-out',
+                  }} />
                   <Image
                     src={src}
                     alt={`app-icon-${imgIndex}`}
@@ -151,8 +165,36 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                     style={{
                       filter: 'grayscale(0.2) brightness(0.95)',
                       willChange: 'transform',
+                      transform: transitionRef.current ? 'translateY(-2px)' : 'none',
+                      transition: 'transform 0.3s ease-out',
                     }}
                     priority={imgIndex < 4}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        {/* 复制第一行到底部以实现无缝滚动 */}
+        <div className="flex flex-row gap-4 w-full justify-center" style={{ marginTop: '-1px' }}>
+          {imageColumns.map((column, colIndex) => (
+            <div key={`bottom-${colIndex}`} className="flex flex-col gap-6">
+              {column.slice(0, 1).map((src, imgIndex) => (
+                <div 
+                  key={`bottom-${colIndex}-${imgIndex}`} 
+                  className="relative w-24 h-24"
+                >
+                  <Image
+                    src={src}
+                    alt={`app-icon-clone-${imgIndex}`}
+                    width={96}
+                    height={96}
+                    className="rounded-xl w-full h-full object-contain p-2"
+                    style={{
+                      filter: 'grayscale(0.2) brightness(0.95)',
+                      opacity: 0,
+                    }}
+                    priority
                   />
                 </div>
               ))}
