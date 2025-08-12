@@ -6,6 +6,10 @@ import { useEffect, useRef, useState } from 'react';
 
 import { pictureList } from '../lib/pictureList';
 
+interface SidebarWaterfallProps {
+  position: 'left' | 'right';
+}
+
 const COLUMN_COUNT = 2;
 const SCROLL_SPEED = 0.5; // px per frame
 
@@ -15,10 +19,6 @@ function splitColumns(list: string[], columns: number) {
     cols[i % columns].push(item);
   });
   return cols;
-}
-
-interface SidebarWaterfallProps {
-  position: 'left' | 'right';
 }
 
 export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
