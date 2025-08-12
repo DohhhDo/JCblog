@@ -11,14 +11,28 @@ interface SidebarWaterfallProps {
 }
 
 const SCROLL_SPEED = 0.5; // px per frame
+const COLUMNS_PER_SIDE = 2; // 每侧2列
 
-// 将图片列表分成左右两部分，确保总数是偶数以便均匀分配
-function prepareImages() {
-  const totalImages = [...pictureList, ...pictureList]; // 复制一份确保足够多的图片
-  const midPoint = Math.ceil(totalImages.length / 2);
+// 将图片列表分成多列，确保每列数量相近
+function distributeImages() {
+  // 确保有足够的图片用于循环
+  const totalImages = [...pictureList, ...pictureList, ...pictureList];
+  const totalColumns = COLUMNS_PER_SIDE * 2; // 总共4列（左2右2）
+  
+  // 计算每列应该有多少图片
+  const imagesPerColumn = Math.ceil(totalImages.length / totalColumns);
+  
+  // 分配图片到每一列
+  const columns = Array.from({ length: totalColumns }, (_, columnIndex) => {
+    const start = columnIndex * imagesPerColumn;
+    const end = start + imagesPerColumn;
+    return totalImages.slice(start, end);
+  });
+
+  // 返回左右两侧的列
   return {
-    leftImages: totalImages.slice(0, midPoint),
-    rightImages: totalImages.slice(midPoint),
+    leftColumns: columns.slice(0, COLUMNS_PER_SIDE),
+    rightColumns: columns.slice(COLUMNS_PER_SIDE),
   };
 }
 
@@ -26,39 +40,39 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   // 准备图片数据
-  const { leftImages, rightImages } = prepareImages();
-  const images = position === 'left' ? leftImages : rightImages;
+  const { leftColumns, rightColumns } = distributeImages();
+  const columns = position === 'left' ? leftColumns : rightColumns;
 
   // 无限滚动动画
   useEffect(() => {
     if (!mounted || !containerRef.current) return;
 
     let frame: number;
-    let offset = 0;
-    const totalHeight = containerRef.current.scrollHeight / 2;
+    let offset = scrollPosition;
+    const container = containerRef.current;
+    const totalHeight = container.scrollHeight / 2;
     
     const animate = () => {
-      if (!paused && containerRef.current) {
+      if (!paused) {
         offset = (offset + SCROLL_SPEED) % totalHeight;
-        containerRef.current.style.transform = `translateY(-${offset}px)`;
+        setScrollPosition(offset);
         
-        // 当滚动到底部时，重置位置到顶部
-        if (offset >= totalHeight - 1) {
-          offset = 0;
-        }
+        // 应用变换
+        container.style.transform = `translateY(-${offset}px)`;
       }
       frame = requestAnimationFrame(animate);
     };
 
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [paused, mounted]);
+  }, [paused, mounted, scrollPosition]);
 
   if (!mounted) return null;
 
@@ -74,20 +88,28 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
         className="flex flex-col items-center gap-8 overflow-hidden"
         style={{ height: "200%" }}
       >
-        {/* 渲染两份图片以实现无缝循环 */}
-        {[...images, ...images].map((src, i) => (
-          <div key={i} className="relative w-28 h-28">
-            <Image
-              src={src}
-              alt={`app-icon-${i}`}
-              width={120}
-              height={120}
-              className="rounded-2xl w-full h-full object-contain p-2 transition-transform duration-300 hover:scale-110 hover:rotate-3"
-              style={{
-                filter: 'grayscale(0.2) brightness(0.95)',
-              }}
-              priority={i < 8} // 优先加载更多图片
-            />
+        {/* 渲染两份内容以实现无缝循环 */}
+        {[...Array(2)].map((_, setIndex) => (
+          <div key={setIndex} className="flex flex-row gap-4 w-full justify-center">
+            {columns.map((column, colIndex) => (
+              <div key={colIndex} className="flex flex-col gap-6">
+                {column.map((src, imgIndex) => (
+                  <div key={`${setIndex}-${colIndex}-${imgIndex}`} className="relative w-24 h-24">
+                    <Image
+                      src={src}
+                      alt={`app-icon-${imgIndex}`}
+                      width={96}
+                      height={96}
+                      className="rounded-xl w-full h-full object-contain p-2 transition-all duration-300 hover:scale-110 hover:rotate-3"
+                      style={{
+                        filter: 'grayscale(0.2) brightness(0.95)',
+                      }}
+                      priority={setIndex === 0 && imgIndex < 4} // 只优先加载第一组的前几张
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
         ))}
       </div>
