@@ -24,7 +24,7 @@ function prepareImagesForColumn() {
   };
 }
 
-export default function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallProps) {
+export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
