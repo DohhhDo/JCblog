@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { pictureList } from '../lib/pictureList';
 
@@ -10,58 +10,55 @@ interface SidebarWaterfallProps {
   position: 'left' | 'right';
 }
 
-const COLUMN_COUNT = 2;
 const SCROLL_SPEED = 0.5; // px per frame
 
-function splitColumns(list: string[], columns: number) {
-  const cols: string[][] = Array.from({ length: columns }, () => []);
-  list.forEach((item, i) => {
-    cols[i % columns].push(item);
-  });
-  return cols;
+// 将图片列表分成左右两部分，确保总数是偶数以便均匀分配
+function prepareImages() {
+  const totalImages = [...pictureList, ...pictureList]; // 复制一份确保足够多的图片
+  const midPoint = Math.ceil(totalImages.length / 2);
+  return {
+    leftImages: totalImages.slice(0, midPoint),
+    rightImages: totalImages.slice(midPoint),
+  };
 }
 
 export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
   const [mounted, setMounted] = useState(false);
-  
-  // 分别创建两个 ref
-  const firstColRef = useRef<HTMLDivElement>(null);
-  const secondColRef = useRef<HTMLDivElement>(null);
-  
-  // 使用 useMemo 缓存 refs 数组
-  const containerRefs = useMemo(
-    () => [firstColRef, secondColRef],
-    [firstColRef, secondColRef]
-  );
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // 拆分图片到两列
-  const columns = splitColumns(pictureList, COLUMN_COUNT);
+  // 准备图片数据
+  const { leftImages, rightImages } = prepareImages();
+  const images = position === 'left' ? leftImages : rightImages;
 
   // 无限滚动动画
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || !containerRef.current) return;
+
     let frame: number;
     let offset = 0;
+    const totalHeight = containerRef.current.scrollHeight / 2;
+    
     const animate = () => {
-      if (!paused) {
-        offset += SCROLL_SPEED;
-        containerRefs.forEach((ref) => {
-          if (ref.current) {
-            const totalHeight = ref.current.scrollHeight / 2;
-            ref.current.style.transform = `translateY(-${offset % totalHeight}px)`;
-          }
-        });
+      if (!paused && containerRef.current) {
+        offset = (offset + SCROLL_SPEED) % totalHeight;
+        containerRef.current.style.transform = `translateY(-${offset}px)`;
+        
+        // 当滚动到底部时，重置位置到顶部
+        if (offset >= totalHeight - 1) {
+          offset = 0;
+        }
       }
       frame = requestAnimationFrame(animate);
     };
+
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [paused, mounted, containerRefs]);
+  }, [paused, mounted]);
 
   if (!mounted) return null;
 
@@ -72,31 +69,28 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {columns.map((col, idx) => (
-        <div
-          key={idx}
-          ref={containerRefs[idx]}
-          className={`flex flex-col items-center gap-8 w-1/2 overflow-hidden ${position === 'right' ? 'order-first' : ''}`}
-          style={{ height: "100%" }}
-        >
-          {/* 两次渲染图片以实现无缝循环 */}
-          {[...col, ...col].map((src, i) => (
-            <div key={i} className="relative w-28 h-28">
-              <Image
-                src={src}
-                alt={`app-icon-${i}`}
-                fill
-                sizes="112px"
-                className="rounded-2xl object-contain p-2 transition-transform duration-300 hover:scale-110 hover:rotate-3"
-                style={{
-                  filter: 'grayscale(0.2) brightness(0.95)',
-                }}
-                priority={i < 8} // 优先加载更多图片
-              />
-            </div>
-          ))}
-        </div>
-      ))}
+      <div
+        ref={containerRef}
+        className="flex flex-col items-center gap-8 overflow-hidden"
+        style={{ height: "200%" }}
+      >
+        {/* 渲染两份图片以实现无缝循环 */}
+        {[...images, ...images].map((src, i) => (
+          <div key={i} className="relative w-28 h-28">
+            <Image
+              src={src}
+              alt={`app-icon-${i}`}
+              width={120}
+              height={120}
+              className="rounded-2xl w-full h-full object-contain p-2 transition-transform duration-300 hover:scale-110 hover:rotate-3"
+              style={{
+                filter: 'grayscale(0.2) brightness(0.95)',
+              }}
+              priority={i < 8} // 优先加载更多图片
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
