@@ -3,68 +3,65 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-
 import { pictureList } from '../lib/pictureList';
 
 interface SidebarWaterfallProps {
   position: 'left' | 'right';
+  onImageLeave?: (targetPosition: 'left' | 'right') => void;
 }
 
-const SCROLL_SPEED = 0.5; // px per frame
-const COLUMNS_PER_SIDE = 2; // 每侧2列
+const SCROLL_SPEED = 0.8; // 稍快的滚动速度
+const IMAGE_HEIGHT = 112; // 图片高度(96) + 间距(16)
 
-// 将图片列表分成多列，确保每列数量相近
-function distributeImages() {
-  // 确保有足够的图片用于循环
-  const totalImages = [...pictureList, ...pictureList, ...pictureList];
-  const totalColumns = COLUMNS_PER_SIDE * 2; // 总共4列（左2右2）
-  
-  // 计算每列应该有多少图片
-  const imagesPerColumn = Math.ceil(totalImages.length / totalColumns);
-  
-  // 分配图片到每一列
-  const columns = Array.from({ length: totalColumns }, (_, columnIndex) => {
-    const start = columnIndex * imagesPerColumn;
-    const end = start + imagesPerColumn;
-    return totalImages.slice(start, end);
-  });
-
-  // 返回左右两侧的列
+// 准备图片列表并分成两列
+function prepareImagesForColumn() {
+  // 复制两份图片列表以确保有足够的图片进行循环
+  const images = [...pictureList, ...pictureList];
+  const columnLength = Math.ceil(images.length / 2);
   return {
-    leftColumns: columns.slice(0, COLUMNS_PER_SIDE),
-    rightColumns: columns.slice(COLUMNS_PER_SIDE),
+    firstColumn: images.slice(0, columnLength),
+    secondColumn: images.slice(columnLength),
   };
 }
 
-export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
+export default function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // 准备图片数据
-  const { leftColumns, rightColumns } = distributeImages();
-  const columns = position === 'left' ? leftColumns : rightColumns;
+  const [imageColumns, setImageColumns] = useState(() => {
+    const { firstColumn, secondColumn } = prepareImagesForColumn();
+    return position === 'left' ? [firstColumn, secondColumn] : [secondColumn, firstColumn];
+  });
 
   // 无限滚动动画
   useEffect(() => {
-    if (!mounted || !containerRef.current) return;
+    if (!containerRef.current) return;
 
     let frame: number;
     let offset = scrollPosition;
     const container = containerRef.current;
-    const totalHeight = container.scrollHeight / 2;
     
     const animate = () => {
       if (!paused) {
-        offset = (offset + SCROLL_SPEED) % totalHeight;
-        setScrollPosition(offset);
+        offset += SCROLL_SPEED;
         
-        // 应用变换
+        // 当一个图片完全滚动出可视区域时
+        if (offset >= IMAGE_HEIGHT) {
+          // 通知父组件需要将图片移到另一侧
+          onImageLeave?.(position === 'left' ? 'right' : 'left');
+          // 循环图片
+          setImageColumns(prev => {
+            const [col1, col2] = prev;
+            return [
+              [...col1.slice(1), col1[0]],
+              [...col2.slice(1), col2[0]]
+            ];
+          });
+          // 重置滚动位置
+          offset = 0;
+        }
+        
+        setScrollPosition(offset);
         container.style.transform = `translateY(-${offset}px)`;
       }
       frame = requestAnimationFrame(animate);
@@ -72,46 +69,43 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
 
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [paused, mounted, scrollPosition]);
-
-  if (!mounted) return null;
+  }, [paused, position, onImageLeave]);
 
   return (
-    <div
-      className={`flex items-center justify-center w-full pt-32 overflow-hidden relative`}
-      style={{ height: "100vh" }}
+    <div 
+      className="flex items-center justify-center w-full overflow-hidden relative" 
+      style={{ height: 'calc(100vh - 4rem)' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       <div
         ref={containerRef}
-        className="flex flex-col items-center gap-8 overflow-hidden"
-        style={{ height: "200%" }}
+        className="flex flex-col items-center gap-6"
       >
-        {/* 渲染两份内容以实现无缝循环 */}
-        {[...Array(2)].map((_, setIndex) => (
-          <div key={setIndex} className="flex flex-row gap-4 w-full justify-center">
-            {columns.map((column, colIndex) => (
-              <div key={colIndex} className="flex flex-col gap-6">
-                {column.map((src, imgIndex) => (
-                  <div key={`${setIndex}-${colIndex}-${imgIndex}`} className="relative w-24 h-24">
-                    <Image
-                      src={src}
-                      alt={`app-icon-${imgIndex}`}
-                      width={96}
-                      height={96}
-                      className="rounded-xl w-full h-full object-contain p-2 transition-all duration-300 hover:scale-110 hover:rotate-3"
-                      style={{
-                        filter: 'grayscale(0.2) brightness(0.95)',
-                      }}
-                      priority={setIndex === 0 && imgIndex < 4} // 只优先加载第一组的前几张
-                    />
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        ))}
+        <div className="flex flex-row gap-4 w-full justify-center">
+          {imageColumns.map((column, colIndex) => (
+            <div key={colIndex} className="flex flex-col gap-6">
+              {column.map((src, imgIndex) => (
+                <div 
+                  key={`${colIndex}-${imgIndex}`} 
+                  className="relative w-24 h-24"
+                >
+                  <Image
+                    src={src}
+                    alt={`app-icon-${imgIndex}`}
+                    width={96}
+                    height={96}
+                    className="rounded-xl w-full h-full object-contain p-2 transition-all duration-300 hover:scale-110 hover:rotate-3"
+                    style={{
+                      filter: 'grayscale(0.2) brightness(0.95)',
+                    }}
+                    priority={imgIndex < 4}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
