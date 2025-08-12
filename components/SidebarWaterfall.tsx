@@ -2,7 +2,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import { pictureList } from '../lib/pictureList';
 
 interface SidebarWaterfallProps {
@@ -38,15 +39,16 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     if (!containerRef.current) return;
 
     let frame: number;
-    let offset = scrollPosition;
+    // 使用 ref 来存储当前偏移量，避免闭包问题
+    const offsetRef = useRef(scrollPosition);
     const container = containerRef.current;
     
     const animate = () => {
       if (!paused) {
-        offset += SCROLL_SPEED;
+        offsetRef.current += SCROLL_SPEED;
         
         // 当一个图片完全滚动出可视区域时
-        if (offset >= IMAGE_HEIGHT) {
+        if (offsetRef.current >= IMAGE_HEIGHT) {
           // 通知父组件需要将图片移到另一侧
           onImageLeave?.(position === 'left' ? 'right' : 'left');
           // 循环图片
@@ -58,11 +60,11 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
             ];
           });
           // 重置滚动位置
-          offset = 0;
+          offsetRef.current = 0;
         }
         
-        setScrollPosition(offset);
-        container.style.transform = `translateY(-${offset}px)`;
+        setScrollPosition(offsetRef.current);
+        container.style.transform = `translateY(-${offsetRef.current}px)`;
       }
       frame = requestAnimationFrame(animate);
     };
