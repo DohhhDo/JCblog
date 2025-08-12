@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { pictureList } from '../lib/pictureList';
 
@@ -45,8 +45,9 @@ function prepareImagesForColumn() {
 export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const transitionRef = useRef<boolean>(false);
+  const offsetRef = useRef(0);
+  const frameRef = useRef<number>();
   
   // 使用 useMemo 来缓存初始列配置
   const [imageColumns, setImageColumns] = useState(() => {
@@ -56,72 +57,57 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
       : [thirdColumn, fourthColumn];
   });
 
-  // 用于存储当前偏移量的ref
-  const offsetRef = useRef(scrollPosition);
-  
-  // 防止闪烁的过渡动画控制
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const container = containerRef.current;
+  // 处理滚动动画
+  const updateScroll = useCallback(() => {
+    if (!containerRef.current || paused || transitionRef.current) return;
     
-    if (transitionRef.current) {
-      container.style.transition = 'transform 0.3s ease-out';
-    } else {
-      container.style.transition = 'none';
-    }
-  }, [scrollPosition]);
+    offsetRef.current += SCROLL_SPEED;
+    
+    // 当一个图片即将完全滚出可视区域时
+    if (offsetRef.current >= IMAGE_HEIGHT - 10) {
+      transitionRef.current = true;
+      
+      // 通知父组件
+      onImageLeave?.(position === 'left' ? 'right' : 'left');
+      
+      // 准备下一组图片
+      setImageColumns(prev => {
+        const [col1, col2] = prev;
+        return [
+          [...col1.slice(1), col1[0]],
+          [...col2.slice(1), col2[0]]
+        ];
+      });
 
-  // 无限滚动动画
-  useEffect(() => {
-    if (!containerRef.current) return;
-    
-    const startPosition = scrollPosition;
-    offsetRef.current = startPosition;
-    let frame: number;
-    
-    const animate = () => {
-      if (!paused && containerRef.current) {
-        offsetRef.current += SCROLL_SPEED;
-        
-        // 当一个图片即将完全滚出可视区域时
-        if (offsetRef.current >= IMAGE_HEIGHT - 10) { // 提前开始过渡
-          // 标记开始过渡
-          if (!transitionRef.current) {
-            transitionRef.current = true;
-            
-            // 通知父组件需要将图片移到另一侧
-            onImageLeave?.(position === 'left' ? 'right' : 'left');
-            
-            // 准备下一组图片
-            requestAnimationFrame(() => {
-              setImageColumns(prev => {
-                const [col1, col2] = prev;
-                return [
-                  [...col1.slice(1), col1[0]],
-                  [...col2.slice(1), col2[0]]
-                ];
-              });
-            });
-
-            // 在过渡结束后重置状态
-            setTimeout(() => {
-              offsetRef.current = 0;
-              setScrollPosition(0);
-              transitionRef.current = false;
-            }, 300);
-          }
-        } else {
-          setScrollPosition(offsetRef.current);
+      // 重置位置
+      containerRef.current.style.transition = 'transform 0.3s ease-out';
+      containerRef.current.style.transform = `translateY(-${IMAGE_HEIGHT}px)`;
+      
+      // 在过渡结束后重置状态
+      setTimeout(() => {
+        if (containerRef.current) {
+          containerRef.current.style.transition = 'none';
+          containerRef.current.style.transform = 'translateY(0)';
+          offsetRef.current = 0;
+          transitionRef.current = false;
         }
-      }
-      frame = requestAnimationFrame(animate);
-    };
+      }, 300);
+    } else {
+      containerRef.current.style.transform = `translateY(-${offsetRef.current}px)`;
+    }
+    
+    frameRef.current = requestAnimationFrame(updateScroll);
+  }, [paused, position, onImageLeave]);
 
-    frame = requestAnimationFrame(animate);
+  // 启动动画
+  useEffect(() => {
+    frameRef.current = requestAnimationFrame(updateScroll);
     return () => {
-      cancelAnimationFrame(frame);
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
     };
-  }, [paused, position, onImageLeave, scrollPosition]);
+  }, [updateScroll]);
 
   return (
     <div 
@@ -138,7 +124,6 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
         ref={containerRef}
         className="flex flex-col items-center gap-6 will-change-transform"
         style={{
-          transform: `translateY(-${scrollPosition}px)`,
           clipPath: 'inset(1px 0)',
         }}
       >
