@@ -17,7 +17,11 @@ function splitColumns(list: string[], columns: number) {
   return cols;
 }
 
-export function SidebarWaterfall() {
+interface SidebarWaterfallProps {
+  position: 'left' | 'right';
+}
+
+export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
   const [mounted, setMounted] = useState(false);
   const containerRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
@@ -56,7 +60,7 @@ export function SidebarWaterfall() {
 
   return (
     <div
-      className="flex gap-4 px-3 pt-32 overflow-hidden relative"
+      className={`flex gap-4 ${position === 'left' ? 'justify-start' : 'justify-end'} px-3 pt-32 overflow-hidden relative`}
       style={{ height: "100vh" }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -65,7 +69,7 @@ export function SidebarWaterfall() {
         <div
           key={idx}
           ref={containerRefs[idx]}
-          className="flex flex-col w-1/2 overflow-hidden"
+          className={`flex flex-col w-1/2 overflow-hidden ${position === 'right' ? 'order-first' : ''}`}
           style={{ height: "100%" }}
         >
           {/* 两次渲染图片以实现无缝循环 */}
