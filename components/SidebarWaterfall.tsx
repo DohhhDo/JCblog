@@ -61,7 +61,7 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
     return baseDelay + Math.random() * 0.5
   }
 
-  const renderColumn = (columnPhotos: string[], delay: number, direction: 'up' | 'down', speed: number) => {
+  const renderColumn = (columnPhotos: string[], delay: number, direction: 'up' | 'down', _speed: number) => {
     // 计算滚动距离，确保图片能够完全移出视图并重新进入
     const itemHeight = 80 // 每个图片大约80px高度（包括间距）
     const totalHeight = columnPhotos.length * itemHeight
