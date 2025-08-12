@@ -63,7 +63,7 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
 
   const renderColumn = (columnPhotos: string[], delay: number, direction: 'up' | 'down', _speed: number) => {
     // 计算滚动距离，确保图片能够完全移出视图并重新进入
-    const itemHeight = 80 // 每个图片大约80px高度（包括间距）
+    const itemHeight = 100 // 每个图片大约100px高度（包括间距）
     const totalHeight = columnPhotos.length * itemHeight
     const viewportHeight = 800 // 视口高度，确保覆盖整个侧边栏
     
@@ -86,13 +86,13 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
         {columnPhotos.map((photo, index) => (
           <motion.div
             key={`${position}-${index}`}
-            className="relative w-full aspect-square overflow-hidden rounded-xl bg-zinc-100 ring-1 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700/50 shadow-sm hover:shadow-lg transition-all duration-300"
+            className="relative w-full h-20 overflow-hidden rounded-lg bg-zinc-100 ring-1 ring-zinc-200 dark:bg-zinc-800 dark:ring-zinc-700/50 shadow-sm hover:shadow-md transition-all duration-300"
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ 
               opacity: 1, 
               y: 0, 
               scale: 1,
-              rotate: index % 2 === 0 ? 1 : -1 // 轻微旋转增加动态感
+              rotate: index % 2 === 0 ? 0.5 : -0.5 // 轻微旋转增加动态感
             }}
             transition={{
               delay: getRandomDelay(delay + index * 0.03),
@@ -102,7 +102,7 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
               stiffness: 100,
             }}
             whileHover={{
-              scale: 1.1,
+              scale: 1.03,
               rotate: 0,
               transition: { duration: 0.3 }
             }}
@@ -110,8 +110,8 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
             <Image
               src={photo}
               alt=""
-              width={100}
-              height={100}
+              width={80}
+              height={80}
               className="h-full w-full object-cover"
               priority={index < 2}
             />
@@ -119,7 +119,7 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
             
             {/* 添加微妙的发光效果 */}
-            <div className="absolute inset-0 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-blue-500/20 to-purple-500/20" />
+            <div className="absolute inset-0 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-blue-500/20 to-purple-500/20" />
           </motion.div>
         ))}
       </motion.div>
