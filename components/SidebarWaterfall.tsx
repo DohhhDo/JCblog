@@ -74,14 +74,13 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
   // 无限滚动动画
   useEffect(() => {
     if (!containerRef.current) return;
-
-    let frame: number;
-    const container = containerRef.current;
+    
     const startPosition = scrollPosition;
     offsetRef.current = startPosition;
+    let frame: number;
     
     const animate = () => {
-      if (!paused) {
+      if (!paused && containerRef.current) {
         offsetRef.current += SCROLL_SPEED;
         
         // 当一个图片即将完全滚出可视区域时
@@ -122,7 +121,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     return () => {
       cancelAnimationFrame(frame);
     };
-  }, [paused, position, onImageLeave]);
+  }, [paused, position, onImageLeave, scrollPosition]);
 
   return (
     <div 
