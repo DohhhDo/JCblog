@@ -25,10 +25,14 @@ export function SidebarWaterfall({ position }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
   const [mounted, setMounted] = useState(false);
   
-  // 使用 useMemo 缓存 refs 数组，避免每次渲染都创建新数组
+  // 分别创建两个 ref
+  const firstColRef = useRef<HTMLDivElement>(null);
+  const secondColRef = useRef<HTMLDivElement>(null);
+  
+  // 使用 useMemo 缓存 refs 数组
   const containerRefs = useMemo(
-    () => [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)],
-    []
+    () => [firstColRef, secondColRef],
+    [firstColRef, secondColRef]
   );
 
   useEffect(() => {
