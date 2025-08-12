@@ -1,11 +1,13 @@
 
-"use client";
-import React, { useRef, useEffect, useState } from "react";
-import { pictureList } from "../lib/pictureList";
+'use client';
+
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+
+import { pictureList } from '../lib/pictureList';
 
 const COLUMN_COUNT = 2;
 const SCROLL_SPEED = 0.5; // px per frame
-const CONTAINER_HEIGHT = typeof window !== 'undefined' ? window.innerHeight : 800;
 
 function splitColumns(list: string[], columns: number) {
   const cols: string[][] = Array.from({ length: columns }, () => []);
@@ -48,7 +50,7 @@ export function SidebarWaterfall() {
     };
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [paused, mounted]);
+  }, [paused, mounted, containerRefs]);
 
   if (!mounted) return null;
 
@@ -68,12 +70,14 @@ export function SidebarWaterfall() {
         >
           {/* 两次渲染图片以实现无缝循环 */}
           {[...col, ...col].map((src, i) => (
-            <img
+            <Image
               key={i}
+              width={300}
+              height={200}
               src={src}
-              alt="waterfall"
-              loading="lazy"
-              className="mb-4 rounded-lg object-cover w-full"
+              priority={i < 4} // 优先加载前4张图片
+              alt={`waterfall-${i}`}
+              className="mb-4 rounded-lg object-cover w-full h-auto"
               style={{ maxHeight: containerHeight / col.length - 16 }}
             />
           ))}
