@@ -76,7 +76,6 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     if (!containerRef.current || paused) return;
     
     offsetRef.current += SCROLL_SPEED;
-    const totalHeight = IMAGE_HEIGHT * imageColumns[0].length; // 使用实际内容高度
     
     // 实现无缝循环
     if (offsetRef.current >= IMAGE_HEIGHT) {
