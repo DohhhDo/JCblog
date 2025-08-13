@@ -3,8 +3,14 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-import { pictureList } from '../lib/pictureList';
+      <div className="flex items-center justify-center w-full overflow-hidden relative h-[100vh]" 
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 w-full h-24 bg-gradient-to-b dark:from-neutral-900 from-white to-transparent z-10" />
+        <div className="absolute bottom-0 w-full h-24 bg-gradient-to-t dark:from-neutral-900 from-white to-transparent z-10" />
+      </div>{ pictureList } from '../lib/pictureList';
 
 interface SidebarWaterfallProps {
   position: 'left' | 'right';
@@ -118,8 +124,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
 
   return (
     <div 
-      className="flex items-center justify-center w-full overflow-hidden relative" 
-      style={{ height: 'calc(100vh - 4rem)' }}
+      className="flex items-center justify-center w-full overflow-hidden relative h-full" 
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >

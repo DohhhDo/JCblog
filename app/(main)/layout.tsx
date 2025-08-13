@@ -35,12 +35,12 @@ export default function BlogLayout({
           <Header />
           
           {/* Left Sidebar Waterfall Photos */}
-          <div className="hidden xl:block fixed left-0 top-0 w-64 h-full pointer-events-auto z-30">
+          <div className="hidden xl:block fixed left-0 top-0 bottom-0 w-64 pointer-events-auto z-30">
             <SidebarWaterfall position="left" />
           </div>
           
           {/* Right Sidebar Waterfall Photos */}
-          <div className="hidden xl:block fixed right-0 top-0 w-64 h-full pointer-events-auto z-30">
+          <div className="hidden xl:block fixed right-0 top-0 bottom-0 w-64 pointer-events-auto z-30">
             <SidebarWaterfall position="right" />
           </div>
           
