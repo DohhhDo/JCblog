@@ -25,14 +25,22 @@ function prepareImagesForColumn() {
     return array;
   };
   
-  const images = [...pictureList];
-  const columnSize = Math.ceil(images.length / 4); // 四等分
+  const images = [...pictureList, ...pictureList]; // 复制两份确保有足够的图片
   const shuffledImages = shuffleArray([...images]); // 随机打乱
   
-  // 将图片分成四份
-  const columns = Array.from({ length: 4 }, (_, i) => 
-    shuffledImages.slice(i * columnSize, (i + 1) * columnSize)
-  );
+  // 确保每列至少有6张图片
+  const columnSize = Math.max(6, Math.ceil(shuffledImages.length / 4));
+  
+  // 将图片分成四份，如果图片不够，循环使用
+  const columns = Array.from({ length: 4 }, (_, i) => {
+    const start = i * columnSize;
+    const columnImages = [];
+    for (let j = 0; j < columnSize; j++) {
+      const index = (start + j) % shuffledImages.length;
+      columnImages.push(shuffledImages[index]);
+    }
+    return columnImages;
+  });
   
   return {
     firstColumn: columns[0],
@@ -62,10 +70,11 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     if (!containerRef.current || paused) return;
     
     offsetRef.current += SCROLL_SPEED;
+    const totalHeight = IMAGE_HEIGHT * 3; // 使用更长的循环周期
     
-    // 当图片完全滚出可视区域时，重置位置，但保持无缝过渡
-    if (offsetRef.current >= IMAGE_HEIGHT) {
-      offsetRef.current = offsetRef.current % IMAGE_HEIGHT;
+    // 当滚动到一定位置时，重置位置实现无缝循环
+    if (offsetRef.current >= totalHeight) {
+      offsetRef.current = 0;
       // 通知父组件
       onImageLeave?.(position === 'left' ? 'right' : 'left');
     }
@@ -129,11 +138,11 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
             </div>
           ))}
         </div>
-        {/* 复制前几行到底部以实现无缝滚动 */}
+        {/* 复制前面部分到底部以实现无缝滚动 */}
         <div className="flex flex-row gap-4 w-full justify-center">
           {imageColumns.map((column, colIndex) => (
             <div key={`bottom-${colIndex}`} className="flex flex-col gap-6">
-              {column.slice(0, 3).map((src, imgIndex) => (
+              {column.map((src, imgIndex) => (
                 <div 
                   key={`bottom-${colIndex}-${imgIndex}`} 
                   className="relative w-24 h-24"
