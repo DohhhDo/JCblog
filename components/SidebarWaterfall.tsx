@@ -2,7 +2,6 @@
 'use client';
 
 import Image from 'next/image';
-import { CSSProperties } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { pictureList } from '../lib/pictureList';
@@ -137,12 +136,10 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                   className="relative w-24 h-24"
                 >
                   <div 
-                    className="absolute inset-0 rounded-xl dark:mix-blend-overlay" 
+                    className="absolute inset-0 rounded-xl dark:mix-blend-overlay before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-b before:from-transparent before:via-white dark:before:via-neutral-800 before:to-transparent"
                     style={{ 
-                      background: 'linear-gradient(to bottom, transparent, var(--gradient-color, white) 50%, transparent)',
                       opacity: transitionRef.current ? 0.1 : 0,
                       transition: 'opacity 0.3s ease-out',
-                      ['--gradient-color' as string]: 'var(--tw-prose-body, white)',
                     }}
                   />
                   <Image
