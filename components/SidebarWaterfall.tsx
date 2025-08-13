@@ -1,11 +1,10 @@
 
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 
-import Image from 'next/image';
-
-import { pictureList } from '../lib/pictureList';
+import { pictureList } from '../lib/pictureList'
 
 interface SidebarWaterfallProps {
   position: 'left' | 'right';
