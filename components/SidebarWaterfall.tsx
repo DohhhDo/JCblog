@@ -15,18 +15,24 @@ const SCROLL_SPEED = 0.8; // 稍快的滚动速度
 const IMAGE_HEIGHT = 112; // 图片高度(96) + 间距(16)
 
 // 将图片列表分成四列，确保每列都不完全相同
-function prepareImagesForColumn() {
+function prepareImagesForColumn(): {
+  firstColumn: string[];
+  secondColumn: string[];
+  thirdColumn: string[];
+  fourthColumn: string[];
+} {
   // 随机打乱图片列表
-  const shuffleArray = (array: string[]) => {
-    for (let i = array.length - 1; i > 0; i--) {
+  const shuffleArray = (array: string[]): string[] => {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
     }
-    return array;
+    return newArray;
   };
   
   const images = [...pictureList, ...pictureList]; // 复制两份确保有足够的图片
-  const shuffledImages = shuffleArray([...images]); // 随机打乱
+  const shuffledImages = shuffleArray(images); // 随机打乱
   
   // 确保每列至少有6张图片
   const columnSize = Math.max(6, Math.ceil(shuffledImages.length / 4));
@@ -34,7 +40,7 @@ function prepareImagesForColumn() {
   // 将图片分成四份，如果图片不够，循环使用
   const columns = Array.from({ length: 4 }, (_, i) => {
     const start = i * columnSize;
-    const columnImages = [];
+    const columnImages: string[] = [];
     for (let j = 0; j < columnSize; j++) {
       const index = (start + j) % shuffledImages.length;
       columnImages.push(shuffledImages[index]);
@@ -57,7 +63,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
   const frameRef = useRef<number>();
   
   // 初始化图片列配置
-  const [imageColumns] = useState(() => {
+  const [imageColumns] = useState<string[][]>(() => {
     const { firstColumn, secondColumn, thirdColumn, fourthColumn } = prepareImagesForColumn();
     // 确保不同位置使用不同的图片组
     return position === 'left' 
