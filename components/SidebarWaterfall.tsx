@@ -2,6 +2,7 @@
 'use client';
 
 import Image from 'next/image';
+import { CSSProperties } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { pictureList } from '../lib/pictureList';
@@ -117,8 +118,8 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
       onMouseLeave={() => setPaused(false)}
     >
       <div className="absolute inset-0">
-        <div className="absolute top-0 w-full h-12 bg-gradient-to-b from-white to-transparent z-10" />
-        <div className="absolute bottom-0 w-full h-12 bg-gradient-to-t from-white to-transparent z-10" />
+        <div className="absolute top-0 w-full h-12 bg-gradient-to-b dark:from-neutral-900 from-white to-transparent z-10" />
+        <div className="absolute bottom-0 w-full h-12 bg-gradient-to-t dark:from-neutral-900 from-white to-transparent z-10" />
       </div>
       <div
         ref={containerRef}
@@ -135,11 +136,15 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                   key={`${colIndex}-${imgIndex}`} 
                   className="relative w-24 h-24"
                 >
-                  <div className="absolute inset-0 rounded-xl" style={{ 
-                    background: 'linear-gradient(to bottom, transparent, white 50%, transparent)',
-                    opacity: transitionRef.current ? 0.1 : 0,
-                    transition: 'opacity 0.3s ease-out',
-                  }} />
+                  <div 
+                    className="absolute inset-0 rounded-xl dark:mix-blend-overlay" 
+                    style={{ 
+                      background: 'linear-gradient(to bottom, transparent, var(--gradient-color, white) 50%, transparent)',
+                      opacity: transitionRef.current ? 0.1 : 0,
+                      transition: 'opacity 0.3s ease-out',
+                      ['--gradient-color' as string]: 'var(--tw-prose-body, white)',
+                    }}
+                  />
                   <Image
                     src={src}
                     alt={`app-icon-${imgIndex}`}
