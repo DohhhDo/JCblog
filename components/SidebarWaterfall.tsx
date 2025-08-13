@@ -59,6 +59,8 @@ function prepareImagesForColumn(): {
 
 export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [countdown, setCountdown] = useState(10);
   const containerRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const frameRef = useRef<number>();
@@ -117,12 +119,47 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     };
   }, [updateScroll]);
 
+  // 第十秒后开始消失动画
+  useEffect(() => {
+    const countdownTimer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          setIsVisible(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdownTimer);
+  }, []);
+
   return (
     <div 
-      className="flex items-center justify-center w-full overflow-hidden relative h-full" 
+      className={`flex items-center justify-center w-full overflow-hidden relative h-full transition-all duration-1000 ease-in-out ${
+        isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+      }`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      style={{
+        transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
+        filter: isVisible ? 'blur(0px)' : 'blur(2px)',
+      }}
     >
+      {/* 倒计时进度条 */}
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="bg-black/20 dark:bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-white dark:text-black">
+          <span className="mr-2">⏰</span>
+          {countdown}s
+        </div>
+        <div className="mt-2 w-32 h-1 bg-black/20 dark:bg-white/20 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-1000 ease-out"
+            style={{ width: `${(countdown / 10) * 100}%` }}
+          />
+        </div>
+      </div>
+      
       <div className="absolute inset-0">
         <div className="absolute top-0 w-full h-12 bg-gradient-to-b dark:from-neutral-900 from-white to-transparent z-10" />
         <div className="absolute bottom-0 w-full h-12 bg-gradient-to-t dark:from-neutral-900 from-white to-transparent z-10" />
