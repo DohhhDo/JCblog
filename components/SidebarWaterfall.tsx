@@ -45,59 +45,76 @@ function prepareImagesForColumn() {
 export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const transitionRef = useRef<boolean>(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const offsetRef = useRef(0);
   const frameRef = useRef<number>();
+  const nextImagesRef = useRef<string[][]>([]);
   
-  // 使用 useMemo 来缓存初始列配置
+  // 初始化图片列配置
   const [imageColumns, setImageColumns] = useState(() => {
     const { firstColumn, secondColumn, thirdColumn, fourthColumn } = prepareImagesForColumn();
+    // 确保不同位置使用不同的图片组
     return position === 'left' 
       ? [firstColumn, secondColumn] 
       : [thirdColumn, fourthColumn];
   });
 
+  // 准备下一组图片，但不立即显示
+  const prepareNextImages = useCallback(() => {
+    nextImagesRef.current = imageColumns.map(column => {
+      const [first, ...rest] = column;
+      return [...rest, first];
+    });
+  }, [imageColumns]);
+
+  // 应用准备好的下一组图片
+  const applyNextImages = useCallback(() => {
+    if (nextImagesRef.current.length) {
+      setImageColumns(nextImagesRef.current);
+      nextImagesRef.current = [];
+    }
+  }, []);
+
   // 处理滚动动画
   const updateScroll = useCallback(() => {
-    if (!containerRef.current || paused || transitionRef.current) return;
+    if (!containerRef.current || paused || isTransitioning) return;
     
     offsetRef.current += SCROLL_SPEED;
     
-    // 当一个图片即将完全滚出可视区域时
-    if (offsetRef.current >= IMAGE_HEIGHT - 10) {
-      transitionRef.current = true;
+    // 提前准备下一组图片
+    if (offsetRef.current >= IMAGE_HEIGHT - 20 && !nextImagesRef.current.length) {
+      prepareNextImages();
+    }
+    
+    // 当图片即将完全滚出可视区域时
+    if (offsetRef.current >= IMAGE_HEIGHT - 10 && !isTransitioning) {
+      setIsTransitioning(true);
       
       // 通知父组件
       onImageLeave?.(position === 'left' ? 'right' : 'left');
       
-      // 准备下一组图片
-      setImageColumns(prev => {
-        const [col1, col2] = prev;
-        return [
-          [...col1.slice(1), col1[0]],
-          [...col2.slice(1), col2[0]]
-        ];
-      });
-
-      // 重置位置
-      containerRef.current.style.transition = 'transform 0.3s ease-out';
-      containerRef.current.style.transform = `translateY(-${IMAGE_HEIGHT}px)`;
-      
-      // 在过渡结束后重置状态
-      setTimeout(() => {
-        if (containerRef.current) {
-          containerRef.current.style.transition = 'none';
-          containerRef.current.style.transform = 'translateY(0)';
-          offsetRef.current = 0;
-          transitionRef.current = false;
-        }
-      }, 300);
-    } else {
+      // 应用过渡效果
+      if (containerRef.current) {
+        containerRef.current.style.transition = 'transform 0.3s ease-out';
+        containerRef.current.style.transform = `translateY(-${IMAGE_HEIGHT}px)`;
+        
+        // 等待过渡完成后再更新图片顺序
+        setTimeout(() => {
+          if (containerRef.current) {
+            containerRef.current.style.transition = 'none';
+            containerRef.current.style.transform = 'translateY(0)';
+            applyNextImages();
+            offsetRef.current = 0;
+            setIsTransitioning(false);
+          }
+        }, 300);
+      }
+    } else if (!isTransitioning) {
       containerRef.current.style.transform = `translateY(-${offsetRef.current}px)`;
     }
     
     frameRef.current = requestAnimationFrame(updateScroll);
-  }, [paused, position, onImageLeave]);
+  }, [paused, position, onImageLeave, isTransitioning, prepareNextImages, applyNextImages]);
 
   // 启动动画
   useEffect(() => {
@@ -138,7 +155,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                   <div 
                     className="absolute inset-0 rounded-xl dark:mix-blend-overlay before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-b before:from-transparent before:via-white dark:before:via-neutral-800 before:to-transparent"
                     style={{ 
-                      opacity: transitionRef.current ? 0.1 : 0,
+                      opacity: isTransitioning ? 0.1 : 0,
                       transition: 'opacity 0.3s ease-out',
                     }}
                   />
@@ -151,7 +168,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                     style={{
                       filter: 'grayscale(0.2) brightness(0.95)',
                       willChange: 'transform',
-                      transform: transitionRef.current ? 'translateY(-2px)' : 'none',
+                      transform: isTransitioning ? 'translateY(-2px)' : 'none',
                       transition: 'transform 0.3s ease-out',
                     }}
                     priority={imgIndex < 4}
