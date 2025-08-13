@@ -1,13 +1,13 @@
 import './blog/[slug]/blog.css'
 
-import { Analytics } from '@vercel/analytics/react'
 import { Suspense } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 
+import { AutoHideSidebars } from './AutoHideSidebars'
 import { Footer } from '~/app/(main)/Footer'
 import { Header } from '~/app/(main)/Header'
 import { QueryProvider } from '~/app/QueryProvider'
 import { SidebarWaterfall } from '~/components/SidebarWaterfall'
-import { AutoHideSidebars } from './AutoHideSidebars'
 
 export default function BlogLayout({
   children,
