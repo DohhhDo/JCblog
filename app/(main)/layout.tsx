@@ -7,6 +7,7 @@ import { Footer } from '~/app/(main)/Footer'
 import { Header } from '~/app/(main)/Header'
 import { QueryProvider } from '~/app/QueryProvider'
 import { SidebarWaterfall } from '~/components/SidebarWaterfall'
+import { AutoHideSidebars } from './AutoHideSidebars'
 
 export default function BlogLayout({
   children,
@@ -34,15 +35,15 @@ export default function BlogLayout({
         <div className="relative text-zinc-800 dark:text-zinc-200">
           <Header />
           
-          {/* Left Sidebar Waterfall Photos */}
-          <div className="hidden xl:block fixed left-0 top-0 bottom-0 w-64 pointer-events-auto z-30">
-            <SidebarWaterfall position="left" />
-          </div>
-          
-          {/* Right Sidebar Waterfall Photos */}
-          <div className="hidden xl:block fixed right-0 top-0 bottom-0 w-64 pointer-events-auto z-30">
-            <SidebarWaterfall position="right" />
-          </div>
+          {/* Sidebars Container */}
+          <AutoHideSidebars>
+            <div className="hidden xl:block fixed left-0 top-0 bottom-0 w-64 pointer-events-auto z-30" key="left">
+              <SidebarWaterfall position="left" />
+            </div>
+            <div className="hidden xl:block fixed right-0 top-0 bottom-0 w-64 pointer-events-auto z-30" key="right">
+              <SidebarWaterfall position="right" />
+            </div>
+          </AutoHideSidebars>
           
           <main>{children}</main>
           <Suspense>
