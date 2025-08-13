@@ -63,7 +63,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
   const frameRef = useRef<number>();
   
   // 初始化图片列配置
-  const [imageColumns] = useState<string[][]>(() => {
+  const [imageColumns, setImageColumns] = useState<string[][]>(() => {
     const { firstColumn, secondColumn, thirdColumn, fourthColumn } = prepareImagesForColumn();
     // 确保不同位置使用不同的图片组
     return position === 'left' 
@@ -76,20 +76,31 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     if (!containerRef.current || paused) return;
     
     offsetRef.current += SCROLL_SPEED;
-    const totalHeight = IMAGE_HEIGHT * 3; // 使用更长的循环周期
+    const totalHeight = IMAGE_HEIGHT * imageColumns[0].length; // 使用实际内容高度
     
-    // 当滚动到一定位置时，重置位置实现无缝循环
-    if (offsetRef.current >= totalHeight) {
-      offsetRef.current = 0;
+    // 实现无缝循环
+    if (offsetRef.current >= IMAGE_HEIGHT) {
+      // 计算新的偏移量，保持滚动位置
+      const newOffset = offsetRef.current - IMAGE_HEIGHT;
+      offsetRef.current = newOffset;
+      
       // 通知父组件
       onImageLeave?.(position === 'left' ? 'right' : 'left');
+      
+      // 重新排列图片顺序
+      setImageColumns(prevColumns => 
+        prevColumns.map(column => {
+          const [first, ...rest] = column;
+          return [...rest, first];
+        })
+      );
     }
     
     // 应用平滑滚动
     containerRef.current.style.transform = `translateY(-${offsetRef.current}px)`;
     
     frameRef.current = requestAnimationFrame(updateScroll);
-  }, [paused, position, onImageLeave]);
+  }, [paused, position, onImageLeave, imageColumns]);
 
   // 启动动画
   useEffect(() => {
@@ -144,11 +155,11 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
             </div>
           ))}
         </div>
-        {/* 复制前面部分到底部以实现无缝滚动 */}
-        <div className="flex flex-row gap-4 w-full justify-center">
+        {/* 在底部添加第一张图片用于无缝过渡 */}
+        <div className="flex flex-row gap-4 w-full justify-center" style={{ marginTop: '0' }}>
           {imageColumns.map((column, colIndex) => (
             <div key={`bottom-${colIndex}`} className="flex flex-col gap-6">
-              {column.map((src, imgIndex) => (
+              {[column[0]].map((src, imgIndex) => (
                 <div 
                   key={`bottom-${colIndex}-${imgIndex}`} 
                   className="relative w-24 h-24"
@@ -161,6 +172,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                     className="rounded-xl w-full h-full object-contain p-2"
                     style={{
                       filter: 'grayscale(0.2) brightness(0.95)',
+                      opacity: 0.99, // 轻微降低重复图片的不透明度
                     }}
                     priority={true}
                   />
