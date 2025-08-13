@@ -3,12 +3,12 @@
     "short_name": "JCblog",
     "icons": [
         {
-            "src": "/android-chrome-192x192.png",
+            "src": "https://gitee.com/jcyf1987/picgo/raw/master/igo.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/android-chrome-512x512.png",
+            "src": "https://gitee.com/jcyf1987/picgo/raw/master/igo.png",
             "sizes": "512x512",
             "type": "image/png"
         }
