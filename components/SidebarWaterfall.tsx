@@ -3,14 +3,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
-      <div className="flex items-center justify-center w-full overflow-hidden relative h-[100vh]" 
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 w-full h-24 bg-gradient-to-b dark:from-neutral-900 from-white to-transparent z-10" />
-        <div className="absolute bottom-0 w-full h-24 bg-gradient-to-t dark:from-neutral-900 from-white to-transparent z-10" />
-      </div>{ pictureList } from '../lib/pictureList';
+import { pictureList } from '../lib/pictureList';
 
 interface SidebarWaterfallProps {
   position: 'left' | 'right';
@@ -25,7 +18,6 @@ function prepareImagesForColumn(): {
   firstColumn: string[];
   secondColumn: string[];
   thirdColumn: string[];
-
   fourthColumn: string[];
 } {
   // 随机打乱图片列表
@@ -41,8 +33,7 @@ function prepareImagesForColumn(): {
   const images = [...pictureList, ...pictureList]; // 复制两份确保有足够的图片
   const shuffledImages = shuffleArray(images); // 随机打乱
   
-  // 确保每列至
-  // 少有6张图片
+  // 确保每列至少有6张图片
   const columnSize = Math.max(6, Math.ceil(shuffledImages.length / 4));
   
   // 将图片分成四份，如果图片不够，循环使用
@@ -77,7 +68,6 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     const selectedColumns = position === 'left' 
       ? [firstColumn, secondColumn] 
       : [thirdColumn, fourthColumn];
-      //dd</number>
     
     // 对每列的内容重复三次
     return selectedColumns.map(column => [...column, ...column, ...column]);
