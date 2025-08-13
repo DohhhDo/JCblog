@@ -63,43 +63,48 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
   const frameRef = useRef<number>();
   
   // 初始化图片列配置
-  const [imageColumns, setImageColumns] = useState<string[][]>(() => {
+  const [imageColumns] = useState<string[][]>(() => {
     const { firstColumn, secondColumn, thirdColumn, fourthColumn } = prepareImagesForColumn();
-    // 确保不同位置使用不同的图片组
-    return position === 'left' 
+    // 确保不同位置使用不同的图片组，并且每列重复三次以确保滚动连续性
+    const selectedColumns = position === 'left' 
       ? [firstColumn, secondColumn] 
       : [thirdColumn, fourthColumn];
+    
+    // 对每列的内容重复三次
+    return selectedColumns.map(column => [...column, ...column, ...column]);
   });
 
+  // 跟踪当前显示的部分
+  const currentSetRef = useRef(0);
+  const itemsPerSet = Math.floor(imageColumns[0].length / 3);
+  
   // 处理滚动动画
   const updateScroll = useCallback(() => {
     if (!containerRef.current || paused) return;
     
     offsetRef.current += SCROLL_SPEED;
+    const singleSetHeight = IMAGE_HEIGHT * itemsPerSet;
     
-    // 实现无缝循环
-    if (offsetRef.current >= IMAGE_HEIGHT) {
-      // 计算新的偏移量，保持滚动位置
-      const newOffset = offsetRef.current - IMAGE_HEIGHT;
-      offsetRef.current = newOffset;
+    // 当滚动到一组图片的末尾时
+    if (offsetRef.current >= singleSetHeight) {
+      // 更新当前显示的组
+      currentSetRef.current = (currentSetRef.current + 1) % 3;
+      
+      // 重置位置到新的一组的开始
+      offsetRef.current = 0;
       
       // 通知父组件
       onImageLeave?.(position === 'left' ? 'right' : 'left');
-      
-      // 重新排列图片顺序
-      setImageColumns(prevColumns => 
-        prevColumns.map(column => {
-          const [first, ...rest] = column;
-          return [...rest, first];
-        })
-      );
     }
     
+    // 计算实际显示位置，考虑当前显示的组
+    const displayOffset = offsetRef.current + (currentSetRef.current * singleSetHeight);
+    
     // 应用平滑滚动
-    containerRef.current.style.transform = `translateY(-${offsetRef.current}px)`;
+    containerRef.current.style.transform = `translateY(-${displayOffset}px)`;
     
     frameRef.current = requestAnimationFrame(updateScroll);
-  }, [paused, position, onImageLeave, imageColumns]);
+  }, [paused, position, onImageLeave, itemsPerSet]);
 
   // 启动动画
   useEffect(() => {
@@ -146,32 +151,6 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                     style={{
                       filter: 'grayscale(0.2) brightness(0.95)',
                       willChange: 'transform',
-                    }}
-                    priority={true}
-                  />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-        {/* 在底部添加第一张图片用于无缝过渡 */}
-        <div className="flex flex-row gap-4 w-full justify-center" style={{ marginTop: '0' }}>
-          {imageColumns.map((column, colIndex) => (
-            <div key={`bottom-${colIndex}`} className="flex flex-col gap-6">
-              {[column[0]].map((src, imgIndex) => (
-                <div 
-                  key={`bottom-${colIndex}-${imgIndex}`} 
-                  className="relative w-24 h-24"
-                >
-                  <Image
-                    src={src}
-                    alt={`app-icon-clone-${imgIndex}`}
-                    width={96}
-                    height={96}
-                    className="rounded-xl w-full h-full object-contain p-2"
-                    style={{
-                      filter: 'grayscale(0.2) brightness(0.95)',
-                      opacity: 0.99, // 轻微降低重复图片的不透明度
                     }}
                     priority={true}
                   />
