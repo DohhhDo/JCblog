@@ -3,14 +3,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
-      <div className="flex items-center justify-center w-full overflow-hidden relative h-[100vh]" 
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 w-full h-24 bg-gradient-to-b dark:from-neutral-900 from-white to-transparent z-10" />
-        <div className="absolute bottom-0 w-full h-24 bg-gradient-to-t dark:from-neutral-900 from-white to-transparent z-10" />
-      </div>{ pictureList } from '../lib/pictureList';
+import { pictureList } from '../lib/pictureList';
 
 interface SidebarWaterfallProps {
   position: 'left' | 'right';
