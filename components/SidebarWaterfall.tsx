@@ -25,6 +25,7 @@ function prepareImagesForColumn(): {
   firstColumn: string[];
   secondColumn: string[];
   thirdColumn: string[];
+
   fourthColumn: string[];
 } {
   // 随机打乱图片列表
@@ -75,6 +76,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     const selectedColumns = position === 'left' 
       ? [firstColumn, secondColumn] 
       : [thirdColumn, fourthColumn];
+      //dd</number>
     
     // 对每列的内容重复三次
     return selectedColumns.map(column => [...column, ...column, ...column]);
