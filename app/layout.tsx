@@ -4,6 +4,7 @@ import './prism.css'
 
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata, Viewport } from 'next'
+import Script from 'next/script'
 
 import { ThemeProvider } from '~/app/(main)/ThemeProvider'
 import { url } from '~/lib'
@@ -95,7 +96,9 @@ export default function RootLayout({
           </ThemeProvider>
           
           {/* Hongmoai AI 插件 */}
-          <script
+          <Script
+            id="tianli-gpt-config"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
                 let tianliGPT_postSelector = 'article'; // 文章选择器，可以根据需要调整
@@ -103,7 +106,10 @@ export default function RootLayout({
               `
             }}
           />
-          <script src="https://ai.zhheo.com/static/public/tianli_gpt.min.js" />
+          <Script 
+            src="https://ai.zhheo.com/static/public/tianli_gpt.min.js"
+            strategy="afterInteractive"
+          />
         </body>
       </html>
     </ClerkProvider>
