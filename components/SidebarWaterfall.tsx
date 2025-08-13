@@ -41,7 +41,8 @@ function prepareImagesForColumn(): {
   const images = [...pictureList, ...pictureList]; // 复制两份确保有足够的图片
   const shuffledImages = shuffleArray(images); // 随机打乱
   
-  // 确保每列至少有6张图片
+  // 确保每列至
+  // 少有6张图片
   const columnSize = Math.max(6, Math.ceil(shuffledImages.length / 4));
   
   // 将图片分成四份，如果图片不够，循环使用
