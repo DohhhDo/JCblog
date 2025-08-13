@@ -79,6 +79,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
       //dd</number>
     
     // 对每列的内容重复三次
+    //</HTMLDivElement>
     return selectedColumns.map(column => [...column, ...column, ...column]);
   });
 
