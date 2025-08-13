@@ -63,11 +63,11 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     
     offsetRef.current += SCROLL_SPEED;
     
-    // 当图片完全滚出可视区域时，重置位置
+    // 当图片完全滚出可视区域时，重置位置，但保持无缝过渡
     if (offsetRef.current >= IMAGE_HEIGHT) {
+      offsetRef.current = offsetRef.current % IMAGE_HEIGHT;
       // 通知父组件
       onImageLeave?.(position === 'left' ? 'right' : 'left');
-      offsetRef.current = 0;
     }
     
     // 应用平滑滚动
@@ -129,11 +129,11 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
             </div>
           ))}
         </div>
-        {/* 复制第一行到底部以实现无缝滚动 */}
-        <div className="flex flex-row gap-4 w-full justify-center" style={{ marginTop: '-1px' }}>
+        {/* 复制前几行到底部以实现无缝滚动 */}
+        <div className="flex flex-row gap-4 w-full justify-center">
           {imageColumns.map((column, colIndex) => (
             <div key={`bottom-${colIndex}`} className="flex flex-col gap-6">
-              {column.slice(0, 1).map((src, imgIndex) => (
+              {column.slice(0, 3).map((src, imgIndex) => (
                 <div 
                   key={`bottom-${colIndex}-${imgIndex}`} 
                   className="relative w-24 h-24"
