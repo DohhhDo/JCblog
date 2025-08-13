@@ -81,6 +81,9 @@ export default function RootLayout({
         className={`${sansFont.variable} m-0 h-full p-0 font-sans antialiased`}
         suppressHydrationWarning
       >
+        <head>
+          <link rel="stylesheet" href="https://ai.zhheo.com/static/public/tianli_gpt.min.css" />
+        </head>
         <body className="flex h-full flex-col">
           <ThemeProvider
             attribute="class"
@@ -90,6 +93,17 @@ export default function RootLayout({
           >
             {children}
           </ThemeProvider>
+          
+          {/* Hongmoai AI 插件 */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                let tianliGPT_postSelector = 'article'; // 文章选择器，可以根据需要调整
+                let tianliGPT_key = 'S-QK75QWEIZ843HCQX';
+              `
+            }}
+          />
+          <script src="https://ai.zhheo.com/static/public/tianli_gpt.min.js" />
         </body>
       </html>
     </ClerkProvider>
