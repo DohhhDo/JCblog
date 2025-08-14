@@ -1,3 +1,4 @@
+import Script from 'next/script'
 import { Suspense } from 'react'
 
 import Studio from './Studio'
@@ -26,8 +27,15 @@ function StudioPageFallback() {
 
 export default function StudioPage() {
   return (
-    <Suspense fallback={<StudioPageFallback />}>
-      <Studio />
-    </Suspense>
+    <>
+      <Script
+        src="/studio-recovery.js"
+        strategy="beforeInteractive"
+        id="studio-recovery"
+      />
+      <Suspense fallback={<StudioPageFallback />}>
+        <Studio />
+      </Suspense>
+    </>
   )
 }

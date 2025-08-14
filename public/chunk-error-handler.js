@@ -21,6 +21,20 @@
       console.warn('Chunk loading error detected. Retrying...', { retryCount, error: error || message });
       retryCount++;
       
+      // Special handling for Studio pages - try to recover gracefully
+      if (window.location.pathname.includes('/studio')) {
+        console.log('Studio chunk error - attempting graceful recovery...');
+        
+        // Try to reload just the studio iframe if it exists
+        const studioIframe = document.querySelector('iframe[title*="studio"], iframe[src*="studio"]');
+        if (studioIframe) {
+          console.log('Reloading studio iframe...');
+          studioIframe.src = studioIframe.src;
+          event.preventDefault();
+          return false;
+        }
+      }
+      
       // Clear any cached data and reload
       setTimeout(function() {
         if ('caches' in window) {

@@ -57,6 +57,15 @@ const nextConfig = {
             reuseExistingChunk: true,
             enforce: true,
           },
+          // Separate chunk for markdown-related dependencies
+          markdown: {
+            test: /[\\/]node_modules[\\/](.*markdown.*|.*editor.*|codemirror|prosemirror|slate)[\\/]/,
+            name: 'markdown',
+            chunks: 'all',
+            priority: 25,
+            reuseExistingChunk: true,
+            enforce: true,
+          },
           // Separate React and React-DOM
           react: {
             test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
