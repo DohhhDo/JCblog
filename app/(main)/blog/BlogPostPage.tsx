@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import React from 'react'
 import Balancer from 'react-wrap-balancer'
+import Script from 'next/script'
 
 import { BlogPostStateLoader } from '~/app/(main)/blog/BlogPostStateLoader'
 import { BlogReactions } from '~/app/(main)/blog/BlogReactions'
@@ -39,7 +40,25 @@ export function BlogPostPage({
   relatedViews: number[]
 }) {
   return (
-    <Container className="mt-16 lg:mt-32">
+    <>
+      {/* AI摘要功能 - 仅在文章页面启用 */}
+      <link rel="stylesheet" href="https://ai.zhheo.com/static/public/tianli_gpt.min.css" />
+      <Script
+        id="tianli-gpt-config"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            let tianliGPT_postSelector = 'article'; // 文章选择器，可以根据需要调整
+            let tianliGPT_key = 'S-QK75QWEIZ843HCQX';
+          `
+        }}
+      />
+      <Script 
+        src="https://ai.zhheo.com/static/public/tianli_gpt.min.js"
+        strategy="afterInteractive"
+      />
+      
+      <Container className="mt-16 lg:mt-32">
       <div className="w-full md:flex md:justify-between xl:relative">
         <aside className="hidden w-[160px] shrink-0 lg:block">
           <div className="sticky top-2 pt-20">
@@ -209,5 +228,6 @@ export function BlogPostPage({
         <BlogPostStateLoader post={post} />
       </ClientOnly>
     </Container>
+    </>
   )
 }
