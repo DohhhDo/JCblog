@@ -4,7 +4,6 @@ import './prism.css'
 
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata, Viewport } from 'next'
-import Script from 'next/script'
 
 import { ThemeProvider } from '~/app/(main)/ThemeProvider'
 import { url } from '~/lib'
