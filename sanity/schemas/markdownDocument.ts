@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
 
 import { PencilSwooshIcon } from '~/assets'
+import { MarkdownTextInput } from '~/sanity/components/MarkdownTextInput'
 
 export default defineType({
   name: 'markdownDocument',
@@ -27,8 +28,17 @@ export default defineType({
     defineField({
       name: 'bio',
       title: 'Markdown 内容',
-      type: 'markdown',
-      description: 'A Github flavored markdown field with image uploading',
+      type: 'text',
+      description: 'Markdown 格式的文档内容 (支持 GitHub Flavored Markdown 语法)',
+      components: {
+        input: MarkdownTextInput,
+      },
+      validation: (Rule) => Rule.required().custom((value) => {
+        if (value && typeof value === 'string' && value.length > 100000) {
+          return '文档内容过长，请控制在100,000字符以内'
+        }
+        return true
+      }),
     }),
     defineField({
       name: 'publishedAt',

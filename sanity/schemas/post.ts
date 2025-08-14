@@ -2,6 +2,7 @@ import { defineField, defineType } from 'sanity'
 import { z } from 'zod'
 
 import { PencilSwooshIcon } from '~/assets'
+import { MarkdownTextInput } from '~/sanity/components/MarkdownTextInput'
 import { readingTimeType } from '~/sanity/schemas/types/readingTime'
 
 export const Post = z.object({
@@ -94,8 +95,17 @@ export default defineType({
     defineField({
       name: 'markdownContent',
       title: 'Markdown 内容',
-      type: 'markdown',
-      description: 'A Github flavored markdown field with image uploading',
+      type: 'text',
+      description: 'Markdown 格式的文本内容 (支持 GitHub Flavored Markdown 语法)',
+      components: {
+        input: MarkdownTextInput,
+      },
+      validation: (Rule) => Rule.custom((value) => {
+        if (value && typeof value === 'string' && value.length > 50000) {
+          return '内容过长，请控制在50,000字符以内'
+        }
+        return true
+      }),
     }),
     defineField({
       name: 'readingTime',
