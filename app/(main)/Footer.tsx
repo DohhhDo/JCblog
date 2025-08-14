@@ -114,7 +114,7 @@ export async function Footer() {
       <Container.Outer>
         <div className="border-t border-zinc-100 pb-16 pt-10 dark:border-zinc-700/40">
           <Container.Inner>
-            <div className="mx-auto mb-8 max-w-md space-y-6">
+            <div className="mx-auto mb-8 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
               <Newsletter subCount={`${subs?.subCount ?? '0'}`} />
               <DailyWaifu />
             </div>
