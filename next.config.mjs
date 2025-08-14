@@ -38,11 +38,14 @@ const nextConfig = {
   },
 
   // Optimize webpack for better chunk loading
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     // Improve chunk loading reliability
     if (!isServer) {
+      // Enhanced split chunks configuration
       config.optimization.splitChunks = {
         ...config.optimization.splitChunks,
+        maxAsyncRequests: 30,
+        maxInitialRequests: 30,
         cacheGroups: {
           ...config.optimization.splitChunks.cacheGroups,
           // Create separate chunks for Sanity Studio
@@ -52,9 +55,31 @@ const nextConfig = {
             chunks: 'all',
             priority: 30,
             reuseExistingChunk: true,
+            enforce: true,
+          },
+          // Separate React and React-DOM
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: 'react',
+            chunks: 'all',
+            priority: 25,
+            reuseExistingChunk: true,
+          },
+          // Common vendor libraries
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendor',
+            chunks: 'all',
+            priority: 10,
+            reuseExistingChunk: true,
+            maxSize: 244000, // ~240KB
           },
         },
       }
+
+      // Improve chunk loading resilience
+      config.optimization.chunkIds = 'deterministic'
+      config.optimization.moduleIds = 'deterministic'
     }
     return config
   },

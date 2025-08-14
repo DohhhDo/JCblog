@@ -9,6 +9,7 @@ interface ErrorBoundaryState {
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
+  onRetry?: () => void
 }
 
 export class StudioErrorBoundary extends React.Component<
@@ -57,10 +58,16 @@ export class StudioErrorBoundary extends React.Component<
               </p>
               <div className="space-y-2">
                 <button
-                  onClick={() => window.location.reload()}
+                  onClick={() => {
+                    if (this.props.onRetry) {
+                      this.props.onRetry()
+                    } else {
+                      window.location.reload()
+                    }
+                  }}
                   className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
-                  刷新页面
+                  重试加载
                 </button>
                 <button
                   onClick={() => {
