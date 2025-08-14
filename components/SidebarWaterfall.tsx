@@ -151,19 +151,7 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
         transformOrigin: position === 'left' ? 'left center' : 'right center',
       }}
     >
-             {/* 倒计时进度条 */}
-       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
-         <div className="bg-black/20 dark:bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-white dark:text-black">
-           <span className="mr-2">⏰</span>
-           {countdown}s
-         </div>
-         <div className="mt-2 w-32 h-1 bg-black/20 dark:bg-white/20 rounded-full overflow-hidden">
-           <div 
-             className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-1000 ease-out"
-             style={{ width: `${(countdown / 10) * 100}%` }}
-           />
-         </div>
-       </div>
+             {/* 倒计时进度条 - 已隐藏显示提示元素 */}
        
        {/* 消散粒子效果 */}
        {!isVisible && (
