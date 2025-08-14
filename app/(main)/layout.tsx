@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { Suspense } from 'react'
 
 import { Footer } from '~/app/(main)/Footer'
+import { GeometryAnimation } from '~/app/(main)/GeometryAnimation'
 import { Header } from '~/app/(main)/Header'
 import { QueryProvider } from '~/app/QueryProvider'
 import { SidebarWaterfall } from '~/components/SidebarWaterfall'
@@ -51,6 +52,7 @@ export default function BlogLayout({
         </div>
       </QueryProvider>
 
+      <GeometryAnimation />
       <Analytics />
     </>
   )
