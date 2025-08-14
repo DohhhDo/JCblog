@@ -125,6 +125,8 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
       setCountdown(prev => {
         if (prev <= 1) {
           setIsVisible(false);
+          // 通知父组件这个栏位已经消失
+          onImageLeave?.(position);
           return 0;
         }
         return prev - 1;
@@ -132,33 +134,54 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     }, 1000);
 
     return () => clearInterval(countdownTimer);
-  }, []);
+  }, [position, onImageLeave]);
 
   return (
     <div 
-      className={`flex items-center justify-center w-full overflow-hidden relative h-full transition-all duration-1000 ease-in-out ${
-        isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+      className={`flex items-center justify-center w-full overflow-hidden relative h-full transition-all duration-1500 ease-in-out ${
+        isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
       }`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       style={{
-        transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
-        filter: isVisible ? 'blur(0px)' : 'blur(2px)',
+        transform: isVisible 
+          ? 'translateY(0) scale(1)' 
+          : `translateY(${position === 'left' ? '-30px' : '30px'}) scale(0.9)`,
+        filter: isVisible ? 'blur(0px)' : 'blur(4px)',
+        transformOrigin: position === 'left' ? 'left center' : 'right center',
       }}
     >
-      {/* 倒计时进度条 */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
-        <div className="bg-black/20 dark:bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-white dark:text-black">
-          <span className="mr-2">⏰</span>
-          {countdown}s
-        </div>
-        <div className="mt-2 w-32 h-1 bg-black/20 dark:bg-white/20 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-1000 ease-out"
-            style={{ width: `${(countdown / 10) * 100}%` }}
-          />
-        </div>
-      </div>
+             {/* 倒计时进度条 */}
+       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
+         <div className="bg-black/20 dark:bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-white dark:text-black">
+           <span className="mr-2">⏰</span>
+           {countdown}s
+         </div>
+         <div className="mt-2 w-32 h-1 bg-black/20 dark:bg-white/20 rounded-full overflow-hidden">
+           <div 
+             className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-1000 ease-out"
+             style={{ width: `${(countdown / 10) * 100}%` }}
+           />
+         </div>
+       </div>
+       
+       {/* 消散粒子效果 */}
+       {!isVisible && (
+         <div className="absolute inset-0 pointer-events-none">
+           {Array.from({ length: 20 }).map((_, i) => (
+             <div
+               key={i}
+               className="absolute w-2 h-2 bg-white/60 rounded-full animate-pulse"
+               style={{
+                 left: `${Math.random() * 100}%`,
+                 top: `${Math.random() * 100}%`,
+                 animationDelay: `${Math.random() * 1000}ms`,
+                 animationDuration: `${1000 + Math.random() * 1000}ms`,
+               }}
+             />
+           ))}
+         </div>
+       )}
       
       <div className="absolute inset-0">
         <div className="absolute top-0 w-full h-12 bg-gradient-to-b dark:from-neutral-900 from-white to-transparent z-10" />
@@ -179,18 +202,21 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                   key={`${colIndex}-${imgIndex}`} 
                   className="relative w-24 h-24"
                 >
-                  <Image
-                    src={src}
-                    alt={`app-icon-${imgIndex}`}
-                    width={96}
-                    height={96}
-                    className="rounded-xl w-full h-full object-contain p-2 transition-all duration-300 hover:scale-110 hover:rotate-3"
-                    style={{
-                      filter: 'grayscale(0.2) brightness(0.95)',
-                      willChange: 'transform',
-                    }}
-                    priority={true}
-                  />
+                                     <Image
+                     src={src}
+                     alt={`app-icon-${imgIndex}`}
+                     width={96}
+                     height={96}
+                     className={`rounded-xl w-full h-full object-contain p-2 transition-all duration-700 ease-out hover:scale-110 hover:rotate-3 ${
+                       isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+                     }`}
+                     style={{
+                       filter: isVisible ? 'grayscale(0.2) brightness(0.95)' : 'grayscale(0.8) brightness(0.3)',
+                       willChange: 'transform',
+                       transitionDelay: `${(imgIndex * 50) + (colIndex * 100)}ms`,
+                     }}
+                     priority={true}
+                   />
                 </div>
               ))}
             </div>
