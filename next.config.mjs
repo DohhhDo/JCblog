@@ -33,6 +33,10 @@ const nextConfig = {
     taint: true,
   },
 
+  compiler: {
+    styledComponents: true,
+  },
+
   redirects() {
     return [
       {
