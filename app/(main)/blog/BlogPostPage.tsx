@@ -2,11 +2,11 @@
 
 import { parseDateTime } from '@zolplay/utils'
 import { motion } from 'framer-motion'
+import Head from 'next/head'
 import Image from 'next/image'
 import Script from 'next/script'
 import React from 'react'
 import Balancer from 'react-wrap-balancer'
-import Head from 'next/head'
 
 import { BlogPostStateLoader } from '~/app/(main)/blog/BlogPostStateLoader'
 import { BlogReactions } from '~/app/(main)/blog/BlogReactions'
