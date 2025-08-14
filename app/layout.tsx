@@ -82,6 +82,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <head>
+          <script src="/chunk-error-handler.js" defer />
         </head>
         <body className="flex h-full flex-col">
           <ThemeProvider
