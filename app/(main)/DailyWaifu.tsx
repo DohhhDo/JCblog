@@ -44,18 +44,19 @@ export function DailyWaifu() {
   }
 
   return (
-    <div className="relative flex h-full flex-col rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
-      {/* Toast 提示 */}
+    <>
+      {/* 全局 Toast 提示 */}
       {showToast && (
-        <div className="absolute left-1/2 top-4 z-50 -translate-x-1/2 transform animate-pulse rounded-lg bg-pink-100 px-4 py-2 text-sm font-medium text-pink-800 shadow-lg dark:bg-pink-900/50 dark:text-pink-200">
+        <div className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform animate-pulse rounded-lg bg-pink-100 px-6 py-3 text-sm font-medium text-pink-800 shadow-2xl dark:bg-pink-900/80 dark:text-pink-200">
           渣男，不可以花心喔～ 💕
         </div>
       )}
       
-      <h2 className="flex items-center text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <SparkleIcon className="h-5 w-5 flex-none" />
-        <span className="ml-2">每日老婆</span>
-      </h2>
+      <div className="relative flex h-full flex-col rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+        <h2 className="flex items-center text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          <SparkleIcon className="h-5 w-5 flex-none" />
+          <span className="ml-2">每日老婆</span>
+        </h2>
       <p className="mt-2 text-xs text-zinc-600 dark:text-zinc-400 md:text-sm">
         <span>每天一张随机二次元美图，放松一下心情。</span>
       </p>
@@ -92,6 +93,7 @@ export function DailyWaifu() {
           换一张
         </button>
       )}
-    </div>
+      </div>
+    </>
   )
 }
