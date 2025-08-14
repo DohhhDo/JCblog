@@ -72,7 +72,7 @@ export function GeometryAnimation() {
     }
 
     setShapes(newShapes)
-  }, [isVisible])
+  }, [isVisible, colors])
 
   // 动画循环
   React.useEffect(() => {

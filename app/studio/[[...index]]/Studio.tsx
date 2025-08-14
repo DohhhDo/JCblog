@@ -13,6 +13,7 @@ import { NextStudio } from 'next-sanity/studio'
 import { Suspense } from 'react'
 
 import config from '~/sanity.config'
+
 import { StudioErrorBoundary } from './ErrorBoundary'
 
 function StudioLoading() {

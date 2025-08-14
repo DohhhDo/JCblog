@@ -66,10 +66,8 @@ export class StudioErrorBoundary extends React.Component<
                   onClick={() => {
                     // Clear cache and reload
                     if ('caches' in window) {
-                      caches.keys().then((names) => {
-                        names.forEach((name) => {
-                          caches.delete(name)
-                        })
+                      void caches.keys().then((names) => {
+                        void Promise.all(names.map((name) => caches.delete(name)))
                       })
                     }
                     window.location.reload()
