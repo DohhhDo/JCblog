@@ -29,11 +29,11 @@ export function GeometryAnimation() {
     'rgba(203, 213, 225, 0.4)', // slate-300
   ]
 
-  // 30秒后显示动画
+  // 13秒后显示动画
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true)
-    }, 30000) // 30秒
+    }, 13000) // 13秒
 
     return () => clearTimeout(timer)
   }, [])
