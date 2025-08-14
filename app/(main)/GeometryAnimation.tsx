@@ -29,11 +29,11 @@ export function GeometryAnimation() {
     'rgba(203, 213, 225, 0.6)', // slate-300
   ]
 
-  // 3秒后显示动画 (临时测试)
+  // 13秒后显示动画
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true)
-    }, 3000) // 3秒测试
+    }, 13000) // 13秒
 
     return () => clearTimeout(timer)
   }, [])
@@ -166,7 +166,7 @@ export function GeometryAnimation() {
       height: shape.size,
       backgroundColor: shape.type === 'circle' ? shape.color : undefined,
       borderRadius: shape.type === 'circle' ? '50%' : undefined,
-      border: '1px solid rgba(0,0,0,0.2)', // 临时边框帮助调试
+
       transition: 'none',
       pointerEvents: 'none' as const,
     }
@@ -209,7 +209,7 @@ export function GeometryAnimation() {
     <div
       ref={containerRef}
       className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 35 }} // 在侧边栏之上但不会太高
+      style={{ zIndex: 35 }}
     >
       {shapes.map(renderShape)}
     </div>
