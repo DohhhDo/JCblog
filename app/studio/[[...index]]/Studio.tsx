@@ -10,9 +10,28 @@
  */
 
 import { NextStudio } from 'next-sanity/studio'
+import { Suspense } from 'react'
 
 import config from '~/sanity.config'
+import { StudioErrorBoundary } from './ErrorBoundary'
+
+function StudioLoading() {
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <div className="text-center">
+        <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
+        <p className="text-gray-600">Loading Sanity Studio...</p>
+      </div>
+    </div>
+  )
+}
 
 export default function Studio() {
-  return <NextStudio config={config} />
+  return (
+    <StudioErrorBoundary>
+      <Suspense fallback={<StudioLoading />}>
+        <NextStudio config={config} />
+      </Suspense>
+    </StudioErrorBoundary>
+  )
 }

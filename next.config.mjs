@@ -37,6 +37,28 @@ const nextConfig = {
     styledComponents: true,
   },
 
+  // Optimize webpack for better chunk loading
+  webpack: (config, { isServer }) => {
+    // Improve chunk loading reliability
+    if (!isServer) {
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          // Create separate chunks for Sanity Studio
+          sanity: {
+            test: /[\\/]node_modules[\\/](@sanity|sanity)[\\/]/,
+            name: 'sanity',
+            chunks: 'all',
+            priority: 30,
+            reuseExistingChunk: true,
+          },
+        },
+      }
+    }
+    return config
+  },
+
   redirects() {
     return [
       {

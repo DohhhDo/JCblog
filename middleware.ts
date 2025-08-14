@@ -9,7 +9,7 @@ import { getIP } from '~/lib/ip'
 import { redis } from '~/lib/redis'
 
 export const config = {
-  matcher: ['/((?!_next|studio|.*\\..*).*)'],
+  matcher: ['/((?!_next|.*\\..*).*)'],
 }
 
 async function beforeAuthMiddleware(req: NextRequest) {
