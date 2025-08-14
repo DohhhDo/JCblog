@@ -20,14 +20,14 @@ export function GeometryAnimation() {
   const containerRef = React.useRef<HTMLDivElement>(null)
 
   // 柔和的几何颜色
-  const colors = [
+  const colors = React.useMemo(() => [
     'rgba(156, 163, 175, 0.6)', // zinc-400
     'rgba(209, 213, 219, 0.6)', // zinc-300
     'rgba(107, 114, 128, 0.6)', // zinc-500
     'rgba(75, 85, 99, 0.6)',    // zinc-600
     'rgba(148, 163, 184, 0.6)', // slate-400
     'rgba(203, 213, 225, 0.6)', // slate-300
-  ]
+  ], [])
 
   // 13秒后显示动画
   React.useEffect(() => {

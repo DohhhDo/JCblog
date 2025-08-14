@@ -3,7 +3,7 @@
  * Provides better UX for writing Markdown without the problematic plugin
  */
 
-import { TextAreaInput } from '@sanity/ui'
+import { TextArea } from '@sanity/ui'
 import { StringInputProps, set, unset } from 'sanity'
 import React, { useCallback } from 'react'
 
@@ -40,7 +40,7 @@ export function MarkdownTextInput(props: StringInputProps) {
   )
 
   return (
-    <TextAreaInput
+    <TextArea
       {...elementProps}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
