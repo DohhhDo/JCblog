@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm turbo build",
-  "installCommand": "pnpm install --no-frozen-lockfile",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install --legacy-peer-deps",
   "github": {
     "silent": true
   }
