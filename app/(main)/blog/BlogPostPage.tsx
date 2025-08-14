@@ -2,9 +2,7 @@
 
 import { parseDateTime } from '@zolplay/utils'
 import { motion } from 'framer-motion'
-import Head from 'next/head'
 import Image from 'next/image'
-import Script from 'next/script'
 import React from 'react'
 import Balancer from 'react-wrap-balancer'
 
@@ -41,11 +39,7 @@ export function BlogPostPage({
   relatedViews: number[]
 }) {
   return (
-    <>
-      <Head>
-        <link rel="stylesheet" href="https://ai.zhheo.com/static/public/tianli_gpt.min.css" />
-      </Head>
-      <Container className="mt-16 lg:mt-32">
+    <Container className="mt-16 lg:mt-32">
       <div className="w-full md:flex md:justify-between xl:relative">
         <aside className="hidden w-[160px] shrink-0 lg:block">
           <div className="sticky top-2 pt-20">
@@ -215,24 +209,6 @@ export function BlogPostPage({
       <ClientOnly>
         <BlogPostStateLoader post={post} />
       </ClientOnly>
-      
-      {/* AI摘要功能 - 页面级别加载 */}
-      <Script
-        id="tianli-gpt-config"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.tianliGPT_postSelector = '.prose'; // 选择器指向prose容器
-            window.tianliGPT_key = 'S-QK75QWEIZ843HCQX';
-            window.tianliGPT_lang = 'zh-CN';
-          `
-        }}
-      />
-      <Script 
-        src="https://ai.zhheo.com/static/public/tianli_gpt.min.js"
-        strategy="afterInteractive"
-      />
     </Container>
-    </>
   )
 }
