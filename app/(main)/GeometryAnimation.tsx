@@ -21,19 +21,19 @@ export function GeometryAnimation() {
 
   // 柔和的几何颜色
   const colors = [
-    'rgba(156, 163, 175, 0.4)', // zinc-400
-    'rgba(209, 213, 219, 0.4)', // zinc-300
-    'rgba(107, 114, 128, 0.4)', // zinc-500
-    'rgba(75, 85, 99, 0.4)',    // zinc-600
-    'rgba(148, 163, 184, 0.4)', // slate-400
-    'rgba(203, 213, 225, 0.4)', // slate-300
+    'rgba(156, 163, 175, 0.6)', // zinc-400
+    'rgba(209, 213, 219, 0.6)', // zinc-300
+    'rgba(107, 114, 128, 0.6)', // zinc-500
+    'rgba(75, 85, 99, 0.6)',    // zinc-600
+    'rgba(148, 163, 184, 0.6)', // slate-400
+    'rgba(203, 213, 225, 0.6)', // slate-300
   ]
 
-  // 13秒后显示动画
+  // 3秒后显示动画 (临时测试)
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true)
-    }, 13000) // 13秒
+    }, 3000) // 3秒测试
 
     return () => clearTimeout(timer)
   }, [])
@@ -166,6 +166,7 @@ export function GeometryAnimation() {
       height: shape.size,
       backgroundColor: shape.type === 'circle' ? shape.color : undefined,
       borderRadius: shape.type === 'circle' ? '50%' : undefined,
+      border: '1px solid rgba(0,0,0,0.2)', // 临时边框帮助调试
       transition: 'none',
       pointerEvents: 'none' as const,
     }
@@ -207,8 +208,8 @@ export function GeometryAnimation() {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-10 pointer-events-none"
-      style={{ mixBlendMode: 'multiply' }}
+      className="fixed inset-0 pointer-events-none"
+      style={{ zIndex: 35 }} // 在侧边栏之上但不会太高
     >
       {shapes.map(renderShape)}
     </div>
