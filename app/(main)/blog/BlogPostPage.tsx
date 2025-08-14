@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Script from 'next/script'
 import React from 'react'
 import Balancer from 'react-wrap-balancer'
+import Head from 'next/head'
 
 import { BlogPostStateLoader } from '~/app/(main)/blog/BlogPostStateLoader'
 import { BlogReactions } from '~/app/(main)/blog/BlogReactions'
@@ -41,6 +42,9 @@ export function BlogPostPage({
 }) {
   return (
     <>
+      <Head>
+        <link rel="stylesheet" href="https://ai.zhheo.com/static/public/tianli_gpt.min.css" />
+      </Head>
       <Container className="mt-16 lg:mt-32">
       <div className="w-full md:flex md:justify-between xl:relative">
         <aside className="hidden w-[160px] shrink-0 lg:block">
@@ -173,25 +177,6 @@ export function BlogPostPage({
               </motion.div>
             </header>
             
-            {/* AI摘要功能 - 显示在主图下方 */}
-            <div className="mt-8 mb-8">
-              <link rel="stylesheet" href="https://ai.zhheo.com/static/public/tianli_gpt.min.css" />
-              <Script
-                id="tianli-gpt-config"
-                strategy="afterInteractive"
-                dangerouslySetInnerHTML={{
-                  __html: `
-                    let tianliGPT_postSelector = 'article'; // 文章选择器，可以根据需要调整
-                    let tianliGPT_key = 'S-QK75QWEIZ843HCQX';
-                  `
-                }}
-              />
-              <Script 
-                src="https://ai.zhheo.com/static/public/tianli_gpt.min.js"
-                strategy="afterInteractive"
-              />
-            </div>
-            
             <Prose className="mt-8">
               <PostPortableText value={post.body} />
             </Prose>
@@ -230,6 +215,23 @@ export function BlogPostPage({
       <ClientOnly>
         <BlogPostStateLoader post={post} />
       </ClientOnly>
+      
+      {/* AI摘要功能 - 页面级别加载 */}
+      <Script
+        id="tianli-gpt-config"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.tianliGPT_postSelector = '.prose'; // 选择器指向prose容器
+            window.tianliGPT_key = 'S-QK75QWEIZ843HCQX';
+            window.tianliGPT_lang = 'zh-CN';
+          `
+        }}
+      />
+      <Script 
+        src="https://ai.zhheo.com/static/public/tianli_gpt.min.js"
+        strategy="afterInteractive"
+      />
     </Container>
     </>
   )
