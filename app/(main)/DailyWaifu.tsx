@@ -35,16 +35,16 @@ export function DailyWaifu() {
   }
 
   return (
-    <div className="relative rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+    <div className="relative flex h-full flex-col rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
       <h2 className="flex items-center text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <SparkleIcon className="h-5 w-5 flex-none" />
         <span className="ml-2">每日老婆</span>
       </h2>
       <p className="mt-2 text-xs text-zinc-600 dark:text-zinc-400 md:text-sm">
-        每日随机更新的精美二次元图片 ✨
+        <span>每天一张随机二次元美图，放松一下心情。</span>
       </p>
       
-      <div className="mt-4 relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800">
+      <div className="mt-4 flex-1 relative overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
         {isLoading ? (
           <div className="flex h-full items-center justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-600 dark:border-zinc-600 dark:border-t-zinc-300" />
