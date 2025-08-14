@@ -22,9 +22,9 @@ export const metadata: Metadata = {
   keywords: 'Cali,Cali Castle,郭晓楠,佐玩,创始人,CEO,开发者,设计师,细节控,创新',
   manifest: '/site.webmanifest',
   icons: {
-    icon: 'https://gitee.com/jcyf1987/picgo/raw/master/igo.png',
-    shortcut: 'https://gitee.com/jcyf1987/picgo/raw/master/igo.png',
-    apple: 'https://gitee.com/jcyf1987/picgo/raw/master/igo.png',
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
   },
   robots: {
     index: true,
