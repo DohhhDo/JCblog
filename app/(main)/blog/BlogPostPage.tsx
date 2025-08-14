@@ -41,23 +41,6 @@ export function BlogPostPage({
 }) {
   return (
     <>
-      {/* AI摘要功能 - 仅在文章页面启用 */}
-      <link rel="stylesheet" href="https://ai.zhheo.com/static/public/tianli_gpt.min.css" />
-      <Script
-        id="tianli-gpt-config"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            let tianliGPT_postSelector = 'article'; // 文章选择器，可以根据需要调整
-            let tianliGPT_key = 'S-QK75QWEIZ843HCQX';
-          `
-        }}
-      />
-      <Script 
-        src="https://ai.zhheo.com/static/public/tianli_gpt.min.js"
-        strategy="afterInteractive"
-      />
-      
       <Container className="mt-16 lg:mt-32">
       <div className="w-full md:flex md:justify-between xl:relative">
         <aside className="hidden w-[160px] shrink-0 lg:block">
@@ -189,6 +172,26 @@ export function BlogPostPage({
                 </span>
               </motion.div>
             </header>
+            
+            {/* AI摘要功能 - 显示在主图下方 */}
+            <div className="mt-8 mb-8">
+              <link rel="stylesheet" href="https://ai.zhheo.com/static/public/tianli_gpt.min.css" />
+              <Script
+                id="tianli-gpt-config"
+                strategy="afterInteractive"
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    let tianliGPT_postSelector = 'article'; // 文章选择器，可以根据需要调整
+                    let tianliGPT_key = 'S-QK75QWEIZ843HCQX';
+                  `
+                }}
+              />
+              <Script 
+                src="https://ai.zhheo.com/static/public/tianli_gpt.min.js"
+                strategy="afterInteractive"
+              />
+            </div>
+            
             <Prose className="mt-8">
               <PostPortableText value={post.body} />
             </Prose>
