@@ -1,9 +1,7 @@
-'use client'
-
 import './blog/[slug]/blog.css'
 
 import { Analytics } from '@vercel/analytics/react'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense } from 'react'
 
 import { Footer } from '~/app/(main)/Footer'
 import { Header } from '~/app/(main)/Header'
@@ -15,16 +13,6 @@ export default function BlogLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [showSidebars, setShowSidebars] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSidebars(false);
-    }, 10000); // 10秒后隐藏侧边栏
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <>
       <div className="pointer-events-none fixed inset-0 select-none bg-[url('/grid-black.svg')] bg-top bg-repeat dark:bg-[url('/grid.svg')]" />
@@ -47,18 +35,14 @@ export default function BlogLayout({
           <Header />
           
           {/* Left Sidebar Waterfall Photos */}
-          {showSidebars && (
-            <div className="hidden xl:block fixed left-0 top-0 w-64 h-full pointer-events-auto z-30">
-              <SidebarWaterfall position="left" />
-            </div>
-          )}
+          <div className="hidden xl:block fixed left-0 top-0 w-64 h-full pointer-events-auto z-30">
+            <SidebarWaterfall position="left" />
+          </div>
           
           {/* Right Sidebar Waterfall Photos */}
-          {showSidebars && (
-            <div className="hidden xl:block fixed right-0 top-0 w-64 h-full pointer-events-auto z-30">
-              <SidebarWaterfall position="right" />
-            </div>
-          )}
+          <div className="hidden xl:block fixed right-0 top-0 w-64 h-full pointer-events-auto z-30">
+            <SidebarWaterfall position="right" />
+          </div>
           
           <main>{children}</main>
           <Suspense>
