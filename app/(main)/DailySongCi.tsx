@@ -43,7 +43,7 @@ export function DailySongCi() {
       }
     }
 
-    fetchPoem()
+    void fetchPoem()
   }, [refreshKey])
 
   const handleRefresh = () => {
