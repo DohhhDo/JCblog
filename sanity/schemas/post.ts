@@ -92,6 +92,12 @@ export default defineType({
       type: 'blockContent',
     }),
     defineField({
+      name: 'markdownContent',
+      title: 'Markdown 内容',
+      type: 'markdown',
+      description: 'A Github flavored markdown field with image uploading',
+    }),
+    defineField({
       name: 'readingTime',
       title: '阅读时长（分钟）',
       type: readingTimeType.name,

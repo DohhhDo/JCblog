@@ -54,6 +54,7 @@
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.1",
+    "easymde": "^2.18.0",
     "edge-cors": "^0.2.1",
     "framer-motion": "^10.12.17",
     "hashids": "^2.3.0",
@@ -76,6 +77,7 @@
     "resend": "^3.2.0",
     "rss": "^1.2.2",
     "sanity": "^3.33.0",
+    "sanity-plugin-markdown": "^4.1.2",
     "sanity-plugin-media": "^2.2.5",
     "valtio": "^1.13.2",
     "zod": "^3.22.4"
