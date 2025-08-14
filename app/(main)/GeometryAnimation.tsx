@@ -19,35 +19,44 @@ export function GeometryAnimation() {
   const animationRef = React.useRef<number>()
   const containerRef = React.useRef<HTMLDivElement>(null)
 
-  // 柔和的几何颜色
+  // 柔和的几何颜色 (测试用更明显的颜色)
   const colors = [
-    'rgba(156, 163, 175, 0.6)', // zinc-400
-    'rgba(209, 213, 219, 0.6)', // zinc-300
-    'rgba(107, 114, 128, 0.6)', // zinc-500
-    'rgba(75, 85, 99, 0.6)',    // zinc-600
-    'rgba(148, 163, 184, 0.6)', // slate-400
-    'rgba(203, 213, 225, 0.6)', // slate-300
+    'rgba(156, 163, 175, 0.8)', // zinc-400
+    'rgba(209, 213, 219, 0.8)', // zinc-300
+    'rgba(107, 114, 128, 0.8)', // zinc-500
+    'rgba(75, 85, 99, 0.8)',    // zinc-600
+    'rgba(148, 163, 184, 0.8)', // slate-400
+    'rgba(203, 213, 225, 0.8)', // slate-300
   ]
 
-  // 30秒后显示动画
+  // 3秒后显示动画 (测试用)
   React.useEffect(() => {
     const timer = setTimeout(() => {
+      console.log('几何动画开始显示')
       setIsVisible(true)
-    }, 30000) // 30秒
+    }, 3000) // 3秒测试
 
     return () => clearTimeout(timer)
   }, [])
 
   // 初始化几何形状
   React.useEffect(() => {
-    if (!isVisible || !containerRef.current) return
+    if (!isVisible || !containerRef.current) {
+      console.log('几何动画条件不满足:', { isVisible, hasContainer: !!containerRef.current })
+      return
+    }
 
     const container = containerRef.current
     const containerRect = container.getBoundingClientRect()
     const centerWidth = Math.min(1200, containerRect.width * 0.7) // 中间内容区域宽度
     const sideWidth = (containerRect.width - centerWidth) / 2 // 每侧空白区域宽度
 
-    if (sideWidth < 100) return // 如果侧边区域太小就不显示
+    console.log('容器信息:', { containerRect, centerWidth, sideWidth })
+
+    if (sideWidth < 100) {
+      console.log('侧边区域太小，不显示动画')
+      return // 如果侧边区域太小就不显示
+    }
 
     const newShapes: Shape[] = []
     
@@ -71,6 +80,7 @@ export function GeometryAnimation() {
       }
     }
 
+    console.log('创建了几何形状:', newShapes.length, newShapes)
     setShapes(newShapes)
   }, [isVisible])
 
@@ -202,13 +212,21 @@ export function GeometryAnimation() {
     return <div key={shape.id} style={style} />
   }
 
-  if (!isVisible) return null
+  if (!isVisible) {
+    console.log('几何动画不可见')
+    return null
+  }
+
+  console.log('渲染几何动画，形状数量:', shapes.length)
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-10 pointer-events-none"
-      style={{ mixBlendMode: 'multiply' }}
+      className="fixed inset-0 pointer-events-none"
+      style={{ 
+        backgroundColor: 'rgba(255,0,0,0.1)', // 临时红色背景用于调试
+        zIndex: 999 // 确保在最高层级
+      }}
     >
       {shapes.map(renderShape)}
     </div>
