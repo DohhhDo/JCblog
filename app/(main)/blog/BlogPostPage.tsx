@@ -3,8 +3,8 @@
 import { parseDateTime } from '@zolplay/utils'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import React from 'react'
 import Script from 'next/script'
+import React from 'react'
 import Balancer from 'react-wrap-balancer'
 
 import { BlogPostStateLoader } from '~/app/(main)/blog/BlogPostStateLoader'
