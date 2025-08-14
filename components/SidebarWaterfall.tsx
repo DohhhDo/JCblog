@@ -60,6 +60,7 @@ function prepareImagesForColumn(): {
 export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [countdown, setCountdown] = useState(10);
   const containerRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
