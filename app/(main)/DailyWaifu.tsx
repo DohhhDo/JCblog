@@ -10,6 +10,7 @@ export function DailyWaifu() {
   const [isLoading, setIsLoading] = React.useState(true)
   const [error, setError] = React.useState(false)
   const [refreshKey, setRefreshKey] = React.useState(0)
+  const [showToast, setShowToast] = React.useState(false)
 
   React.useEffect(() => {
     setIsLoading(true)
@@ -31,11 +32,26 @@ export function DailyWaifu() {
   }, [refreshKey])
 
   const handleRefresh = () => {
+    // 显示提示消息
+    setShowToast(true)
+    
+    // 2秒后自动隐藏提示
+    setTimeout(() => {
+      setShowToast(false)
+    }, 2000)
+    
     setRefreshKey(prev => prev + 1)
   }
 
   return (
     <div className="relative flex h-full flex-col rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+      {/* Toast 提示 */}
+      {showToast && (
+        <div className="absolute left-1/2 top-4 z-50 -translate-x-1/2 transform animate-pulse rounded-lg bg-pink-100 px-4 py-2 text-sm font-medium text-pink-800 shadow-lg dark:bg-pink-900/50 dark:text-pink-200">
+          渣男，不可以花心喔～ 💕
+        </div>
+      )}
+      
       <h2 className="flex items-center text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <SparkleIcon className="h-5 w-5 flex-none" />
         <span className="ml-2">每日老婆</span>
