@@ -1,6 +1,6 @@
 import { Box, Button, Card, Flex, Stack, Text, TextArea } from '@sanity/ui'
 import React, { useState, useCallback } from 'react'
-import { set, unset, type BlockContentInputProps } from 'sanity'
+import { set, unset, type ArrayInputProps } from 'sanity'
 
 // Markdown到blockContent的转换函数
 function markdownToBlocks(markdown: string): any[] {
@@ -221,8 +221,8 @@ function markdownToBlocks(markdown: string): any[] {
   return blocks
 }
 
-interface MarkdownImporterProps extends BlockContentInputProps {
-  // 继承所有BlockContentInputProps的属性
+interface MarkdownImporterProps extends ArrayInputProps {
+  // 继承所有ArrayInputProps的属性
 }
 
 export function MarkdownImporter(props: MarkdownImporterProps) {
