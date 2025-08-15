@@ -71,36 +71,14 @@ function markdownToBlocks(markdown: string): any[] {
     code,
   })
 
-  // 处理外站图片：转换为包含链接的文本块，而不是真实的图片组件
-  const createImageBlock = (src: string, alt?: string): any => {
-    const imageText = alt ? `${alt}` : '图片'
-    return {
-      _type: 'block',
-      _key: Math.random().toString(36).substr(2, 9),
-      style: 'normal',
-      children: [
-        {
-          _type: 'span',
-          _key: Math.random().toString(36).substr(2, 9),
-          text: '🖼️ ',
-          marks: [],
-        },
-        {
-          _type: 'span',
-          _key: Math.random().toString(36).substr(2, 9),
-          text: imageText,
-          marks: ['imageLink'],
-        },
-      ],
-      markDefs: [
-        {
-          _type: 'link',
-          _key: 'imageLink',
-          href: src,
-        },
-      ],
-    }
-  }
+  // 创建外链图片组件
+  const createImageBlock = (src: string, alt?: string): any => ({
+    _type: 'externalImage',
+    _key: Math.random().toString(36).substr(2, 9),
+    url: src,
+    alt: alt || '',
+    label: alt || '', // 使用alt作为标注
+  })
 
   let inCodeBlock = false
   let codeLines: string[] = []

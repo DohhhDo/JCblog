@@ -113,6 +113,49 @@ export default defineType({
       },
     }),
     defineArrayMember({
+      type: 'object',
+      name: 'externalImage',
+      title: '外链图片',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      fields: [
+        {
+          name: 'url',
+          type: 'url',
+          title: '图片链接',
+          description: '外部图片的完整URL地址',
+          validation: (Rule: any) => Rule.required(),
+        },
+        {
+          name: 'alt',
+          type: 'string',
+          title: '替代文本',
+          description: '图片的描述文字，用于无障碍访问',
+        },
+        {
+          name: 'label',
+          type: 'string',
+          title: '标注',
+          description: '图片下方显示的标注文字',
+        },
+      ],
+      preview: {
+        select: {
+          title: 'alt',
+          subtitle: 'url',
+          imageUrl: 'url',
+        },
+        prepare(selection: any) {
+          const { title, subtitle, imageUrl } = selection
+          return {
+            title: title || '外链图片',
+            subtitle: subtitle,
+            media: imageUrl,
+          }
+        },
+      },
+    }),
+    defineArrayMember({
       type: 'code',
       name: 'codeBlock',
       title: '代码块',

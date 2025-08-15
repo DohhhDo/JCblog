@@ -14,6 +14,7 @@ import {
   PortableTextBlocksNormal,
 } from '~/components/portable-text/PortableTextBlocks'
 import { PortableTextCodeBlock } from '~/components/portable-text/PortableTextCodeBlock'
+import { PortableTextExternalImage } from '~/components/portable-text/PortableTextExternalImage'
 import { PortableTextImage } from '~/components/portable-text/PortableTextImage'
 import { PortableTextTweet } from '~/components/portable-text/PortableTextTweet'
 
@@ -29,6 +30,7 @@ const components: PortableTextComponents = {
   listItem: PortableTextBlocksListItem,
   types: {
     image: PortableTextImage,
+    externalImage: PortableTextExternalImage,
     tweet: PortableTextTweet,
     codeBlock: PortableTextCodeBlock,
   },
