@@ -83,39 +83,21 @@ function createCodeBlock(code: string, language?: string): any {
 }
 
 /**
- * 创建图片信息块（安全方式）
- * 将图片信息作为富文本块，包含可点击的链接
+ * 创建外链图片块（使用网站标准的 externalImage 类型）
  */
 function createImageBlock(url: string, alt?: string): any {
-  const imageTitle = `🖼️ ${alt || '图片'}`
-  const linkKey = generateKey()
-  
-  // 创建包含链接的富文本块
+  // 验证URL格式
+  if (!url || typeof url !== 'string' || !url.startsWith('http')) {
+    console.warn('Invalid image URL:', url)
+    return createTextBlock(`🖼️ 无效图片链接: ${url}`, 'normal')
+  }
+
   return {
-    _type: 'block',
+    _type: 'externalImage',
     _key: generateKey(),
-    style: 'normal',
-    children: [
-      {
-        _type: 'span',
-        _key: generateKey(),
-        text: imageTitle + '\n📎 ',
-        marks: [],
-      },
-      {
-        _type: 'span',
-        _key: generateKey(),
-        text: url,
-        marks: [linkKey],
-      },
-    ],
-    markDefs: [
-      {
-        _type: 'link',
-        _key: linkKey,
-        href: url,
-      },
-    ],
+    url: url.trim(),
+    alt: alt || '',
+    label: alt || '',
   }
 }
 
