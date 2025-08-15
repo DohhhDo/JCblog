@@ -2,7 +2,6 @@ import { defineField, defineType } from 'sanity'
 import { z } from 'zod'
 
 import { PencilSwooshIcon } from '~/assets'
-import { MarkdownTextInput } from '~/sanity/components/MarkdownTextInput'
 import { readingTimeType } from '~/sanity/schemas/types/readingTime'
 
 export const Post = z.object({
@@ -25,9 +24,7 @@ export const Post = z.object({
   publishedAt: z.string(),
   description: z.string(),
   categories: z.array(z.string()).optional(),
-  body: z.any(),
-  markdownContent: z.string().optional(),
-  advancedMarkdown: z.string().optional(),
+  body: z.string(), // 现在body是markdown字符串而不是any
   readingTime: z.number(),
   mood: z.enum(['happy', 'sad', 'neutral']),
 })
@@ -92,28 +89,8 @@ export default defineType({
     defineField({
       name: 'body',
       title: '内容',
-      type: 'blockContent',
-    }),
-    defineField({
-      name: 'markdownContent',
-      title: 'Markdown 内容 (简化版)',
-      type: 'text',
-      description: 'Markdown 格式的文本内容 (支持 GitHub Flavored Markdown 语法) - 简化编辑器',
-      components: {
-        input: MarkdownTextInput,
-      },
-      validation: (Rule) => Rule.custom((value) => {
-        if (value && typeof value === 'string' && value.length > 50000) {
-          return '内容过长，请控制在50,000字符以内'
-        }
-        return true
-      }),
-    }),
-    defineField({
-      name: 'advancedMarkdown',
-      title: 'Markdown 内容 (高级版)',
       type: 'markdown',
-      description: 'Markdown 格式的文章内容 - 完整的编辑器，支持实时预览、图片上传、语法高亮等高级功能',
+      description: 'Markdown 格式的文章内容，支持实时预览、图片上传、语法高亮等功能',
       options: {
         imageUpload: true,
         preview: true,
@@ -125,13 +102,9 @@ export default defineType({
           'preview', 'side-by-side', 'fullscreen'
         ]
       },
-      validation: (Rule) => Rule.custom((value) => {
-        if (value && typeof value === 'string' && value.length > 100000) {
-          return '内容过长，请控制在100,000字符以内'
-        }
-        return true
-      }),
+      validation: (Rule) => Rule.required(),
     }),
+
     defineField({
       name: 'readingTime',
       title: '阅读时长（分钟）',
