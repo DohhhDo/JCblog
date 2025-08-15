@@ -5,48 +5,51 @@
 
 import { TextArea } from '@sanity/ui'
 import { StringInputProps, set, unset } from 'sanity'
-import React, { useCallback } from 'react'
+import React, { useCallback, forwardRef } from 'react'
 
-export function MarkdownTextInput(props: StringInputProps) {
-  const { onChange, value = '', elementProps } = props
+export const MarkdownTextInput = forwardRef<HTMLTextAreaElement, StringInputProps>(
+  (props, ref) => {
+    const { onChange, value = '', elementProps, ...restProps } = props
 
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const nextValue = event.currentTarget.value
-      onChange(nextValue ? set(nextValue) : unset())
-    },
-    [onChange]
-  )
+    const handleChange = useCallback(
+      (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const nextValue = event.currentTarget.value
+        onChange(nextValue ? set(nextValue) : unset())
+      },
+      [onChange]
+    )
 
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      // Add some helpful keyboard shortcuts for Markdown
-      if (event.key === 'Tab') {
-        event.preventDefault()
-        const target = event.currentTarget
-        const start = target.selectionStart
-        const end = target.selectionEnd
-        const newValue = value.substring(0, start) + '  ' + value.substring(end)
-        
-        onChange(set(newValue))
-        
-        // Reset cursor position
-        setTimeout(() => {
-          target.selectionStart = target.selectionEnd = start + 2
-        }, 0)
-      }
-    },
-    [value, onChange]
-  )
+    const handleKeyDown = useCallback(
+      (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        // Add some helpful keyboard shortcuts for Markdown
+        if (event.key === 'Tab') {
+          event.preventDefault()
+          const target = event.currentTarget
+          const start = target.selectionStart
+          const end = target.selectionEnd
+          const newValue = value.substring(0, start) + '  ' + value.substring(end)
+          
+          onChange(set(newValue))
+          
+          // Reset cursor position
+          setTimeout(() => {
+            target.selectionStart = target.selectionEnd = start + 2
+          }, 0)
+        }
+      },
+      [value, onChange]
+    )
 
-  return (
-    <TextArea
-      {...elementProps}
-      onChange={handleChange}
-      onKeyDown={handleKeyDown}
-      value={value}
-      rows={15}
-      placeholder="在这里输入 Markdown 内容...
+    return (
+      <TextArea
+        {...elementProps}
+        {...restProps}
+        ref={ref}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        value={value || ''}
+        rows={15}
+        placeholder="在这里输入 Markdown 内容...
 
 支持的语法包括：
 # 标题
@@ -56,11 +59,15 @@ export function MarkdownTextInput(props: StringInputProps) {
 ```代码块```
 
 按 Tab 键插入两个空格的缩进。"
-      style={{
-        fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-        fontSize: '14px',
-        lineHeight: '1.5',
-      }}
-    />
-  )
-}
+        style={{
+          fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+          fontSize: '14px',
+          lineHeight: '1.5',
+          ...elementProps?.style,
+        }}
+      />
+    )
+  }
+)
+
+MarkdownTextInput.displayName = 'MarkdownTextInput'
