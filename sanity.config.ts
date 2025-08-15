@@ -35,10 +35,6 @@ export default defineConfig({
     media(),
     codeInput(),
     // Enhanced Markdown plugin with all features enabled
-    markdownSchema({
-      imageUpload: true,  // 启用图片上传功能
-      preview: true,      // 启用实时预览
-      toolbar: 'full',    // 完整工具栏
-    }),
+    markdownSchema(),
   ],
 })

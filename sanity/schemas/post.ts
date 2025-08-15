@@ -90,18 +90,7 @@ export default defineType({
       name: 'body',
       title: '内容',
       type: 'markdown',
-      description: 'Markdown 格式的文章内容，支持实时预览、图片上传、语法高亮等功能',
-      options: {
-        imageUpload: true,
-        preview: true,
-        toolbar: [
-          'bold', 'italic', 'heading', '|',
-          'quote', 'unordered-list', 'ordered-list', '|',
-          'link', 'image', '|',
-          'code', 'table', '|',
-          'preview', 'side-by-side', 'fullscreen'
-        ]
-      },
+      description: 'Markdown 格式的文章内容，支持语法高亮、实时预览等功能',
       validation: (Rule) => Rule.required(),
     }),
 
