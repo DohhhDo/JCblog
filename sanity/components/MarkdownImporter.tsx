@@ -238,8 +238,15 @@ export function MarkdownImporter(props: MarkdownImporterProps) {
     try {
       const blocks = markdownToBlocks(markdownText)
       
-      // 如果当前已有内容，追加到现有内容后面
-      const currentValue = props.value || []
+      // 处理当前值，兼容从code类型迁移的数据
+      let currentValue = props.value || []
+      
+      // 如果当前值是code对象，先转换为blockContent
+      if (currentValue && typeof currentValue === 'object' && currentValue._type === 'code' && currentValue.code) {
+        const codeBlocks = markdownToBlocks(currentValue.code)
+        currentValue = codeBlocks
+      }
+      
       const newValue = Array.isArray(currentValue) ? [...currentValue, ...blocks] : blocks
       
       props.onChange(set(newValue))
@@ -259,8 +266,43 @@ export function MarkdownImporter(props: MarkdownImporterProps) {
     props.onChange(unset())
   }, [props])
 
+  const handleMigrateCodeData = useCallback(() => {
+    const currentValue = props.value
+    
+    // 如果当前值是code对象，转换为blockContent
+    if (currentValue && typeof currentValue === 'object' && currentValue._type === 'code' && currentValue.code) {
+      const blocks = markdownToBlocks(currentValue.code)
+      props.onChange(set(blocks))
+    }
+  }, [props])
+
+  // 检查是否需要迁移
+  const needsMigration = props.value && 
+    typeof props.value === 'object' && 
+    props.value._type === 'code'
+
   return (
     <Stack space={3}>
+      {/* 数据迁移提示 */}
+      {needsMigration && (
+        <Card padding={3} radius={2} shadow={1} tone="caution">
+          <Stack space={3}>
+            <Text size={1} weight="semibold">
+              🔄 检测到旧格式数据
+            </Text>
+            <Text size={1} muted>
+              发现code格式的内容，需要转换为新的富文本格式。点击下方按钮自动迁移。
+            </Text>
+            <Button
+              mode="default"
+              tone="caution"
+              onClick={handleMigrateCodeData}
+              text="迁移现有数据"
+            />
+          </Stack>
+        </Card>
+      )}
+
       {/* Markdown导入区域 */}
       <Card padding={3} radius={2} shadow={1} tone="primary">
         <Stack space={3}>
