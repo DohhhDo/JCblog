@@ -14,7 +14,7 @@ const songciData = [
   "知否，知否？应是绿肥红瘦。"
 ]
 
-export async function GET() {
+export function GET() {
   try {
     // 随机选择一首宋词
     const randomIndex = Math.floor(Math.random() * songciData.length)
