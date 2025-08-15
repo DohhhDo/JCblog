@@ -23,10 +23,51 @@ function markdownToBlocks(markdown: string): any[] {
     markDefs: [],
   })
 
+  // 支持的编程语言列表
+  const supportedLanguages = [
+    'javascript', 'typescript', 'jsx', 'tsx', 'json',
+    'python', 'java', 'c', 'cpp', 'csharp', 'c#',
+    'php', 'ruby', 'go', 'rust', 'swift', 'kotlin',
+    'html', 'css', 'scss', 'sass', 'less',
+    'xml', 'yaml', 'yml', 'toml', 'ini',
+    'sql', 'mysql', 'postgresql', 'sqlite',
+    'bash', 'shell', 'sh', 'zsh', 'fish', 'powershell',
+    'dockerfile', 'docker', 'makefile', 'cmake',
+    'markdown', 'md', 'text', 'txt', 'plain',
+    'vim', 'lua', 'perl', 'r', 'matlab', 'octave',
+    'haskell', 'scala', 'clojure', 'elixir', 'erlang',
+    'dart', 'groovy', 'batch', 'nginx', 'apache'
+  ]
+
+  const normalizeLanguage = (lang?: string): string => {
+    if (!lang) return 'text'
+    
+    const normalized = lang.toLowerCase().trim()
+    
+    // 处理常见的语言别名
+    const languageAliases: { [key: string]: string } = {
+      'js': 'javascript',
+      'ts': 'typescript',
+      'py': 'python',
+      'rb': 'ruby',
+      'cs': 'csharp',
+      'c++': 'cpp',
+      'sh': 'bash',
+      'yml': 'yaml',
+      'md': 'markdown',
+      'txt': 'text'
+    }
+    
+    const aliasedLang = languageAliases[normalized] || normalized
+    
+    // 如果是支持的语言，返回该语言；否则返回 'text'
+    return supportedLanguages.includes(aliasedLang) ? aliasedLang : 'text'
+  }
+
   const createCodeBlock = (code: string, language?: string): any => ({
     _type: 'code',
     _key: Math.random().toString(36).substr(2, 9),
-    language: language || 'text',
+    language: normalizeLanguage(language),
     code,
   })
 
@@ -47,24 +88,34 @@ function markdownToBlocks(markdown: string): any[] {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
 
-    // 代码块处理
-    if (line.startsWith('```')) {
-      if (inCodeBlock) {
-        // 结束代码块
-        blocks.push(createCodeBlock(codeLines.join('\n'), codeLanguage))
-        inCodeBlock = false
-        codeLines = []
-        codeLanguage = ''
-      } else {
-        // 开始代码块
-        inCodeBlock = true
-        codeLanguage = line.slice(3).trim()
+    try {
+      // 代码块处理
+      if (line.startsWith('```')) {
+        if (inCodeBlock) {
+          // 结束代码块 - 即使语言不支持也不报错
+          const normalizedLang = normalizeLanguage(codeLanguage)
+          blocks.push(createCodeBlock(codeLines.join('\n'), normalizedLang))
+          inCodeBlock = false
+          codeLines = []
+          codeLanguage = ''
+        } else {
+          // 开始代码块
+          inCodeBlock = true
+          codeLanguage = line.slice(3).trim()
+        }
+        continue
       }
-      continue
-    }
 
-    if (inCodeBlock) {
-      codeLines.push(line)
+      if (inCodeBlock) {
+        codeLines.push(line)
+        continue
+      }
+    } catch (error) {
+      // 如果处理代码块出错，作为普通文本处理
+      console.warn('代码块处理出错，作为普通文本处理:', error)
+      if (line.trim()) {
+        blocks.push(createTextBlock(line.trim()))
+      }
       continue
     }
 
@@ -213,9 +264,10 @@ function markdownToBlocks(markdown: string): any[] {
     }
   }
 
-  // 处理未结束的代码块
+  // 处理未结束的代码块 - 不报错，直接处理
   if (inCodeBlock && codeLines.length > 0) {
-    blocks.push(createCodeBlock(codeLines.join('\n'), codeLanguage))
+    const normalizedLang = normalizeLanguage(codeLanguage)
+    blocks.push(createCodeBlock(codeLines.join('\n'), normalizedLang))
   }
 
   return blocks
