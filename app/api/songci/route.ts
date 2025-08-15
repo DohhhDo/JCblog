@@ -1,29 +1,24 @@
 import { NextResponse } from 'next/server'
 
-import { promises as fs } from 'fs'
-import path from 'path'
+// 宋词数据直接嵌入到API中，避免文件读取的复杂性
+const songciData = [
+  "寻寻觅觅，冷冷清清，凄凄惨惨戚戚。乍暖还寒时候，最难将息。",
+  "三杯两盏淡酒，怎敌他、晚来风急？雁过也，正伤心，却是旧时相识。",
+  "满地黄花堆积，憔悴损，如今有谁堪摘？守着窗儿，独自怎生得黑？",
+  "梧桐更兼细雨，到黄昏、点点滴滴。这次第，怎一个愁字了得！",
+  "薄雾浓云愁永昼，瑞脑销金兽。佳节又重阳，玉枕纱厨，半夜凉初透。",
+  "东篱把酒黄昏后，有暗香盈袖。莫道不销魂，帘卷西风，人比黄花瘦。",
+  "红藕香残玉簟秋，轻解罗裳，独上兰舟。云中谁寄锦书来？雁字回时，月满西楼。",
+  "花自飘零水自流，一种相思，两处闲愁。此情无计可消除，才下眉头，却上心头。",
+  "昨夜雨疏风骤，浓睡不消残酒。试问卷帘人，却道海棠依旧。",
+  "知否，知否？应是绿肥红瘦。"
+]
 
 export async function GET() {
   try {
-    // 读取本地songci.txt文件
-    const filePath = path.join(process.cwd(), 'components', 'songci.txt')
-    const content = await fs.readFile(filePath, 'utf-8')
-    
-    // 按行分割内容
-    const lines = content.split('\n').filter(line => line.trim())
-    
-    // 过滤出包含句号、感叹号或问号的行（这些是宋词内容）
-    const poemLines = lines.filter(line => 
-      line.includes('。') || line.includes('！') || line.includes('？')
-    )
-    
-    if (poemLines.length === 0) {
-      return NextResponse.json({ error: '没有找到宋词内容' }, { status: 404 })
-    }
-    
-    // 随机选择一首宋词（选择连续的几行作为一首完整的词）
-    const randomIndex = Math.floor(Math.random() * (poemLines.length - 2))
-    const selectedPoem = poemLines.slice(randomIndex, randomIndex + 3).join('\n')
+    // 随机选择一首宋词
+    const randomIndex = Math.floor(Math.random() * songciData.length)
+    const selectedPoem = songciData[randomIndex]
     
     return NextResponse.json({
       poem: selectedPoem,
@@ -31,7 +26,7 @@ export async function GET() {
     })
     
   } catch (error) {
-    console.error('读取宋词文件失败:', error)
-    return NextResponse.json({ error: '读取宋词失败' }, { status: 500 })
+    console.error('获取宋词失败:', error)
+    return NextResponse.json({ error: '获取宋词失败' }, { status: 500 })
   }
 }
