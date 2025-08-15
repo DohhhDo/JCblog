@@ -71,11 +71,11 @@ function createTextBlock(text: string, style: string = 'normal'): any {
 }
 
 /**
- * 创建代码块（使用标准 code 类型）
+ * 创建代码块（使用标准 codeBlock 类型）
  */
 function createCodeBlock(code: string, language?: string): any {
   return {
-    _type: 'code',
+    _type: 'codeBlock',
     _key: generateKey(),
     language: normalizeLanguage(language),
     code: code.trim(),
@@ -83,15 +83,39 @@ function createCodeBlock(code: string, language?: string): any {
 }
 
 /**
- * 创建外链图片块（使用 externalImage 类型）
+ * 创建图片信息块（安全方式）
+ * 将图片信息作为富文本块，包含可点击的链接
  */
 function createImageBlock(url: string, alt?: string): any {
+  const imageTitle = `🖼️ ${alt || '图片'}`
+  const linkKey = generateKey()
+  
+  // 创建包含链接的富文本块
   return {
-    _type: 'externalImage',
+    _type: 'block',
     _key: generateKey(),
-    url,
-    alt: alt || '',
-    label: alt || '',
+    style: 'normal',
+    children: [
+      {
+        _type: 'span',
+        _key: generateKey(),
+        text: imageTitle + '\n📎 ',
+        marks: [],
+      },
+      {
+        _type: 'span',
+        _key: generateKey(),
+        text: url,
+        marks: [linkKey],
+      },
+    ],
+    markDefs: [
+      {
+        _type: 'link',
+        _key: linkKey,
+        href: url,
+      },
+    ],
   }
 }
 
