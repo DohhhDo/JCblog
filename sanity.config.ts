@@ -7,6 +7,7 @@ import { visionTool } from '@sanity/vision'
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { media } from 'sanity-plugin-media'
+import { markdownSchema } from 'sanity-plugin-markdown'
 
 import { settingsPlugin, settingsStructure } from '~/sanity/plugins/settings'
 
@@ -33,7 +34,11 @@ export default defineConfig({
     }),
     media(),
     codeInput(),
-    // Markdown plugin removed due to chunk loading issues
-    // Using enhanced text fields instead for better stability
+    // Enhanced Markdown plugin with all features enabled
+    markdownSchema({
+      imageUpload: true,  // 启用图片上传功能
+      preview: true,      // 启用实时预览
+      toolbar: 'full',    // 完整工具栏
+    }),
   ],
 })
