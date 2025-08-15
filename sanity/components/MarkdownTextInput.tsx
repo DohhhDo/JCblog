@@ -63,7 +63,6 @@ export const MarkdownTextInput = forwardRef<HTMLTextAreaElement, StringInputProp
           fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
           fontSize: '14px',
           lineHeight: '1.5',
-          ...elementProps?.style,
         }}
       />
     )
