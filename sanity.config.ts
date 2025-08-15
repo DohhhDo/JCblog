@@ -7,7 +7,6 @@ import { visionTool } from '@sanity/vision'
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { media } from 'sanity-plugin-media'
-import { markdownSchema } from 'sanity-plugin-markdown'
 
 import { settingsPlugin, settingsStructure } from '~/sanity/plugins/settings'
 
@@ -34,7 +33,5 @@ export default defineConfig({
     }),
     media(),
     codeInput(),
-    // Enhanced Markdown plugin with all features enabled
-    markdownSchema(),
   ],
 })
