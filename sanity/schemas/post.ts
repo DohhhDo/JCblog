@@ -91,6 +91,7 @@ export default defineType({
       title: '内容',
       type: 'markdown',
       description: 'Markdown 格式的文章内容，支持语法高亮、实时预览等功能',
+      initialValue: '',
       validation: (Rule) => Rule.required(),
     }),
 
