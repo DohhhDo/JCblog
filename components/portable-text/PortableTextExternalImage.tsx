@@ -105,10 +105,8 @@ export function PortableTextExternalImage({
               <motion.div className="relative" layoutId={`external_image_${value._key}`}>
                 <Dialog.Trigger>
                   <div className="relative">
-                    <Image
+                    <img
                       src={value.url}
-                      width={imageDimensions.width}
-                      height={imageDimensions.height}
                       className={clsxm(
                         'relative z-20 cursor-zoom-in dark:brightness-75 dark:transition-[filter] dark:hover:brightness-100',
                         hasLabel ? 'rounded-xl' : 'rounded-xl md:rounded-3xl'
@@ -116,7 +114,6 @@ export function PortableTextExternalImage({
                       alt={value.alt || '外链图片'}
                       onLoad={handleImageLoad}
                       onError={handleImageError}
-                      unoptimized // 外链图片使用unoptimized
                       style={{
                         maxWidth: '100%',
                         height: 'auto',
@@ -147,13 +144,10 @@ export function PortableTextExternalImage({
                   layoutId={`external_image_${value._key}`}
                   className="relative"
                 >
-                  <Image
+                  <img
                     src={value.url}
-                    width={imageDimensions.width}
-                    height={imageDimensions.height}
                     className="rounded-xl object-contain"
                     alt={value.alt || '外链图片'}
-                    unoptimized
                     style={{
                       maxWidth: '90vw',
                       maxHeight: '90vh',

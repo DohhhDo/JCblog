@@ -86,6 +86,7 @@ function markdownToBlocks(markdown: string): any[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    console.log('处理行:', line) // 调试用
 
     try {
       // 代码块处理
@@ -127,12 +128,26 @@ function markdownToBlocks(markdown: string): any[] {
       continue
     }
 
-    // 图片处理
-    const imageMatch = line.match(/!\[([^\]]*)\]\(([^)]+)\)/)
-    if (imageMatch) {
-      const [, alt, src] = imageMatch
-      blocks.push(createImageBlock(src, alt))
-      continue
+    // 图片处理 - 必须在链接处理之前，支持独立行和行内图片
+    if (line.includes('![')) {
+      const imageMatch = line.match(/!\[([^\]]*)\]\(([^)]+)\)/)
+      if (imageMatch) {
+        const [fullMatch, alt, src] = imageMatch
+        console.log('检测到图片:', { alt, src, fullMatch }) // 调试用
+        
+        // 如果整行只有图片，直接创建图片块
+        if (line.trim() === fullMatch) {
+          blocks.push(createImageBlock(src, alt))
+          continue
+        } else {
+          // 如果行内有其他内容，将图片替换为占位符，后续作为文本处理
+          const textWithPlaceholder = line.replace(fullMatch, `[图片: ${alt || '图片'}]`)
+          blocks.push(createTextBlock(textWithPlaceholder))
+          // 然后添加图片块
+          blocks.push(createImageBlock(src, alt))
+          continue
+        }
+      }
     }
 
     // 链接处理 - 转换为富文本中的链接标记
