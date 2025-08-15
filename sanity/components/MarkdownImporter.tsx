@@ -65,21 +65,42 @@ function markdownToBlocks(markdown: string): any[] {
   }
 
   const createCodeBlock = (code: string, language?: string): any => ({
-    _type: 'code',
+    _type: 'codeBlock', // 使用blockContent schema中定义的正确类型名
     _key: Math.random().toString(36).substr(2, 9),
     language: normalizeLanguage(language),
     code,
   })
 
-  const createImageBlock = (src: string, alt?: string): any => ({
-    _type: 'image',
-    _key: Math.random().toString(36).substr(2, 9),
-    asset: {
-      _type: 'reference',
-      _ref: 'image-' + Math.random().toString(36).substr(2, 9), // 占位符，实际需要上传图片
-    },
-    alt: alt || '',
-  })
+  // 处理外站图片：转换为包含链接的文本块，而不是真实的图片组件
+  const createImageBlock = (src: string, alt?: string): any => {
+    const imageText = alt ? `${alt}` : '图片'
+    return {
+      _type: 'block',
+      _key: Math.random().toString(36).substr(2, 9),
+      style: 'normal',
+      children: [
+        {
+          _type: 'span',
+          _key: Math.random().toString(36).substr(2, 9),
+          text: '🖼️ ',
+          marks: [],
+        },
+        {
+          _type: 'span',
+          _key: Math.random().toString(36).substr(2, 9),
+          text: imageText,
+          marks: ['imageLink'],
+        },
+      ],
+      markDefs: [
+        {
+          _type: 'link',
+          _key: 'imageLink',
+          href: src,
+        },
+      ],
+    }
+  }
 
   let inCodeBlock = false
   let codeLines: string[] = []
@@ -141,17 +162,59 @@ function markdownToBlocks(markdown: string): any[] {
       const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g
       let processedText = line
       const markDefs: any[] = []
+      const children: any[] = []
+      let lastIndex = 0
       let match
 
+      // 重置regex lastIndex
+      linkRegex.lastIndex = 0
+      
       while ((match = linkRegex.exec(line)) !== null) {
         const [fullMatch, linkText, href] = match
         const markKey = Math.random().toString(36).substr(2, 9)
+        
+        // 添加链接前的文本
+        if (match.index > lastIndex) {
+          const beforeText = line.substring(lastIndex, match.index)
+          if (beforeText) {
+            children.push({
+              _type: 'span',
+              _key: Math.random().toString(36).substr(2, 9),
+              text: beforeText,
+              marks: [],
+            })
+          }
+        }
+        
+        // 添加链接标记定义
         markDefs.push({
           _type: 'link',
           _key: markKey,
           href,
         })
-        processedText = processedText.replace(fullMatch, linkText)
+        
+        // 添加链接文本
+        children.push({
+          _type: 'span',
+          _key: Math.random().toString(36).substr(2, 9),
+          text: linkText,
+          marks: [markKey],
+        })
+        
+        lastIndex = match.index + fullMatch.length
+      }
+      
+      // 添加剩余文本
+      if (lastIndex < line.length) {
+        const remainingText = line.substring(lastIndex)
+        if (remainingText) {
+          children.push({
+            _type: 'span',
+            _key: Math.random().toString(36).substr(2, 9),
+            text: remainingText,
+            marks: [],
+          })
+        }
       }
 
       if (markDefs.length > 0) {
@@ -159,14 +222,7 @@ function markdownToBlocks(markdown: string): any[] {
           _type: 'block',
           _key: Math.random().toString(36).substr(2, 9),
           style: 'normal',
-          children: [
-            {
-              _type: 'span',
-              _key: Math.random().toString(36).substr(2, 9),
-              text: processedText,
-              marks: markDefs.map(def => def._key),
-            },
-          ],
+          children,
           markDefs,
         })
         continue
