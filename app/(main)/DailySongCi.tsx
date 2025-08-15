@@ -5,11 +5,9 @@ import React from 'react'
 import { ScriptIcon } from '~/assets'
 
 interface SongCiResponse {
-  code: number
-  length: number
-  key: string
-  msg: string[]
-  tip: string
+  poem: string
+  success: boolean
+  error?: string
 }
 
 export function DailySongCi() {
@@ -24,14 +22,12 @@ export function DailySongCi() {
     
     const fetchPoem = async () => {
       try {
-        // 使用HTTPS代理或者直接使用API
-        const response = await fetch(`https://api.szcyyds.icu/api/smsc?key=李清照&t=${Date.now()}&r=${refreshKey}`)
+        // 调用本地API获取宋词
+        const response = await fetch(`/api/songci?t=${Date.now()}&r=${refreshKey}`)
         const data: SongCiResponse = await response.json()
         
-        if (data.code === 200 && data.msg && data.msg.length > 0) {
-          // 随机选择一首诗词
-          const randomPoem = data.msg[Math.floor(Math.random() * data.msg.length)]
-          setPoem(randomPoem)
+        if (data.success && data.poem) {
+          setPoem(data.poem)
         } else {
           setError(true)
         }
@@ -73,10 +69,10 @@ export function DailySongCi() {
         )}
         {!isLoading && !error && poem && (
           <div className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-            {poem.split('。').map((line, index) => (
+            {poem.split('\n').map((line, index) => (
               line.trim() && (
                 <div key={index} className="mb-2 last:mb-0">
-                  {line.trim()}。
+                  {line.trim()}
                 </div>
               )
             ))}
