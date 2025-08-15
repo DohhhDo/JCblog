@@ -72,13 +72,16 @@ function markdownToBlocks(markdown: string): any[] {
   })
 
   // 创建外链图片组件
-  const createImageBlock = (src: string, alt?: string): any => ({
-    _type: 'externalImage',
-    _key: Math.random().toString(36).substr(2, 9),
-    url: src,
-    alt: alt || '',
-    label: alt || '', // 使用alt作为标注
-  })
+  const createImageBlock = (src: string, alt?: string): any => {
+    console.log('创建图片块:', { src, alt }) // 调试用
+    return {
+      _type: 'externalImage',
+      _key: Math.random().toString(36).substr(2, 9),
+      url: src,
+      alt: alt || '',
+      label: alt || '', // 使用alt作为标注
+    }
+  }
 
   let inCodeBlock = false
   let codeLines: string[] = []
@@ -135,16 +138,31 @@ function markdownToBlocks(markdown: string): any[] {
         const [fullMatch, alt, src] = imageMatch
         console.log('检测到图片:', { alt, src, fullMatch }) // 调试用
         
+        // 验证URL格式
+        if (!src || typeof src !== 'string' || src.trim() === '') {
+          console.warn('无效的图片URL，跳过:', src)
+          blocks.push(createTextBlock(line.trim()))
+          continue
+        }
+        
+        // 清理和验证URL
+        const cleanedSrc = src.trim()
+        if (!cleanedSrc.match(/^https?:\/\//)) {
+          console.warn('不支持的图片URL格式，跳过:', cleanedSrc)
+          blocks.push(createTextBlock(line.trim()))
+          continue
+        }
+        
         // 如果整行只有图片，直接创建图片块
         if (line.trim() === fullMatch) {
-          blocks.push(createImageBlock(src, alt))
+          blocks.push(createImageBlock(cleanedSrc, alt))
           continue
         } else {
           // 如果行内有其他内容，将图片替换为占位符，后续作为文本处理
           const textWithPlaceholder = line.replace(fullMatch, `[图片: ${alt || '图片'}]`)
           blocks.push(createTextBlock(textWithPlaceholder))
           // 然后添加图片块
-          blocks.push(createImageBlock(src, alt))
+          blocks.push(createImageBlock(cleanedSrc, alt))
           continue
         }
       }

@@ -18,6 +18,25 @@ export function PortableTextExternalImage({
   alt?: string
   label?: string
 }>) {
+  // 数据验证和错误处理
+  if (!value || typeof value !== 'object') {
+    console.error('PortableTextExternalImage: 无效的value参数', value)
+    return null
+  }
+
+  if (!value.url || typeof value.url !== 'string') {
+    console.error('PortableTextExternalImage: 无效的URL', value)
+    return (
+      <div className="rounded-2xl bg-red-50 p-4 dark:bg-red-900/20">
+        <div className="text-center">
+          <div className="mb-2 text-2xl">❌</div>
+          <p className="text-sm text-red-600 dark:text-red-400">
+            图片数据格式错误
+          </p>
+        </div>
+      </div>
+    )
+  }
   const [isZoomed, setIsZoomed] = React.useState(false)
   const [imageError, setImageError] = React.useState(false)
   const [imageDimensions, setImageDimensions] = React.useState({

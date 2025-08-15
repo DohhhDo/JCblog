@@ -54,10 +54,46 @@ export function PostPortableText(props: {
   value: any
   components?: PortableTextComponents
 }) {
-  return (
-    <PortableText
-      value={props.value}
-      components={props.components ?? components}
-    />
-  )
+  // 添加错误边界处理
+  try {
+    // 确保value是有效的数组
+    if (!props.value || !Array.isArray(props.value)) {
+      console.warn('PostPortableText: 无效的value，使用空数组', props.value)
+      return null
+    }
+
+    // 过滤和清理数据，移除无效的块
+    const cleanedValue = props.value.filter((block: any) => {
+      if (!block || typeof block !== 'object' || !block._type) {
+        console.warn('PostPortableText: 移除无效块', block)
+        return false
+      }
+      
+      // 特别检查externalImage类型
+      if (block._type === 'externalImage') {
+        if (!block.url || typeof block.url !== 'string') {
+          console.warn('PostPortableText: 移除无效的externalImage块', block)
+          return false
+        }
+      }
+      
+      return true
+    })
+
+    return (
+      <PortableText
+        value={cleanedValue}
+        components={props.components ?? components}
+      />
+    )
+  } catch (error) {
+    console.error('PostPortableText渲染错误:', error)
+    return (
+      <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
+        <p className="text-sm text-red-600 dark:text-red-400">
+          内容渲染出错，请检查数据格式
+        </p>
+      </div>
+    )
+  }
 }
