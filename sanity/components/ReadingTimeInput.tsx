@@ -58,20 +58,7 @@ export default function ReadingTimeInput(props: NumberInputProps) {
   const body = useFormValue(['body'])
 
   const generate = React.useCallback(() => {
-    let textContent = ''
-    
-    if (typeof body === 'string') {
-      // 如果body是markdown字符串，提取纯文本
-      textContent = extractTextFromMarkdown(body)
-    } else if (body && typeof body === 'object' && 'code' in body && typeof (body as any).code === 'string') {
-      // 如果body是code对象（来自@sanity/code-input），提取code字段
-      textContent = extractTextFromMarkdown((body as any).code)
-    } else if (Array.isArray(body)) {
-      // 如果body是块内容数组，使用原有逻辑
-      textContent = flattenBlocks(body as SanityBlock[]).join('\n')
-    }
-    
-    const rt = ReadingTime(textContent)
+    const rt = ReadingTime(flattenBlocks(body as SanityBlock[]).join('\n'))
     props.onChange(set(rt.minutes))
   }, [body, props])
 

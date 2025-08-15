@@ -2,6 +2,7 @@ import { defineField, defineType } from 'sanity'
 import { z } from 'zod'
 
 import { PencilSwooshIcon } from '~/assets'
+import { MarkdownImporter } from '~/sanity/components/MarkdownImporter'
 import { readingTimeType } from '~/sanity/schemas/types/readingTime'
 
 export const Post = z.object({
@@ -24,7 +25,7 @@ export const Post = z.object({
   publishedAt: z.string(),
   description: z.string(),
   categories: z.array(z.string()).optional(),
-  body: z.string(), // 现在body是markdown字符串而不是any
+  body: z.any(), // body是blockContent数组
   readingTime: z.number(),
   mood: z.enum(['happy', 'sad', 'neutral']),
 })
@@ -89,11 +90,11 @@ export default defineType({
     defineField({
       name: 'body',
       title: '内容',
-      type: 'code',
-      options: {
-        language: 'markdown',
+      type: 'blockContent',
+      description: '文章内容，支持富文本编辑。可使用上方的Markdown导入区快速导入Markdown内容',
+      components: {
+        input: MarkdownImporter,
       },
-      description: 'Markdown 格式的文章内容，支持语法高亮',
       validation: (Rule) => Rule.required(),
     }),
 
