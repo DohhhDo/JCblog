@@ -16,13 +16,15 @@ const songciData = [
 
 export function GET() {
   try {
-    // 随机选择一首宋词
-    const randomIndex = Math.floor(Math.random() * songciData.length)
+    // 使用当前时间戳作为种子，确保每次调用都有不同的随机结果
+    const timestamp = Date.now()
+    const randomIndex = (timestamp % songciData.length)
     const selectedPoem = songciData[randomIndex]
     
     return NextResponse.json({
       poem: selectedPoem,
-      success: true
+      success: true,
+      timestamp: timestamp
     })
     
   } catch (error) {
