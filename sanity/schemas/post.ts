@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 import { z } from 'zod'
 
 import { PencilSwooshIcon } from '~/assets'
-import { MarkdownImporterWrapper } from '~/sanity/components/MarkdownImporterWrapper'
+import { StableMarkdownImporter } from '~/sanity/components/StableMarkdownImporter'
 import { readingTimeType } from '~/sanity/schemas/types/readingTime'
 
 export const Post = z.object({
@@ -93,7 +93,7 @@ export default defineType({
       type: 'blockContent',
       description: '文章内容，支持富文本编辑。可使用上方的Markdown导入区快速导入Markdown内容',
       components: {
-        input: MarkdownImporterWrapper,
+        input: StableMarkdownImporter,
       },
       validation: (Rule) => Rule.required(),
     }),
