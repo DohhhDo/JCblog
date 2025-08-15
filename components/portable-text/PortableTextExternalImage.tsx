@@ -104,20 +104,23 @@ export function PortableTextExternalImage({
             >
               <motion.div className="relative" layoutId={`external_image_${value._key}`}>
                 <Dialog.Trigger>
-                  <div className="relative">
-                    <img
+                  <div className="relative overflow-hidden rounded-xl md:rounded-3xl">
+                    <Image
                       src={value.url}
+                      alt={value.alt || '外链图片'}
+                      width={800}
+                      height={600}
                       className={clsxm(
-                        'relative z-20 cursor-zoom-in dark:brightness-75 dark:transition-[filter] dark:hover:brightness-100',
+                        'relative z-20 cursor-zoom-in object-cover transition-transform hover:scale-105 dark:brightness-75 dark:transition-[filter] dark:hover:brightness-100',
                         hasLabel ? 'rounded-xl' : 'rounded-xl md:rounded-3xl'
                       )}
-                      alt={value.alt || '外链图片'}
                       onLoad={handleImageLoad}
                       onError={handleImageError}
                       style={{
                         maxWidth: '100%',
                         height: 'auto',
                       }}
+                      unoptimized // 对于外部图片使用 unoptimized
                     />
                     {/* 外链图片标识 */}
                     <div className="absolute right-2 top-2 rounded-md bg-black/50 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
@@ -144,17 +147,22 @@ export function PortableTextExternalImage({
                   layoutId={`external_image_${value._key}`}
                   className="relative"
                 >
-                  <img
-                    src={value.url}
-                    className="rounded-xl object-contain"
-                    alt={value.alt || '外链图片'}
-                    style={{
-                      maxWidth: '90vw',
-                      maxHeight: '90vh',
-                      width: 'auto',
-                      height: 'auto',
-                    }}
-                  />
+                  <div className="relative overflow-hidden rounded-xl">
+                    <Image
+                      src={value.url}
+                      alt={value.alt || '外链图片'}
+                      width={imageDimensions.width}
+                      height={imageDimensions.height}
+                      className="object-contain"
+                      style={{
+                        maxWidth: '90vw',
+                        maxHeight: '90vh',
+                        width: 'auto',
+                        height: 'auto',
+                      }}
+                      unoptimized // 对于外部图片使用 unoptimized
+                    />
+                  </div>
                   <Dialog.Close className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white hover:bg-black/70">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                       <path d="M12.5 3.5a.5.5 0 0 0-.707 0L8 7.293 4.207 3.5a.5.5 0 1 0-.707.707L7.293 8l-3.793 3.793a.5.5 0 0 0 .707.707L8 8.707l3.793 3.793a.5.5 0 0 0 .707-.707L8.707 8l3.793-3.793a.5.5 0 0 0 0-.707z"/>
