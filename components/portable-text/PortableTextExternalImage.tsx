@@ -18,7 +18,20 @@ export function PortableTextExternalImage({
   alt?: string
   label?: string
 }>) {
-  // 数据验证和错误处理
+  // 所有Hooks必须在组件顶部调用
+  const [isZoomed, setIsZoomed] = React.useState(false)
+  const [imageError, setImageError] = React.useState(false)
+  const [imageDimensions, setImageDimensions] = React.useState({
+    width: 800,
+    height: 600,
+  })
+
+  const hasLabel = React.useMemo(
+    () => value?.label && value.label.length > 0,
+    [value?.label]
+  )
+
+  // 数据验证和错误处理 - 在Hooks之后
   if (!value || typeof value !== 'object') {
     console.error('PortableTextExternalImage: 无效的value参数', value)
     return null
@@ -37,17 +50,6 @@ export function PortableTextExternalImage({
       </div>
     )
   }
-  const [isZoomed, setIsZoomed] = React.useState(false)
-  const [imageError, setImageError] = React.useState(false)
-  const [imageDimensions, setImageDimensions] = React.useState({
-    width: 800,
-    height: 600,
-  })
-
-  const hasLabel = React.useMemo(
-    () => value.label && value.label.length > 0,
-    [value.label]
-  )
 
   // 处理图片加载
   const handleImageLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {

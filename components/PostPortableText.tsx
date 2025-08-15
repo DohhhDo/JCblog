@@ -63,7 +63,7 @@ export function PostPortableText(props: {
     }
 
     // 过滤和清理数据，移除无效的块
-    const cleanedValue = props.value.filter((block: any) => {
+    const cleanedValue = props.value.filter((block: { _type?: string; url?: unknown }) => {
       if (!block || typeof block !== 'object' || !block._type) {
         console.warn('PostPortableText: 移除无效块', block)
         return false
