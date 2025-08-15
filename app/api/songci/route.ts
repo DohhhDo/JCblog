@@ -14,17 +14,28 @@ const songciData = [
   "知否，知否？应是绿肥红瘦。"
 ]
 
-export function GET() {
+export function GET(request: Request) {
   try {
-    // 使用当前时间戳作为种子，确保每次调用都有不同的随机结果
-    const timestamp = Date.now()
-    const randomIndex = (timestamp % songciData.length)
+    // 从URL参数中获取随机种子，如果没有则使用时间戳
+    const url = new URL(request.url)
+    const seed = url.searchParams.get('seed') || Date.now().toString()
+    
+    // 使用种子生成随机索引
+    let hash = 0
+    for (let i = 0; i < seed.length; i++) {
+      const char = seed.charCodeAt(i)
+      hash = ((hash << 5) - hash) + char
+      hash = hash & hash // 转换为32位整数
+    }
+    
+    const randomIndex = Math.abs(hash) % songciData.length
     const selectedPoem = songciData[randomIndex]
     
     return NextResponse.json({
       poem: selectedPoem,
       success: true,
-      timestamp: timestamp
+      seed: seed,
+      index: randomIndex
     })
     
   } catch (error) {

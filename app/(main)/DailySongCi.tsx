@@ -8,6 +8,8 @@ interface SongCiResponse {
   poem: string
   success: boolean
   error?: string
+  seed?: string
+  index?: number
 }
 
 export function DailySongCi() {
@@ -22,8 +24,9 @@ export function DailySongCi() {
     
     const fetchPoem = async () => {
       try {
-        // 调用本地API获取宋词
-        const response = await fetch(`/api/songci?t=${Date.now()}&r=${refreshKey}`)
+        // 生成随机种子，确保每次调用都不同
+        const randomSeed = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+        const response = await fetch(`/api/songci?seed=${randomSeed}&r=${refreshKey}`)
         const data: SongCiResponse = await response.json()
         
         if (data.success && data.poem) {
