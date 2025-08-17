@@ -81,32 +81,11 @@ export default authMiddleware({
     const pathname = url.pathname
     // 仅限制 /studio 及其子路由
     if (pathname.startsWith('/studio')) {
-      // 必须已登录
+      // 必须已登录（邮箱白名单在页面级校验，以便通过 Clerk API 获取准确邮箱）
       if (!userId) {
         const signInUrl = new URL('/sign-in', url.origin)
         signInUrl.searchParams.set('redirect_url', url.href)
         return NextResponse.redirect(signInUrl)
-      }
-      // 可选：基于邮箱白名单限制管理员
-      const adminList = [
-        // 默认内置管理员（可被环境变量补充/覆盖）
-        'dvorakzhou@gmail.com',
-        ...(process.env.ADMIN_EMAILS || '')
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean),
-      ].map((s) => s.toLowerCase())
-      const emailRaw =
-        (sessionClaims as any)?.email ||
-        (sessionClaims as any)?.email_address ||
-        (sessionClaims as any)?.primary_email ||
-        (sessionClaims as any)?.primaryEmail ||
-        (sessionClaims as any)?.user?.email_address
-      const email = emailRaw ? String(emailRaw).toLowerCase() : undefined
-      // 邮箱缺失或不在白名单内，一律禁止
-      if (adminList.length > 0 && (!email || !adminList.includes(email))) {
-        // 用 403 阻止访问，避免暴露 Studio
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
       }
     }
     return NextResponse.next()

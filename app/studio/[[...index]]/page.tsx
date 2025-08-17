@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs'
+import { auth, currentUser } from '@clerk/nextjs'
 import { redirect } from 'next/navigation'
 import Script from 'next/script'
 import { Suspense } from 'react'
@@ -34,14 +34,14 @@ type StudioClaims = Partial<{
   primaryEmail: string
 }>
 
-export default function StudioPage() {
-  const { userId, sessionClaims } = auth()
-  const claims = (sessionClaims ?? {}) as StudioClaims
-  const email = claims.email || claims.email_address || claims.primary_email || claims.primaryEmail
-
+export default async function StudioPage() {
+  const { userId } = auth()
+  if (!userId) redirect('/sign-in')
+  const user = await currentUser()
+  const email = user?.primaryEmailAddress?.emailAddress?.toLowerCase()
   const allowed = ['dvorakzhou@gmail.com']
-  if (!userId || !email || !allowed.includes(String(email).toLowerCase())) {
-    redirect('/sign-in')
+  if (!email || !allowed.includes(email)) {
+    redirect('/')
   }
   return (
     <>
