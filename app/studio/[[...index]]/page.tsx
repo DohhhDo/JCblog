@@ -1,4 +1,6 @@
 import Script from 'next/script'
+import { auth } from '@clerk/nextjs'
+import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
 import Studio from './Studio'
@@ -26,6 +28,17 @@ function StudioPageFallback() {
 }
 
 export default function StudioPage() {
+  const { userId, sessionClaims } = auth()
+  const email =
+    (sessionClaims as any)?.email ||
+    (sessionClaims as any)?.email_address ||
+    (sessionClaims as any)?.primary_email ||
+    (sessionClaims as any)?.primaryEmail
+
+  const allowed = ['dvorakzhou@gmail.com']
+  if (!userId || !email || !allowed.includes(String(email).toLowerCase())) {
+    redirect('/sign-in')
+  }
   return (
     <>
       <Script

@@ -9,7 +9,13 @@ import { getIP } from '~/lib/ip'
 import { redis } from '~/lib/redis'
 
 export const config = {
-  matcher: ['/((?!_next|.*\\..*).*)'],
+  // 仅对 /studio 相关路径及基础页面启用，以减少不必要开销
+  matcher: [
+    '/studio',
+    '/studio/(.*)',
+    '/',
+    '/(api|blog|confirm|projects|friends|guestbook|newsletters|about|rss|feed|ama)(.*)'
+  ],
 }
 
 async function beforeAuthMiddleware(req: NextRequest) {
@@ -89,9 +95,17 @@ export default authMiddleware({
           .split(',')
           .map((s) => s.trim())
           .filter(Boolean),
-      ]
-      const email = (sessionClaims as any)?.email || (sessionClaims as any)?.primaryEmail || (sessionClaims as any)?.email_address
-      if (adminList.length > 0 && email && !adminList.includes(String(email))) {
+      ].map((s) => s.toLowerCase())
+      const emailRaw =
+        (sessionClaims as any)?.email ||
+        (sessionClaims as any)?.email_address ||
+        (sessionClaims as any)?.primary_email ||
+        (sessionClaims as any)?.primaryEmail ||
+        (sessionClaims as any)?.user?.email_address
+      const email = emailRaw ? String(emailRaw).toLowerCase() : undefined
+      // 邮箱缺失或不在白名单内，一律禁止
+      if (adminList.length > 0 && (!email || !adminList.includes(email))) {
+        // 用 403 阻止访问，避免暴露 Studio
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
       }
     }
