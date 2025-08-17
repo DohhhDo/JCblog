@@ -4,7 +4,7 @@
  */
 
 import { Box, Button, Card, Flex, Stack, Text, TextArea } from '@sanity/ui'
-import React, { useState, useCallback, Component, ErrorInfo, ReactNode, Suspense } from 'react'
+import React, { useState, useCallback, Component, ErrorInfo, ReactNode } from 'react'
 import { set, unset } from 'sanity'
 
 import { parseMarkdownToBlocks } from '../lib/markdownParser'
@@ -230,85 +230,65 @@ export function UnifiedMarkdownImporter(props: UnifiedMarkdownImporterProps) {
     props.onChange(unset())
   }, [props])
 
-  // 主要组件UI
-  const MainComponent = () => (
-    <Stack space={3}>
-      {/* Markdown 导入区域 */}
-      <Card padding={3} radius={2} shadow={1} tone="primary">
-        <Stack space={3}>
-          <Text size={1} weight="semibold">
-            📝 Markdown 导入器
-          </Text>
-          <Text size={1} muted>
-            支持：标题、代码块、图片、链接、列表、**粗体**、*斜体*、~~删除线~~、`行内代码`、@[TOC]目录
-          </Text>
-          
-          {error && (
-            <Card padding={2} radius={1} tone="critical">
-              <Text size={1}>{error}</Text>
-            </Card>
-          )}
-          
-          <TextArea
-            value={markdownText}
-            onChange={(event) => setMarkdownText(event.currentTarget.value)}
-            placeholder="在这里粘贴 Markdown 内容...
-
-示例：
-@[TOC](目录)
-# 标题
-**粗体文本** 和 *斜体文本* 和 ~~删除线~~
-`行内代码` 和 终端命令
-- 列表项
-[链接文本](https://example.com)
-![图片描述](https://example.com/image.jpg)
-
-```javascript
-console.log('代码块');
-```"
-            rows={8}
-            style={{
-              fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-              fontSize: '14px',
-            }}
-          />
-          
-          <Flex gap={2}>
-            <Button
-              mode="default"
-              tone="primary"
-              onClick={handleImport}
-              disabled={!markdownText.trim() || isImporting}
-              text={isImporting ? '导入中...' : '导入'}
-            />
-            <Button
-              mode="ghost"
-              onClick={handleClear}
-              disabled={!markdownText.trim()}
-              text="清空输入"
-            />
-            <Button
-              mode="ghost"
-              tone="critical"
-              onClick={handleClearAll}
-              text="清空编辑器"
-            />
-          </Flex>
-        </Stack>
-      </Card>
-
-      {/* 原生富文本编辑器 */}
-      <Box>
-        {props.renderDefault(props)}
-      </Box>
-    </Stack>
-  )
-
   return (
     <MarkdownImporterErrorBoundary {...props}>
-      <Suspense fallback={<LoadingFallback />}>
-        <MainComponent />
-      </Suspense>
+      <Stack space={3}>
+        {/* Markdown 导入区域 */}
+        <Card padding={3} radius={2} shadow={1} tone="primary">
+          <Stack space={3}>
+            <Text size={1} weight="semibold">
+              📝 Markdown 导入器
+            </Text>
+            <Text size={1} muted>
+              支持：标题、代码块、图片、链接、列表、**粗体**、*斜体*、~~删除线~~、`行内代码`、@[TOC]目录
+            </Text>
+            
+            {error && (
+              <Card padding={2} radius={1} tone="critical">
+                <Text size={1}>{error}</Text>
+              </Card>
+            )}
+            
+            <TextArea
+              value={markdownText}
+              onChange={(event) => setMarkdownText(event.currentTarget.value)}
+              placeholder={"在这里粘贴 Markdown 内容...\n\n示例：\n@[TOC](目录)\n# 标题\n**粗体文本** 和 *斜体文本* 和 ~~删除线~~\n`行内代码` 和 终端命令\n- 列表项\n[链接文本](https://example.com)\n![图片描述](https://example.com/image.jpg)\n\n```javascript\nconsole.log('代码块');\n```"}
+              rows={8}
+              style={{
+                fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+                fontSize: '14px',
+              }}
+            />
+            
+            <Flex gap={2}>
+              <Button
+                mode="default"
+                tone="primary"
+                onClick={handleImport}
+                disabled={!markdownText.trim() || isImporting}
+                text={isImporting ? '导入中...' : '导入'}
+              />
+              <Button
+                mode="ghost"
+                onClick={handleClear}
+                disabled={!markdownText.trim()}
+                text="清空输入"
+              />
+              <Button
+                mode="ghost"
+                tone="critical"
+                onClick={handleClearAll}
+                text="清空编辑器"
+              />
+            </Flex>
+          </Stack>
+        </Card>
+
+        {/* 原生富文本编辑器 */}
+        <Box>
+          {props.renderDefault(props)}
+        </Box>
+      </Stack>
     </MarkdownImporterErrorBoundary>
   )
 }
