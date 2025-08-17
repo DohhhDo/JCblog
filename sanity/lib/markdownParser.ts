@@ -302,13 +302,15 @@ export function parseMarkdownToBlocks(markdown: string): any[] {
 
   // 辅助：处理行内图片（可多张），并将前后文本按段落/行生成 block
   const emitLineWithInlineImages = (rawLine: string) => {
-    const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g
+    const imageRegex = /!\[([^\]]*)\]\((\S+?)\)/g
     let lastIndex = 0
     let m: RegExpExecArray | null
     let emittedAnything = false
 
     while ((m = imageRegex.exec(rawLine)) !== null) {
-      const [fullMatch, alt, src] = m
+      const [fullMatch, altRaw, srcRaw] = m
+      const alt = (altRaw || '').trim()
+      const src = (srcRaw || '').replace(/^<|>$/g, '').trim()
       const before = rawLine.slice(lastIndex, m.index)
       if (before.trim()) {
         paragraphBuffer.push(before.trim())
@@ -316,7 +318,7 @@ export function parseMarkdownToBlocks(markdown: string): any[] {
         emittedAnything = true
       }
 
-      if (src && src.startsWith('http')) {
+      if (src && /^https?:\/\//i.test(src)) {
         blocks.push(createImageBlock(src, alt))
         emittedAnything = true
       } else {
@@ -410,12 +412,14 @@ export function parseMarkdownToBlocks(markdown: string): any[] {
     }
     
     // 处理图片（独立行）
-    const imageMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/)
+    const imageMatch = line.match(/^\s*!\[([^\]]*)\]\((\S+?)\)\s*$/)
     if (imageMatch) {
       flushParagraph()
       inList = false
-      const [, alt, src] = imageMatch
-      if (src && src.startsWith('http')) {
+      const [, altRaw, srcRaw] = imageMatch
+      const alt = (altRaw || '').trim()
+      const src = (srcRaw || '').replace(/^<|>$/g, '').trim()
+      if (src && /^https?:\/\//i.test(src)) {
         blocks.push(createImageBlock(src, alt))
         continue
       }
@@ -444,7 +448,7 @@ export function parseMarkdownToBlocks(markdown: string): any[] {
     }
     
     // 行内图片：非整行图片，拆分处理
-    if (/!\[[^\]]*\]\([^\)]+\)/.test(line)) {
+    if (/!\[[^\]]*\]\((\S+?)\)/.test(line)) {
       emitLineWithInlineImages(line)
       inList = false
       continue
