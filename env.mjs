@@ -12,6 +12,7 @@ const server = z.object({
   UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
   LINK_PREVIEW_API_BASE_URL: z.string().optional(),
   SITE_NOTIFICATION_EMAIL_TO: z.string().optional(),
+  ADMIN_EMAILS: z.string().optional(), // 逗号分隔的管理员邮箱列表
 })
 
 const client = z.object({
@@ -44,6 +45,7 @@ const processEnv = {
   NEXT_PUBLIC_SITE_LINK_PREVIEW_ENABLED: process.env.NEXT_PUBLIC_SITE_LINK_PREVIEW_ENABLED == 'true',
   LINK_PREVIEW_API_BASE_URL: process.env.LINK_PREVIEW_API_BASE_URL,
   SITE_NOTIFICATION_EMAIL_TO: process.env.SITE_NOTIFICATION_EMAIL_TO,
+  ADMIN_EMAILS: process.env.ADMIN_EMAILS,
 }
 
 // Don't touch the part below

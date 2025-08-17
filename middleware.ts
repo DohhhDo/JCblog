@@ -56,7 +56,7 @@ export default authMiddleware({
   beforeAuth: beforeAuthMiddleware,
   publicRoutes: [
     '/',
-    '/studio(.*)',
+    // Studio 不公开
     '/api(.*)',
     '/blog(.*)',
     '/confirm(.*)',
@@ -69,4 +69,28 @@ export default authMiddleware({
     '/feed',
     '/ama',
   ],
+  afterAuth(auth, req) {
+    const { userId, sessionClaims } = auth
+    const url = req.nextUrl
+    const pathname = url.pathname
+    // 仅限制 /studio 及其子路由
+    if (pathname.startsWith('/studio')) {
+      // 必须已登录
+      if (!userId) {
+        const signInUrl = new URL('/sign-in', url.origin)
+        signInUrl.searchParams.set('redirect_url', url.href)
+        return NextResponse.redirect(signInUrl)
+      }
+      // 可选：基于邮箱白名单限制管理员
+      const adminList = (process.env.ADMIN_EMAILS || '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+      const email = (sessionClaims as any)?.email || (sessionClaims as any)?.primaryEmail || (sessionClaims as any)?.email_address
+      if (adminList.length > 0 && email && !adminList.includes(String(email))) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      }
+    }
+    return NextResponse.next()
+  },
 })
