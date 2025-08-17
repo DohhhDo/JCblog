@@ -23,6 +23,7 @@ interface UltraStableProps {
   value?: any
   onChange: (patch: any) => void
   renderDefault: (props: any) => React.ReactElement
+  children?: ReactNode
 }
 
 class MarkdownImporterErrorBoundary extends Component<UltraStableProps, ErrorBoundaryState> {
