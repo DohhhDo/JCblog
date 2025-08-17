@@ -149,8 +149,18 @@ export default defineType({
           const { title, subtitle, imageUrl } = selection
           return {
             title: title || '外链图片',
-            subtitle: subtitle,
-            media: imageUrl,
+            subtitle,
+            // media 需要是 ReactNode，而不是字符串，否则会被当作标签名
+            media: imageUrl
+              ? {
+                  $$typeof: Symbol.for('react.element'),
+                  type: 'img',
+                  key: null,
+                  ref: null,
+                  props: { src: imageUrl, alt: title || 'external image', style: { objectFit: 'cover', width: '100%', height: '100%' } },
+                  _owner: null,
+                }
+              : undefined,
           }
         },
       },

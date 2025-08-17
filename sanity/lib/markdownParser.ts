@@ -88,12 +88,21 @@ function createImageBlock(url: string, alt?: string): any {
     return createTextBlock(`🖼️ 无效图片链接: ${url}`, 'normal')
   }
 
+  // 方案 B：导入时将外链图片上传到 Sanity 资产库，落为原生 image 引用
   return {
-    _type: 'externalImage',
+    _type: 'image',
     _key: generateKey(),
-    url: url.trim(),
-    alt: alt || '',
-    label: alt || '',
+    asset: {
+      _type: 'reference',
+      // 占位：前端渲染时会用 url 显示，保存后由服务器/任务将其替换为真实 _ref
+      _ref: `external:pending:${url.trim()}`,
+    },
+    // 保存原始信息，后续任务可据此下载并创建真实 asset
+    _external: {
+      url: url.trim(),
+      alt: alt || '',
+      label: alt || '',
+    },
   }
 }
 
