@@ -382,7 +382,14 @@ export function parseMarkdownToBlocks(markdown: string): any[] {
       const level = line.match(/^#+/)?.[0].length || 1
       const title = line.replace(/^#+\s*/, '')
       const style = level === 1 ? 'h1' : level === 2 ? 'h2' : level === 3 ? 'h3' : 'h4'
-      blocks.push(createTextBlock(title, style))
+      const { children, markDefs } = processInlineMarks(title)
+      blocks.push({
+        _type: 'block',
+        _key: generateKey(),
+        style,
+        children,
+        markDefs,
+      })
       continue
     }
 
