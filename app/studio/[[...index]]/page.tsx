@@ -1,6 +1,6 @@
-import Script from 'next/script'
 import { auth } from '@clerk/nextjs'
 import { redirect } from 'next/navigation'
+import Script from 'next/script'
 import { Suspense } from 'react'
 
 import Studio from './Studio'
@@ -27,13 +27,17 @@ function StudioPageFallback() {
   )
 }
 
+type StudioClaims = Partial<{
+  email: string
+  email_address: string
+  primary_email: string
+  primaryEmail: string
+}>
+
 export default function StudioPage() {
   const { userId, sessionClaims } = auth()
-  const email =
-    (sessionClaims as any)?.email ||
-    (sessionClaims as any)?.email_address ||
-    (sessionClaims as any)?.primary_email ||
-    (sessionClaims as any)?.primaryEmail
+  const claims = (sessionClaims ?? {}) as StudioClaims
+  const email = claims.email || claims.email_address || claims.primary_email || claims.primaryEmail
 
   const allowed = ['dvorakzhou@gmail.com']
   if (!userId || !email || !allowed.includes(String(email).toLowerCase())) {
