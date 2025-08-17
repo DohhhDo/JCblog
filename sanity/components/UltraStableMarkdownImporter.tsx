@@ -1,17 +1,18 @@
 /**
  * 超稳定的 Markdown 导入器包装器
  * 解决 ChunkLoadError 和其他运行时错误
+ *
+ * 此文件已被 UnifiedMarkdownImporter.tsx 替代
+ * 请使用 UnifiedMarkdownImporter 组件
+ *
+ * 原文件内容已被移除以避免导入冲突
+ * 
+ * 旧文件中存在的问题：
+ * 1. 导入了已不存在的 StableMarkdownImporter 组件
+ * 2. 与其他 Markdown 组件存在重复导入
+ * 3. 功能已被统一到新的 UnifiedMarkdownImporter 组件中
  */
 
-import React, { Component, ErrorInfo, ReactNode, Suspense } from 'react'
-import { Box, Button, Card, Stack, Text } from '@sanity/ui'
-
-// 动态导入主要组件以避免 chunk 错误
-const LazyStableMarkdownImporter = React.lazy(() => 
-  import('./StableMarkdownImporter').then(module => ({
-    default: module.StableMarkdownImporter
-  }))
-)
 
 interface ErrorBoundaryState {
   hasError: boolean
