@@ -5,8 +5,7 @@ import { Container } from '~/components/ui/Container'
 
 import { BlogPosts } from './BlogPosts'
 
-const description =
-  '写博客文章是我比较喜欢的沉淀分享方式，我希望能够把好用的技术知识传递给更多的人。我比较喜欢围绕着技术为主的话题，但是也会写一些非技术的话题，比如设计、创业、企业管理、生活随笔等等。'
+const description = '这里是主要的内容展示，包括技术分享，浅浅的历史解析，北史知识库。'
 export const metadata = {
   title: '我的博客',
   description,
