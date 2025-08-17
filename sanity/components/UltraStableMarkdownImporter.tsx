@@ -26,13 +26,6 @@ interface UltraStableProps {
 }
 
 class MarkdownImporterErrorBoundary extends Component<UltraStableProps, ErrorBoundaryState> {
-  constructor(props: UltraStableProps) {
-    super(props)
-    this.state = { 
-      hasError: false, 
-      retryCount: 0 
-    }
-  }
   private retryTimer?: NodeJS.Timeout
 
   constructor(props: UltraStableProps) {
