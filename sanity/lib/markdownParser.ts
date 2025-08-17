@@ -272,15 +272,75 @@ function processNestedMarks(text: string): any[] {
 export function parseMarkdownToBlocks(markdown: string): any[] {
   const lines = markdown.split('\n')
   const blocks: any[] = []
-  
+
+  // 段落缓冲，合并连续行作为一个段落
+  let paragraphBuffer: string[] = []
+
   let inCodeBlock = false
   let codeLines: string[] = []
   let codeLanguage = ''
-  
-  for (const line of lines) {
+
+  // 列表状态（用于将连续列表项分组时保持一致风格）
+  let inList = false
+
+  // 辅助：刷新段落缓冲
+  const flushParagraph = () => {
+    if (paragraphBuffer.length === 0) return
+    const text = paragraphBuffer.join(' ').trim()
+    if (text) {
+      const { children, markDefs } = processInlineMarks(text)
+      blocks.push({
+        _type: 'block',
+        _key: generateKey(),
+        style: 'normal',
+        children,
+        markDefs,
+      })
+    }
+    paragraphBuffer = []
+  }
+
+  // 辅助：处理行内图片（可多张），并将前后文本按段落/行生成 block
+  const emitLineWithInlineImages = (rawLine: string) => {
+    const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g
+    let lastIndex = 0
+    let m: RegExpExecArray | null
+    let emittedAnything = false
+
+    while ((m = imageRegex.exec(rawLine)) !== null) {
+      const [fullMatch, alt, src] = m
+      const before = rawLine.slice(lastIndex, m.index)
+      if (before.trim()) {
+        paragraphBuffer.push(before.trim())
+        flushParagraph()
+        emittedAnything = true
+      }
+
+      if (src && src.startsWith('http')) {
+        blocks.push(createImageBlock(src, alt))
+        emittedAnything = true
+      } else {
+        // 无效图片，按原文本落入段落
+        paragraphBuffer.push(fullMatch)
+      }
+      lastIndex = m.index + fullMatch.length
+    }
+
+    const after = rawLine.slice(lastIndex)
+    if (after.trim()) {
+      paragraphBuffer.push(after.trim())
+      flushParagraph()
+      emittedAnything = true
+    }
+
+    return emittedAnything
+  }
+
+  for (const lineRaw of lines) {
+    const line = lineRaw.replace(/\t/g, '    ')
     // 跳过 TOC 目录语法
     if (line.startsWith('@[TOC]')) {
-      // 创建一个提示块
+      flushParagraph()
       blocks.push(createTextBlock('📋 目录 (TOC)', 'h4'))
       continue
     }
@@ -308,18 +368,45 @@ export function parseMarkdownToBlocks(markdown: string): any[] {
       continue
     }
     
-    // 处理标题
+    // 空行：刷新段落/列表
+    if (line.trim().length === 0) {
+      flushParagraph()
+      inList = false
+      continue
+    }
+
+    // 处理标题（映射 h5/h6 为 h4）
     if (line.startsWith('#')) {
+      flushParagraph()
+      inList = false
       const level = line.match(/^#+/)?.[0].length || 1
       const title = line.replace(/^#+\s*/, '')
       const style = level === 1 ? 'h1' : level === 2 ? 'h2' : level === 3 ? 'h3' : 'h4'
       blocks.push(createTextBlock(title, style))
       continue
     }
+
+    // 处理引用块
+    if (/^>\s?/.test(line)) {
+      flushParagraph()
+      inList = false
+      const text = line.replace(/^>\s?/, '')
+      const { children, markDefs } = processInlineMarks(text)
+      blocks.push({
+        _type: 'block',
+        _key: generateKey(),
+        style: 'blockquote',
+        children,
+        markDefs,
+      })
+      continue
+    }
     
     // 处理图片（独立行）
     const imageMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/)
     if (imageMatch) {
+      flushParagraph()
+      inList = false
       const [, alt, src] = imageMatch
       if (src && src.startsWith('http')) {
         blocks.push(createImageBlock(src, alt))
@@ -330,38 +417,42 @@ export function parseMarkdownToBlocks(markdown: string): any[] {
     // 处理列表
     const listMatch = line.match(/^(\s*)([-*+]|\d+\.)\s+(.+)/)
     if (listMatch) {
-      const [, , marker, text] = listMatch
+      flushParagraph()
+      inList = true
+      const [, indent, marker, text] = listMatch
       const isOrdered = /\d+\./.test(marker)
+      const level = Math.max(1, Math.floor((indent || '').length / 2) + 1)
       const { children, markDefs } = processInlineMarks(text)
-      
+
       blocks.push({
         _type: 'block',
         _key: generateKey(),
         style: 'normal',
         listItem: isOrdered ? 'number' : 'bullet',
+        level,
         children,
         markDefs,
       })
       continue
     }
     
-    // 处理普通文本
-    if (line.trim()) {
-      const { children, markDefs } = processInlineMarks(line)
-      blocks.push({
-        _type: 'block',
-        _key: generateKey(),
-        style: 'normal',
-        children,
-        markDefs,
-      })
+    // 行内图片：非整行图片，拆分处理
+    if (/!\[[^\]]*\]\([^\)]+\)/.test(line)) {
+      emitLineWithInlineImages(line)
+      inList = false
+      continue
     }
+
+    // 其他普通文本先加入段落缓冲，延后统一 flush（便于合并多行）
+    paragraphBuffer.push(line.trim())
   }
   
   // 处理未结束的代码块
   if (inCodeBlock && codeLines.length > 0) {
     blocks.push(createCodeBlock(codeLines.join('\n'), codeLanguage))
   }
+  // 刷新尾部段落
+  flushParagraph()
   
   return blocks
 }

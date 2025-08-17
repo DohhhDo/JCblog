@@ -3,7 +3,6 @@ import { z } from 'zod'
 
 import { PencilSwooshIcon } from '~/assets'
 import { UnifiedMarkdownImporter } from '~/sanity/components/UnifiedMarkdownImporter'
-import { readingTimeType } from '~/sanity/schemas/types/readingTime'
 
 export const Post = z.object({
   _id: z.string(),
@@ -93,7 +92,7 @@ export default defineType({
       type: 'blockContent',
       description: '文章内容，支持富文本编辑。可使用上方的Markdown导入区快速导入Markdown内容',
       components: {
-        input: UltraStableMarkdownImporter,
+        input: UnifiedMarkdownImporter,
       },
       validation: (Rule) => Rule.required(),
     }),
