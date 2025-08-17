@@ -1,10 +1,47 @@
-import { Box, Button, Card, Flex, Stack, Text, TextArea } from '@sanity/ui'
-import React, { useState, useCallback } from 'react'
-import { set, unset } from 'sanity'
+// UnifiedMarkdownImporter.tsx
+import { Box, Card, Text } from '@sanity/ui'
+import React from 'react'
 
-// Markdown到blockContent的转换函数
-function markdownToBlocks(markdown: string): any[] {
-  const lines = markdown.split('\n')
+interface UnifiedMarkdownImporterProps {
+  value?: any
+  onChange: (patch: any) => void
+  renderDefault: (props: any) => React.ReactElement
+}
+
+export function UnifiedMarkdownImporter(props: UnifiedMarkdownImporterProps) {
+  return (
+    <Card padding={3} radius={2} shadow={1} tone="positive">
+      <Box>
+        <Text size={2} weight="bold">
+          ✅ 已使用新版统一Markdown导入器
+        </Text>
+        <Text size={1} muted>
+          旧版导入器已被替换为统一版本，请在此处实现新功能。
+        </Text>
+      </Box>
+    </Card>
+  )
+}
+// 此文件已被 UnifiedMarkdownImporter.tsx 替代
+// 请使用 UnifiedMarkdownImporter 组件
+
+import { Box, Card, Text } from '@sanity/ui'
+import React from 'react'
+
+export function MarkdownImporter() {
+  return (
+    <Card padding={3} radius={2} shadow={1} tone="caution">
+      <Box>
+        <Text size={2} weight="semibold" style={{ color: '#d97706' }}>
+          ⚠️ 旧版Markdown导入器已弃用
+        </Text>
+        <Text size={1} muted>
+          该组件已被新版统一Markdown导入器替代，请使用 <code>UnifiedMarkdownImporter</code> 组件。
+        </Text>
+      </Box>
+    </Card>
+  )
+}
   const blocks: any[] = []
   let currentBlock: any = null
 

@@ -1,16 +1,12 @@
 /**
- * 稳定的 Markdown 导入器
- * 严格按照 Sanity blockContent 标准，确保与原生富文本编辑器完全兼容
+ * 统一的 Markdown 解析器
+ * 将 Markdown 文本转换为 Sanity blockContent 结构
  */
-
-import { Box, Button, Card, Flex, Stack, Text, TextArea } from '@sanity/ui'
-import React, { useState, useCallback } from 'react'
-import { set, unset } from 'sanity'
 
 // 支持的代码语言列表（与 Sanity 代码块组件兼容）
 const SUPPORTED_LANGUAGES = [
   'javascript', 'typescript', 'jsx', 'tsx', 'json',
-  'python', 'java', 'c', 'cpp', 'csharp',
+  'python', 'java', 'c', 'cpp', 'csharp', 'c#',
   'php', 'ruby', 'go', 'rust', 'swift', 'kotlin',
   'html', 'css', 'scss', 'sass',
   'xml', 'yaml', 'sql', 'bash', 'shell',
@@ -32,6 +28,13 @@ const LANGUAGE_ALIASES: { [key: string]: string } = {
 }
 
 /**
+ * 生成唯一 key
+ */
+function generateKey(): string {
+  return Math.random().toString(36).substr(2, 9)
+}
+
+/**
  * 规范化代码语言
  */
 function normalizeLanguage(lang?: string): string {
@@ -41,13 +44,6 @@ function normalizeLanguage(lang?: string): string {
   const aliased = LANGUAGE_ALIASES[normalized] || normalized
   
   return SUPPORTED_LANGUAGES.includes(aliased) ? aliased : 'text'
-}
-
-/**
- * 生成唯一 key
- */
-function generateKey(): string {
-  return Math.random().toString(36).substr(2, 9)
 }
 
 /**
@@ -271,9 +267,9 @@ function processNestedMarks(text: string): any[] {
 }
 
 /**
- * 主要的 Markdown 转换函数
+ * 主要的 Markdown 轣换函数
  */
-function convertMarkdownToBlocks(markdown: string): any[] {
+export function parseMarkdownToBlocks(markdown: string): any[] {
   const lines = markdown.split('\n')
   const blocks: any[] = []
   
@@ -368,120 +364,4 @@ function convertMarkdownToBlocks(markdown: string): any[] {
   }
   
   return blocks
-}
-
-interface StableMarkdownImporterProps {
-  value?: any
-  onChange: (patch: any) => void
-  renderDefault: (props: any) => React.ReactElement
-}
-
-export function StableMarkdownImporter(props: StableMarkdownImporterProps) {
-  const [markdownText, setMarkdownText] = useState('')
-  const [isImporting, setIsImporting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const handleImport = useCallback(async () => {
-    if (!markdownText.trim()) return
-
-    setIsImporting(true)
-    setError(null)
-    
-    try {
-      const blocks = convertMarkdownToBlocks(markdownText)
-      const currentValue = props.value || []
-      const newValue = Array.isArray(currentValue) ? [...currentValue, ...blocks] : blocks
-      
-      props.onChange(set(newValue))
-      setMarkdownText('')
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '导入失败'
-      setError(errorMessage)
-      console.error('Markdown 导入错误:', err)
-    } finally {
-      setIsImporting(false)
-    }
-  }, [markdownText, props])
-
-  const handleClear = useCallback(() => {
-    setMarkdownText('')
-    setError(null)
-  }, [])
-
-  const handleClearAll = useCallback(() => {
-    props.onChange(unset())
-  }, [props])
-
-  return (
-    <Stack space={3}>
-      {/* Markdown 导入区域 */}
-      <Card padding={3} radius={2} shadow={1} tone="primary">
-        <Stack space={3}>
-          <Text size={1} weight="semibold">
-            📝 Markdown 导入器 (稳定版)
-          </Text>
-          <Text size={1} muted>
-            支持：标题、代码块、图片、链接、列表、**粗体**、*斜体*、~~删除线~~、`行内代码`、@[TOC]目录
-          </Text>
-          
-          {error && (
-            <Card padding={2} radius={1} tone="critical">
-              <Text size={1}>{error}</Text>
-            </Card>
-          )}
-          
-          <TextArea
-            value={markdownText}
-            onChange={(event) => setMarkdownText(event.currentTarget.value)}
-            placeholder="在这里粘贴 Markdown 内容...
-
-示例：
-@[TOC](目录)
-# 标题
-**粗体文本** 和 *斜体文本* 和 ~~删除线~~
-`行内代码` 和 终端命令
-- 列表项
-[链接文本](https://example.com)
-![图片描述](https://example.com/image.jpg)
-
-``javascript
-console.log('代码块');
-```"
-            rows={8}
-            style={{
-              fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-              fontSize: '14px',
-            }}
-          />
-          
-          <Flex gap={2}>
-            <Button
-              mode="default"
-              tone="primary"
-              onClick={handleImport}
-              disabled={!markdownText.trim() || isImporting}
-              text={isImporting ? '导入中...' : '导入'}
-            />
-            <Button
-              mode="ghost"
-              onClick={handleClear}
-              disabled={!markdownText.trim()}
-              text="清空输入"
-            />
-            <Button
-              mode="ghost"
-              tone="critical"
-              onClick={handleClearAll}
-              text="清空编辑器"
-            />
-          </Flex>
-        </Stack>
-      </Card>
-
-      {/* 原生富文本编辑器 */}
-      <Box>
-        {props.renderDefault(props)}
-      </Box>
-    </Stack>
-  )
 }

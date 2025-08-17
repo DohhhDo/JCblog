@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 import { z } from 'zod'
 
 import { PencilSwooshIcon } from '~/assets'
-import { UltraStableMarkdownImporter } from '~/sanity/components/UltraStableMarkdownImporter'
+import { UnifiedMarkdownImporter } from '~/sanity/components/UnifiedMarkdownImporter'
 import { readingTimeType } from '~/sanity/schemas/types/readingTime'
 
 export const Post = z.object({
@@ -100,25 +100,23 @@ export default defineType({
 
     defineField({
       name: 'readingTime',
-      title: '阅读时长（分钟）',
-      type: readingTimeType.name,
-      validation: (Rule) => Rule.required(),
-      options: {
-        source: 'body',
-      },
+      title: '阅读时长',
+      type: 'readingTime',
+      readOnly: true,
     }),
     defineField({
       name: 'mood',
-      title: '文章情绪',
+      title: '心情状态',
       type: 'string',
       options: {
         list: [
-          { title: 'Neutral', value: 'neutral' },
-          { title: 'Happy', value: 'happy' },
-          { title: 'Sad', value: 'sad' },
+          { title: '开心', value: 'happy' },
+          { title: '悲伤', value: 'sad' },
+          { title: '中性', value: 'neutral' },
         ],
         layout: 'radio',
       },
+      initialValue: 'neutral',
     }),
   ],
 
@@ -131,7 +129,7 @@ export default defineType({
   preview: {
     select: {
       title: 'title',
-      author: 'slug',
+      subtitle: 'description',
       media: 'mainImage',
     },
   },
