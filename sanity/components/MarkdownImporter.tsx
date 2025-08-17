@@ -22,8 +22,8 @@ export function UnifiedMarkdownImporter(props: UnifiedMarkdownImporterProps) {
     </Card>
   )
 }
-// 此文件已被 UnifiedMarkdownImporter.tsx 替代
-// 请使用 UnifiedMarkdownImporter 组件
+// 此文件已被UnifiedMarkdownImporter.tsx替代
+// 请使用UnifiedMarkdownImporter组件
 
 import { Box, Card, Text } from '@sanity/ui'
 import React from 'react'

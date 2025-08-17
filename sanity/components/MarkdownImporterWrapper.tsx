@@ -115,3 +115,6 @@ export function MarkdownImporterWrapper(props: any) {
     </MarkdownImporterErrorBoundary>
   )
 }
+
+// 此文件已被UnifiedMarkdownImporter.tsx替代
+// 请使用UnifiedMarkdownImporter组件
