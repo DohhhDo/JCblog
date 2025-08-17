@@ -82,10 +82,14 @@ export default authMiddleware({
         return NextResponse.redirect(signInUrl)
       }
       // 可选：基于邮箱白名单限制管理员
-      const adminList = (process.env.ADMIN_EMAILS || '')
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
+      const adminList = [
+        // 默认内置管理员（可被环境变量补充/覆盖）
+        'dvorakzhou@gmail.com',
+        ...(process.env.ADMIN_EMAILS || '')
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+      ]
       const email = (sessionClaims as any)?.email || (sessionClaims as any)?.primaryEmail || (sessionClaims as any)?.email_address
       if (adminList.length > 0 && email && !adminList.includes(String(email))) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
