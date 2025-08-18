@@ -10,8 +10,8 @@ export function GET(
   _: Request,
   context: { params?: { indexnowKey?: string } }
 ) {
-  const key = env.INDEXNOW_KEY
-  const requested = context?.params?.indexnowKey
+  const key = (env.INDEXNOW_KEY || '').trim()
+  const requested = (context?.params?.indexnowKey || '').trim()
   if (!key || !requested || requested !== key) {
     return new NextResponse('Not Found', { status: 404 })
   }
