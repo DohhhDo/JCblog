@@ -27,20 +27,15 @@ function StudioPageFallback() {
   )
 }
 
-type StudioClaims = Partial<{
-  email: string
-  email_address: string
-  primary_email: string
-  primaryEmail: string
-}>
-
 export default async function StudioPage() {
   const { userId } = auth()
   if (!userId) redirect('/sign-in')
   const user = await currentUser()
-  const email = user?.primaryEmailAddress?.emailAddress?.toLowerCase()
+  const rawEmail = user?.primaryEmailAddress?.emailAddress
+  const email = typeof rawEmail === 'string' ? rawEmail.toLowerCase() : undefined
   const allowed = ['dvorakzhou@gmail.com']
-  if (!email || !allowed.includes(email)) {
+  const isAllowed = email !== undefined && allowed.includes(email)
+  if (!isAllowed) {
     redirect('/')
   }
   return (
