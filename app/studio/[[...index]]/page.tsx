@@ -31,7 +31,9 @@ export default async function StudioPage() {
   const { userId } = auth()
   if (!userId) redirect('/sign-in')
   const user = await currentUser()
-  const rawEmail = user?.primaryEmailAddress?.emailAddress
+  const primaryEmailId = user?.primaryEmailAddressId
+  const primaryEmailObj = user?.emailAddresses?.find(addr => addr.id === primaryEmailId) ?? user?.emailAddresses?.[0]
+  const rawEmail = primaryEmailObj?.emailAddress
   const email = typeof rawEmail === 'string' ? rawEmail.toLowerCase() : undefined
   const allowed = ['dvorakzhou@gmail.com']
   const isAllowed = email !== undefined && allowed.includes(email)
