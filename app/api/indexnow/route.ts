@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+
 import { env } from '~/env.mjs'
 import { submitIndexNow } from '~/lib/indexnow'
 
@@ -29,8 +30,9 @@ export async function POST(req: Request) {
     if (urls.length === 0) return NextResponse.json({ ok: true, submitted: 0 })
     const result = await submitIndexNow(urls)
     return NextResponse.json(result)
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: e?.message ?? 'unknown' }, { status: 500 })
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'unknown'
+    return NextResponse.json({ ok: false, error: message }, { status: 500 })
   }
 }
 
