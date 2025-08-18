@@ -13,6 +13,7 @@ const server = z.object({
   LINK_PREVIEW_API_BASE_URL: z.string().optional(),
   SITE_NOTIFICATION_EMAIL_TO: z.string().optional(),
   ADMIN_EMAILS: z.string().optional(), // 逗号分隔的管理员邮箱列表
+  INDEXNOW_KEY: z.string().min(1),
 })
 
 const client = z.object({
@@ -46,6 +47,7 @@ const processEnv = {
   LINK_PREVIEW_API_BASE_URL: process.env.LINK_PREVIEW_API_BASE_URL,
   SITE_NOTIFICATION_EMAIL_TO: process.env.SITE_NOTIFICATION_EMAIL_TO,
   ADMIN_EMAILS: process.env.ADMIN_EMAILS,
+  INDEXNOW_KEY: process.env.INDEXNOW_KEY,
 }
 
 // Don't touch the part below
