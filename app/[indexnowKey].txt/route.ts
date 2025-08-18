@@ -2,11 +2,17 @@ import { NextResponse } from 'next/server'
 
 import { env } from '~/env.mjs'
 
-export const dynamic = 'force-static'
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const runtime = 'nodejs'
 
-export function GET(_: Request, { params }: { params: { indexnowKey: string } }) {
+export function GET(
+  _: Request,
+  context: { params?: { indexnowKey?: string } }
+) {
   const key = env.INDEXNOW_KEY
-  if (!key || params.indexnowKey !== key) {
+  const requested = context?.params?.indexnowKey
+  if (!key || !requested || requested !== key) {
     return new NextResponse('Not Found', { status: 404 })
   }
   return new NextResponse(key, {
