@@ -20,12 +20,59 @@ export const generateMetadata = async ({
 
   const { title, description, mainImage } = post
 
+  // 更自然的 meta description 生成：
+  // 1) 优先使用作者填写的 description；
+  // 2) 若过短，则拼接正文首段；
+  // 3) 若过长，则按中/英标点就近收口，不做生硬截断；
+  // 4) 最终保证在 25-160 字之间。
+  function extractFirstParagraphFromBody(body: any): string {
+    if (!Array.isArray(body)) return ''
+    for (const block of body) {
+      if (block && block._type === 'block') {
+        // 仅挑选普通段落
+        if (block.style === 'normal' && Array.isArray(block.children)) {
+          const text = block.children
+            .map((c: any) => (typeof c?.text === 'string' ? c.text : ''))
+            .join('')
+            .replace(/\s+/g, ' ')
+            .trim()
+          if (text) return text
+        }
+      }
+    }
+    return ''
+  }
+
+  function smartCloseToSentence(input: string, max = 160): string {
+    if (input.length <= max) return input
+    const truncated = input.slice(0, max)
+    const punctuations = ['。', '！', '？', '……', '；', '.', '!', '?', ';']
+    let best = -1
+    for (const p of punctuations) {
+      const i = truncated.lastIndexOf(p)
+      if (i > best) best = i
+    }
+    if (best >= 25) return truncated.slice(0, best + 1)
+    // 若没有句末标点，退到最近空白（针对英文）
+    const ws = truncated.lastIndexOf(' ')
+    if (ws >= 25) return truncated.slice(0, ws)
+    return truncated
+  }
+
+  const bodyFirstPara = extractFirstParagraphFromBody(post.body)
+  let candidate = (description ?? '').trim()
+  if (candidate.length < 25) {
+    const merged = [candidate, bodyFirstPara].filter(Boolean).join(' ')
+    candidate = merged || title
+  }
+  const metaDescription = smartCloseToSentence(candidate, 160)
+
   return {
     title,
-    description,
+    description: metaDescription,
     openGraph: {
       title,
-      description,
+      description: metaDescription,
       images: [
         {
           url: mainImage.asset.url,
@@ -40,7 +87,7 @@ export const generateMetadata = async ({
         },
       ],
       title,
-      description,
+      description: metaDescription,
       card: 'summary_large_image',
       site: '@DvorakZhou',
       creator: '@DvorakZhou',

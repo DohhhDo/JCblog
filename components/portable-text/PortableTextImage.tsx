@@ -65,7 +65,7 @@ export function PortableTextImage({
                       'relative z-20 cursor-zoom-in dark:brightness-75 dark:transition-[filter] dark:hover:brightness-100',
                       hasLabel ? 'rounded-xl' : 'rounded-xl md:rounded-3xl'
                     )}
-                    alt={value.alt || ''}
+                    alt={value.alt || value.label || '文章插图'}
                     fetchPriority="high"
                     unoptimized
                   />
@@ -114,7 +114,7 @@ export function PortableTextImage({
                           placeholder={value.lqip ? 'blur' : 'empty'}
                           blurDataURL={value.lqip}
                           className="mx-auto h-full overflow-hidden object-contain"
-                          alt={value.alt || ''}
+                          alt={value.alt || value.label || '文章插图'}
                           unoptimized
                         />
                       </motion.div>

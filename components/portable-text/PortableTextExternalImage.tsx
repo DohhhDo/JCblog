@@ -128,7 +128,7 @@ export function PortableTextExternalImage({
                   <div className="relative overflow-hidden rounded-xl md:rounded-3xl">
                     <Image
                       src={value.url}
-                      alt={value.alt || '外链图片'}
+                      alt={value.alt || value.label || '外链图片'}
                       width={800}
                       height={600}
                       className={clsxm(
@@ -171,7 +171,7 @@ export function PortableTextExternalImage({
                   <div className="relative overflow-hidden rounded-xl">
                     <Image
                       src={value.url}
-                      alt={value.alt || '外链图片'}
+                      alt={value.alt || value.label || '外链图片'}
                       width={imageDimensions.width}
                       height={imageDimensions.height}
                       className="object-contain"

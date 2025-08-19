@@ -36,7 +36,8 @@ export function PortableTextBlocksH1({
   children,
 }: PortableTextComponentProps<any>) {
   return (
-    <h1
+    // 将正文中的 H1 降级为 H2，避免页面出现多个 H1
+    <h2
       data-blockid={value._key}
       className="group relative pr-3 after:pointer-events-none after:inline after:select-none after:opacity-0 after:transition-opacity after:will-change-[opacity] after:content-['_#'] hover:after:opacity-10 md:pr-0"
     >
@@ -44,7 +45,7 @@ export function PortableTextBlocksH1({
         <Commentable blockId={value._key} />
       </ClientOnly>
       {children}
-    </h1>
+    </h2>
   )
 }
 
