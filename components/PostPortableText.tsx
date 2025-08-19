@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { PortableText, type PortableTextComponents } from '@portabletext/react'
 import React from 'react'
+import { PortableText, type PortableTextComponents } from '@portabletext/react'
 
 import { PeekabooLink } from '~/components/links/PeekabooLink'
 import {
@@ -18,6 +18,7 @@ import { PortableTextExternalImage } from '~/components/portable-text/PortableTe
 import { PortableTextImage } from '~/components/portable-text/PortableTextImage'
 import { AltTextProvider } from '~/components/AltTextContext'
 import { PortableTextTweet } from '~/components/portable-text/PortableTextTweet'
+import { AltTextProvider } from '~/components/AltTextContext'
 
 const components: PortableTextComponents = {
   block: {
@@ -50,9 +51,15 @@ const components: PortableTextComponents = {
   },
 }
 
+type PortableBlockChild = { text?: string }
+type PortableBlock = {
+  _type?: string
+  style?: string
+  children?: PortableBlockChild[]
+}
+
 export function PostPortableText(props: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any
+  value: unknown
   components?: PortableTextComponents
 }) {
   // 添加错误边界处理
@@ -64,15 +71,16 @@ export function PostPortableText(props: {
     }
 
     // 过滤和清理数据，移除无效的块
-    const cleanedValue = props.value.filter((block: { _type?: string; url?: unknown }) => {
-      if (!block || typeof block !== 'object' || !block._type) {
+    const cleanedValue = (props.value as unknown[]).filter((block: unknown) => {
+      if (!block || typeof block !== 'object' || !('_type' in (block as any))) {
         console.warn('PostPortableText: 移除无效块', block)
         return false
       }
       
       // 特别检查externalImage类型
-      if (block._type === 'externalImage') {
-        if (!block.url || typeof block.url !== 'string') {
+      const b = block as Record<string, unknown>
+      if (b._type === 'externalImage') {
+        if (!('url' in b) || typeof b.url !== 'string') {
           console.warn('PostPortableText: 移除无效的externalImage块', block)
           return false
         }
@@ -82,11 +90,11 @@ export function PostPortableText(props: {
     })
 
     // 依据正文内容计算关键词（简单词频法），供图片 alt 回退使用
-    const textContent: string = cleanedValue
-      .filter((b: any) => b?._type === 'block' && b.style === 'normal' && Array.isArray(b.children))
-      .map((b: any) =>
+    const textContent: string = (cleanedValue as PortableBlock[])
+      .filter((b) => b?._type === 'block' && b.style === 'normal' && Array.isArray(b.children))
+      .map((b) =>
         (b.children || [])
-          .map((c: any) => (typeof c?.text === 'string' ? c.text : ''))
+          .map((c) => (typeof c?.text === 'string' ? c.text : ''))
           .join(' ')
       )
       .join(' ')
@@ -97,11 +105,11 @@ export function PostPortableText(props: {
       'the','a','an','and','or','to','of','in','on','for','with','by','is','are','was','were','be','been','this','that','it','we','you','they','as','at','from','into','your','our'
     ])
 
-    const tokens = textContent
+    const tokens: string[] = textContent
       .replace(/[^\p{L}\p{N}\s]+/gu, ' ')
       .split(/\s+/)
       .filter(Boolean)
-      .filter((w: string) => w.length >= 2 && !stopwords.has(w))
+      .filter((w) => w.length >= 2 && !stopwords.has(w))
 
     const freq = new Map<string, number>()
     for (const w of tokens) freq.set(w, (freq.get(w) ?? 0) + 1)

@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
+import React from 'react'
 import { type PortableTextComponentProps } from '@portabletext/react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { clsxm } from '@zolplay/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
-import React from 'react'
+import { clsxm } from '@zolplay/utils'
 
 import { ClientOnly } from '~/components/ClientOnly'
 import { Commentable } from '~/components/Commentable'
@@ -29,6 +29,14 @@ export function PortableTextImage({
     () => typeof value.label === 'string' && value.label.length > 0,
     [value.label]
   )
+  const { keywords } = useAltTextContext()
+  const computedAlt = React.useMemo(() => {
+    if (value.alt && value.alt.trim().length > 0) return value.alt
+    if (value.label && value.label.trim().length > 0) return value.label
+    return keywords.length > 0
+      ? `文章插图：${keywords.slice(0, 4).join('、')}`
+      : '文章插图'
+  }, [keywords, value.alt, value.label])
 
   return (
     <div data-blockid={value._key} className="group relative pr-3 md:pr-0">
@@ -66,10 +74,7 @@ export function PortableTextImage({
                       'relative z-20 cursor-zoom-in dark:brightness-75 dark:transition-[filter] dark:hover:brightness-100',
                       hasLabel ? 'rounded-xl' : 'rounded-xl md:rounded-3xl'
                     )}
-                    alt={(() => {
-                      const { keywords } = useAltTextContext()
-                      return value.alt || value.label || (keywords.length > 0 ? `文章插图：${keywords.slice(0,4).join('、')}` : '文章插图')
-                    })()}
+                    alt={computedAlt}
                     fetchPriority="high"
                     unoptimized
                   />
@@ -118,10 +123,7 @@ export function PortableTextImage({
                           placeholder={value.lqip ? 'blur' : 'empty'}
                           blurDataURL={value.lqip}
                           className="mx-auto h-full overflow-hidden object-contain"
-                          alt={(() => {
-                            const { keywords } = useAltTextContext()
-                            return value.alt || value.label || (keywords.length > 0 ? `文章插图：${keywords.slice(0,4).join('、')}` : '文章插图')
-                          })()}
+                          alt={computedAlt}
                           unoptimized
                         />
                       </motion.div>

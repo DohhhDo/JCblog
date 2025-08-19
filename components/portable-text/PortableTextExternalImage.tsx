@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
+import React from 'react'
 import { type PortableTextComponentProps } from '@portabletext/react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { clsxm } from '@zolplay/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
-import React from 'react'
+import { clsxm } from '@zolplay/utils'
 
 import { ClientOnly } from '~/components/ClientOnly'
 import { Commentable } from '~/components/Commentable'
@@ -31,6 +31,14 @@ export function PortableTextExternalImage({
     () => value?.label && value.label.length > 0,
     [value?.label]
   )
+  const { keywords } = useAltTextContext()
+  const computedAlt = React.useMemo(() => {
+    if (value.alt && value.alt.trim().length > 0) return value.alt
+    if (value.label && value.label.trim().length > 0) return value.label
+    return keywords.length > 0
+      ? `外链图片：${keywords.slice(0, 4).join('、')}`
+      : '外链图片'
+  }, [keywords, value.alt, value.label])
 
   // 数据验证和错误处理 - 在Hooks之后
   if (!value || typeof value !== 'object') {
@@ -129,10 +137,7 @@ export function PortableTextExternalImage({
                   <div className="relative overflow-hidden rounded-xl md:rounded-3xl">
                     <Image
                       src={value.url}
-                      alt={(() => {
-                        const { keywords } = useAltTextContext()
-                        return value.alt || value.label || (keywords.length > 0 ? `外链图片：${keywords.slice(0,4).join('、')}` : '外链图片')
-                      })()}
+                      alt={computedAlt}
                       width={800}
                       height={600}
                       className={clsxm(
@@ -175,10 +180,7 @@ export function PortableTextExternalImage({
                   <div className="relative overflow-hidden rounded-xl">
                     <Image
                       src={value.url}
-                      alt={(() => {
-                        const { keywords } = useAltTextContext()
-                        return value.alt || value.label || (keywords.length > 0 ? `外链图片：${keywords.slice(0,4).join('、')}` : '外链图片')
-                      })()}
+                      alt={computedAlt}
                       width={imageDimensions.width}
                       height={imageDimensions.height}
                       className="object-contain"
