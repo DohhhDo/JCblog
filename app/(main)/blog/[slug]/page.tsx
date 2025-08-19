@@ -25,19 +25,29 @@ export const generateMetadata = async ({
   // 2) 若过短，则拼接正文首段；
   // 3) 若过长，则按中/英标点就近收口，不做生硬截断；
   // 4) 最终保证在 25-160 字之间。
-  function extractFirstParagraphFromBody(body: any): string {
+  type PortableTextChild = { text?: string }
+  type PortableTextBlock = {
+    _type?: string
+    style?: string
+    children?: PortableTextChild[]
+  }
+  function isPortableTextBlock(value: unknown): value is PortableTextBlock {
+    if (typeof value !== 'object' || value === null) return false
+    const v = value as Record<string, unknown>
+    return '_type' in v && 'children' in v
+  }
+  function extractFirstParagraphFromBody(body: unknown): string {
     if (!Array.isArray(body)) return ''
-    for (const block of body) {
-      if (block && block._type === 'block') {
-        // 仅挑选普通段落
-        if (block.style === 'normal' && Array.isArray(block.children)) {
-          const text = block.children
-            .map((c: any) => (typeof c?.text === 'string' ? c.text : ''))
-            .join('')
-            .replace(/\s+/g, ' ')
-            .trim()
-          if (text) return text
-        }
+    for (const raw of body as unknown[]) {
+      if (!isPortableTextBlock(raw)) continue
+      const block = raw as PortableTextBlock
+      if (block._type === 'block' && block.style === 'normal' && Array.isArray(block.children)) {
+        const text = block.children
+          .map((c: PortableTextChild) => (typeof c.text === 'string' ? c.text : ''))
+          .join('')
+          .replace(/\s+/g, ' ')
+          .trim()
+        if (text) return text
       }
     }
     return ''
