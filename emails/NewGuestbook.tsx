@@ -7,9 +7,9 @@ import Layout from './Layout'
 
 const NewGuestbookEmail = ({
   link = 'https://caliso/guestbook',
-  userFirstName = 'Cali',
-  userLastName = 'Castle',
-  userImageUrl = 'https://cali.so/icon.png',
+  userFirstName = 'JC',
+  userLastName = 'Blog',
+  userImageUrl = 'https://jcblog.com.cn/icon.png',
   commentContent = '*测试评论*\n- Wow wtf\n- Cool',
 }: {
   link?: string | null

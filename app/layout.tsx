@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     default: seo.title,
   },
   description: seo.description,
-  keywords: 'Cali,Cali Castle,郭晓楠,佐玩,创始人,CEO,开发者,设计师,细节控,创新',
+  keywords: 'JCblog,博客,技术,文章,项目',
   manifest: '/site.webmanifest',
   icons: {
     icon: '/favicon.ico',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     siteName: 'JCblog',
     locale: 'zh_CN',
     type: 'website',
-    url: 'https://cali.so',
+    url: seo.url.href,
   },
   twitter: {
     site: '@DvorakZhou',

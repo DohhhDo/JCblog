@@ -23,7 +23,7 @@ JC 的个人博客网站 [https://jcblog.com.cn](https://www.jcblog.com.cn) 的�
 
 ### 教程
 
-想部署成自己的网站？可以查看 Cali 的[官方教程](https://cali.so/blog/guide-for-cloning-my-site)
+想部署成自己的网站？请参考本仓库与注释。
 
 ### 本地开发
 
