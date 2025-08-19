@@ -3,7 +3,7 @@ import { clsxm } from '@zolplay/utils'
 import Image from 'next/image'
 import Link, { type LinkProps } from 'next/link'
 
-import portraitAltImage from '../assets/PortraitAlt.jpg'
+const portraitAltImage = '/avatars/avatar_1.png'
 
 const portraitImage = 'https://gitee.com/jcyf1987/picgo/raw/master/a.png'
 
