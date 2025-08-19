@@ -9,6 +9,7 @@ import React from 'react'
 
 import { ClientOnly } from '~/components/ClientOnly'
 import { Commentable } from '~/components/Commentable'
+import { useAltTextContext } from '~/components/AltTextContext'
 
 export function PortableTextExternalImage({
   value,
@@ -128,7 +129,10 @@ export function PortableTextExternalImage({
                   <div className="relative overflow-hidden rounded-xl md:rounded-3xl">
                     <Image
                       src={value.url}
-                      alt={value.alt || value.label || '外链图片'}
+                      alt={(() => {
+                        const { keywords } = useAltTextContext()
+                        return value.alt || value.label || (keywords.length > 0 ? `外链图片：${keywords.slice(0,4).join('、')}` : '外链图片')
+                      })()}
                       width={800}
                       height={600}
                       className={clsxm(
@@ -171,7 +175,10 @@ export function PortableTextExternalImage({
                   <div className="relative overflow-hidden rounded-xl">
                     <Image
                       src={value.url}
-                      alt={value.alt || value.label || '外链图片'}
+                      alt={(() => {
+                        const { keywords } = useAltTextContext()
+                        return value.alt || value.label || (keywords.length > 0 ? `外链图片：${keywords.slice(0,4).join('、')}` : '外链图片')
+                      })()}
                       width={imageDimensions.width}
                       height={imageDimensions.height}
                       className="object-contain"

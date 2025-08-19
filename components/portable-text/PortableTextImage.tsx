@@ -9,6 +9,7 @@ import React from 'react'
 
 import { ClientOnly } from '~/components/ClientOnly'
 import { Commentable } from '~/components/Commentable'
+import { useAltTextContext } from '~/components/AltTextContext'
 
 export function PortableTextImage({
   value,
@@ -65,7 +66,10 @@ export function PortableTextImage({
                       'relative z-20 cursor-zoom-in dark:brightness-75 dark:transition-[filter] dark:hover:brightness-100',
                       hasLabel ? 'rounded-xl' : 'rounded-xl md:rounded-3xl'
                     )}
-                    alt={value.alt || value.label || '文章插图'}
+                    alt={(() => {
+                      const { keywords } = useAltTextContext()
+                      return value.alt || value.label || (keywords.length > 0 ? `文章插图：${keywords.slice(0,4).join('、')}` : '文章插图')
+                    })()}
                     fetchPriority="high"
                     unoptimized
                   />
@@ -114,7 +118,10 @@ export function PortableTextImage({
                           placeholder={value.lqip ? 'blur' : 'empty'}
                           blurDataURL={value.lqip}
                           className="mx-auto h-full overflow-hidden object-contain"
-                          alt={value.alt || value.label || '文章插图'}
+                          alt={(() => {
+                            const { keywords } = useAltTextContext()
+                            return value.alt || value.label || (keywords.length > 0 ? `文章插图：${keywords.slice(0,4).join('、')}` : '文章插图')
+                          })()}
                           unoptimized
                         />
                       </motion.div>

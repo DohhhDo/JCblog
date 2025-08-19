@@ -16,6 +16,7 @@ import {
 import { PortableTextCodeBlock } from '~/components/portable-text/PortableTextCodeBlock'
 import { PortableTextExternalImage } from '~/components/portable-text/PortableTextExternalImage'
 import { PortableTextImage } from '~/components/portable-text/PortableTextImage'
+import { AltTextProvider } from '~/components/AltTextContext'
 import { PortableTextTweet } from '~/components/portable-text/PortableTextTweet'
 
 const components: PortableTextComponents = {
@@ -80,11 +81,42 @@ export function PostPortableText(props: {
       return true
     })
 
+    // 依据正文内容计算关键词（简单词频法），供图片 alt 回退使用
+    const textContent: string = cleanedValue
+      .filter((b: any) => b?._type === 'block' && b.style === 'normal' && Array.isArray(b.children))
+      .map((b: any) =>
+        (b.children || [])
+          .map((c: any) => (typeof c?.text === 'string' ? c.text : ''))
+          .join(' ')
+      )
+      .join(' ')
+      .toLowerCase()
+
+    const stopwords = new Set([
+      '的','了','和','是','在','就','也','都','而','及','与','或','一个','我们','你','我','他','她','它','这','那','被','对','于','上','下','中','与','并','请','通过','以及',
+      'the','a','an','and','or','to','of','in','on','for','with','by','is','are','was','were','be','been','this','that','it','we','you','they','as','at','from','into','your','our'
+    ])
+
+    const tokens = textContent
+      .replace(/[^\p{L}\p{N}\s]+/gu, ' ')
+      .split(/\s+/)
+      .filter(Boolean)
+      .filter((w: string) => w.length >= 2 && !stopwords.has(w))
+
+    const freq = new Map<string, number>()
+    for (const w of tokens) freq.set(w, (freq.get(w) ?? 0) + 1)
+    const keywords = Array.from(freq.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([w]) => w)
+
     return (
-      <PortableText
-        value={cleanedValue}
-        components={props.components ?? components}
-      />
+      <AltTextProvider value={{ keywords }}>
+        <PortableText
+          value={cleanedValue}
+          components={props.components ?? components}
+        />
+      </AltTextProvider>
     )
   } catch (error) {
     console.error('PostPortableText渲染错误:', error)
