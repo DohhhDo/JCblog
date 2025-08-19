@@ -13,8 +13,9 @@ export const config = {
   matcher: [
     '/studio',
     '/studio/(.*)',
-    '/',
-    '/(api|blog|confirm|projects|friends|guestbook|newsletters|about|rss|feed|ama)(.*)'
+    // 仅在必要的受限区域启用鉴权，中间件不再作用于公开页面，避免爬虫被 401 影响索引
+    '/admin',
+    '/admin/(.*)'
   ],
 }
 
