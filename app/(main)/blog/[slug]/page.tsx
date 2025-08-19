@@ -41,6 +41,8 @@ export const generateMetadata = async ({
     for (const raw of body as unknown[]) {
       if (!isPortableTextBlock(raw)) continue
       const block = raw
+
+      
       if (block._type === 'block' && block.style === 'normal' && Array.isArray(block.children)) {
         const text = block.children
           .map((c: PortableTextChild) => (typeof c.text === 'string' ? c.text : ''))
