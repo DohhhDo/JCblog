@@ -16,7 +16,6 @@ import {
 import { PortableTextCodeBlock } from '~/components/portable-text/PortableTextCodeBlock'
 import { PortableTextExternalImage } from '~/components/portable-text/PortableTextExternalImage'
 import { PortableTextImage } from '~/components/portable-text/PortableTextImage'
-import { AltTextProvider } from '~/components/AltTextContext'
 import { PortableTextTweet } from '~/components/portable-text/PortableTextTweet'
 import { AltTextProvider } from '~/components/AltTextContext'
 
