@@ -1,4 +1,4 @@
-## 基于Cali 支持MD的个人博客网站开发的个人博客
+## SEO友好，基于Cali，支持MD的个人博客网站开发的个人博客
 
 JC 的个人博客网站 [https://jcblog.com.cn](https://www.jcblog.com.cn) 的源代码。
 
