@@ -1,5 +1,5 @@
-import { getAltForImage } from '~/lib/alt'
 import { PortableTextExternalImage } from '~/components/portable-text/PortableTextExternalImage'
+import { getAltForImage } from '~/lib/alt'
 
 type ExternalImageValue = {
   _key: string
