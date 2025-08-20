@@ -1,7 +1,20 @@
 import { PortableTextImage } from '~/components/portable-text/PortableTextImage'
 import { getAltForImage } from '~/lib/alt'
 
-export async function PortableTextImageServer(props: any) {
+type ImageValue = {
+  _key: string
+  url: string
+  dimensions: { width: number; height: number }
+  lqip?: string
+  label?: string
+  alt?: string
+}
+
+type PTProps<T> = { value: T } & { [key: string]: unknown }
+
+export async function PortableTextImageServer(
+  props: PTProps<ImageValue>,
+) {
   const { value, ...rest } = props
   // 如果已有 alt，直接用原组件（客户端）
   if (value?.alt && value.alt.length > 0) return <PortableTextImage value={value} {...rest} />
