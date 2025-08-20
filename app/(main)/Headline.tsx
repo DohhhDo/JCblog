@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Balancer from 'react-wrap-balancer'
 
-import { SparkleIcon, UserSecurityIcon } from '~/assets'
+import { SparkleIcon, ScriptIcon } from '~/assets'
 import { SocialLink } from '~/components/links/SocialLink'
 
 function Developer() {
@@ -25,7 +25,7 @@ function Designer() {
           <span className="absolute -bottom-[3.5px] -left-[3.5px] size-1.5 border border-blue-700 bg-zinc-50 dark:border-blue-400" />
           <span className="absolute -right-[3.5px] -top-[3.5px] size-1.5 border border-blue-700 bg-zinc-50 dark:border-blue-400" />
         </span>
-      设计师
+      业余平面设计
     </span>
   )
 }
@@ -42,8 +42,8 @@ function OCD() {
 function Founder() {
   return (
     <span className="group inline-flex items-center">
-      <UserSecurityIcon className="mr-1 inline-flex group-hover:fill-zinc-600/20 dark:group-hover:fill-zinc-200/20" />
-      <span>南宋五代北朝历史爱好者</span>
+      <ScriptIcon className="mr-1 inline-flex group-hover:fill-zinc-600/20 dark:group-hover:fill-zinc-200/20" />
+      <span>南宋 | 五代 | 北朝历史爱好者</span>
     </span>
   )
 }
