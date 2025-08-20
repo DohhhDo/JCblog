@@ -65,7 +65,7 @@ export function Activity() {
             <Image
               width={32}
               height={32}
-              src={`/apps/${app}.png`}
+              src={`/apps_webP/${app}.webp`}
               alt={app}
               priority
               fetchPriority="high"
