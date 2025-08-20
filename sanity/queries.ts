@@ -38,7 +38,7 @@ export const getLatestBlogPostsQuery = ({
     mainImage {
       _ref,
       asset->{
-        url,
+        url: url + '?auto=format',
         ${
           forDisplay
             ? '"lqip": metadata.lqip, "dominant": metadata.palette.dominant,'
@@ -63,7 +63,7 @@ export const getBlogPostQuery = groq`
     body[] {
       ...,
       _type == "image" => {
-        "url": asset->url,
+        "url": asset->url + '?auto=format',
         "lqip": asset->metadata.lqip,
         "dimensions": asset->metadata.dimensions,
         ...
@@ -73,7 +73,7 @@ export const getBlogPostQuery = groq`
     mainImage {
       _ref,
       asset->{
-        url,
+        url: url + '?auto=format',
         "lqip": metadata.lqip
       }
     },
@@ -87,7 +87,7 @@ export const getBlogPostQuery = groq`
       mainImage {
         _ref,
         asset->{
-          url,
+          url: url + '?auto=format',
           "lqip": metadata.lqip,
           "dominant": metadata.palette.dominant
         }
@@ -109,13 +109,13 @@ export const getSettingsQuery = () =>
       description,
       icon
     },
-    "heroPhotos": heroPhotos[].asset->url,
+    "heroPhotos": heroPhotos[].asset->url + '?auto=format',
     "resume": resume[]{
       company,
       title,
       start,
       end,
-      "logo": logo.asset->url
+      "logo": logo.asset->url + '?auto=format'
     }
 }`
 export const getSettings = () =>
