@@ -38,7 +38,7 @@ export const getLatestBlogPostsQuery = ({
     mainImage {
       _ref,
       asset->{
-        url: url + "?auto=format",
+        "url": url + "?auto=format",
         ${
           forDisplay
             ? '"lqip": metadata.lqip, "dominant": metadata.palette.dominant,'
@@ -73,7 +73,7 @@ export const getBlogPostQuery = groq`
     mainImage {
       _ref,
       asset->{
-        url: url + "?auto=format",
+        "url": url + "?auto=format",
         "lqip": metadata.lqip
       }
     },
@@ -87,7 +87,7 @@ export const getBlogPostQuery = groq`
       mainImage {
         _ref,
         asset->{
-          url: url + "?auto=format",
+          "url": url + "?auto=format",
           "lqip": metadata.lqip,
           "dominant": metadata.palette.dominant
         }
