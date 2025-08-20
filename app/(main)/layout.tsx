@@ -32,12 +32,7 @@ export default function BlogLayout({
           <div className="relative z-[50] pointer-events-auto">
             <Header />
           </div>
-          {/* Center Opaque Background: above waterfalls (z-20), below content (z-40) */}
-          <div className="fixed inset-0 z-[30] flex justify-center sm:px-8 pointer-events-none">
-            <div className="flex w-full max-w-7xl lg:px-8 h-full">
-              <div className="w-full h-full bg-zinc-50 ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-400/20" />
-            </div>
-          </div>
+          {/* Center Opaque Background: constrained to main content height */}
           
           {/* Left Sidebar Waterfall Photos */}
           <div className="hidden xl:block fixed left-0 top-0 w-64 h-full pointer-events-auto z-10">
@@ -49,7 +44,14 @@ export default function BlogLayout({
             <SidebarWaterfall position="right" />
           </div>
           
-          <main className="relative z-[40]">{children}</main>
+          <div className="relative z-[40]">
+            <div className="pointer-events-none absolute inset-0 z-[30] flex justify-center sm:px-8">
+              <div className="flex w-full max-w-7xl lg:px-8">
+                <div className="w-full h-full bg-zinc-50 ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-400/20" />
+              </div>
+            </div>
+            <main className="relative z-[40]">{children}</main>
+          </div>
           <Suspense>
             <Footer />
           </Suspense>
