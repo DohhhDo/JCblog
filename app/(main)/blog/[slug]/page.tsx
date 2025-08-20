@@ -6,6 +6,7 @@ import { kvKeys } from '~/config/kv'
 import { env } from '~/env.mjs'
 import { url } from '~/lib'
 import { redis } from '~/lib/redis'
+import { getAltForImage } from '~/lib/alt'
 import { getBlogPost } from '~/sanity/queries'
 
 export const generateMetadata = async ({
@@ -155,9 +156,36 @@ export default async function BlogPage({
     }
   }
 
+  // 在服务端为缺失 alt 的图片补全简要描述（<=16 字）
+  async function enrichBodyWithAlt(body: unknown): Promise<unknown> {
+    if (!Array.isArray(body)) return body
+    const tasks = (body as unknown[]).map(async (block) => {
+      if (block && typeof block === 'object') {
+        const b = block as Record<string, unknown>
+        const type = b['_type']
+        // 适配自定义的 image / externalImage 两种块
+        if ((type === 'image' || type === 'externalImage') && !b['alt']) {
+          const urlStr = typeof b['url'] === 'string' ? (b['url'] as string) : ''
+          if (urlStr) {
+            try {
+              const { alt } = await getAltForImage(urlStr, { maxLength: 16 })
+              return { ...b, alt }
+            } catch {
+              return block
+            }
+          }
+        }
+      }
+      return block
+    })
+    return Promise.all(tasks)
+  }
+
+  const enrichedBody = await enrichBodyWithAlt(post.body)
+
   return (
     <BlogPostPage
-      post={post}
+      post={{ ...post, body: enrichedBody }}
       views={views}
       relatedViews={relatedViews}
       reactions={reactions.length > 0 ? reactions : undefined}

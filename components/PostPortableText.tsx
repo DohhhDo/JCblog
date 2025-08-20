@@ -14,8 +14,8 @@ import {
   PortableTextBlocksNormal,
 } from '~/components/portable-text/PortableTextBlocks'
 import { PortableTextCodeBlock } from '~/components/portable-text/PortableTextCodeBlock'
-import { PortableTextExternalImageServer } from '~/components/portable-text/PortableTextExternalImageServer'
-import { PortableTextImageServer } from '~/components/portable-text/PortableTextImageServer'
+import { PortableTextExternalImage } from '~/components/portable-text/PortableTextExternalImage'
+import { PortableTextImage } from '~/components/portable-text/PortableTextImage'
 import { PortableTextTweet } from '~/components/portable-text/PortableTextTweet'
 
 const components: PortableTextComponents = {
@@ -29,12 +29,8 @@ const components: PortableTextComponents = {
   },
   listItem: PortableTextBlocksListItem,
   types: {
-    image: // 服务端包装器：先生成 alt，再渲染原客户端组件
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (props: any) => <PortableTextImageServer {...props} />,
-    externalImage:
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (props: any) => <PortableTextExternalImageServer {...props} />,
+    image: PortableTextImage,
+    externalImage: PortableTextExternalImage,
     tweet: PortableTextTweet,
     codeBlock: PortableTextCodeBlock,
   },
