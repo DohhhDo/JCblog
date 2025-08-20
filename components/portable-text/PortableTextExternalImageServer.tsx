@@ -1,6 +1,5 @@
-import { type PortableTextComponentProps } from '@portabletext/react'
-import { PortableTextExternalImage } from '~/components/portable-text/PortableTextExternalImage'
 import { getAltForImage } from '~/lib/alt'
+import { PortableTextExternalImage } from '~/components/portable-text/PortableTextExternalImage'
 
 type ExternalImageValue = {
   _key: string
@@ -10,8 +9,10 @@ type ExternalImageValue = {
 }
 
 // 透传除 value 外的所有 props，以满足 @portabletext/react 的额外参数要求
+type PTProps<T> = { value: T } & { [key: string]: unknown }
+
 export async function PortableTextExternalImageServer(
-  props: PortableTextComponentProps<ExternalImageValue>,
+  props: PTProps<ExternalImageValue>,
 ) {
   const { value, ...rest } = props
   if (value?.alt && value.alt.length > 0) {
