@@ -3,7 +3,6 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
 
 import { pictureList } from '~/lib/pictureList'
 
@@ -139,6 +138,8 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
 
   return (
     <div 
+      aria-hidden="true"
+      data-nosnippet
       className={`flex items-center justify-center w-full overflow-hidden relative h-full transition-all duration-1500 ease-in-out ${
         isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
       }`}
@@ -191,21 +192,23 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
                   key={`${colIndex}-${imgIndex}`} 
                   className="relative w-24 h-24"
                 >
-                                     <Image
-                     src={src}
-                     alt={`app-icon-${imgIndex}`}
-                     width={96}
-                     height={96}
-                     className={`rounded-xl w-full h-full object-contain p-2 transition-all duration-700 ease-out hover:scale-110 hover:rotate-3 ${
-                       isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
-                     }`}
-                     style={{
-                       filter: isVisible ? 'grayscale(0.2) brightness(0.95)' : 'grayscale(0.8) brightness(0.3)',
-                       willChange: 'transform',
-                       transitionDelay: `${(imgIndex * 50) + (colIndex * 100)}ms`,
-                     }}
-                     priority={true}
-                   />
+                  <div
+                    aria-hidden="true"
+                    role="presentation"
+                    className={`rounded-xl w-full h-full p-2 transition-all duration-700 ease-out hover:scale-110 hover:rotate-3 ${
+                      isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+                    }`}
+                    style={{
+                      backgroundImage: `url(${src})`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                      backgroundSize: 'contain',
+                      backgroundOrigin: 'content-box',
+                      filter: isVisible ? 'grayscale(0.2) brightness(0.95)' : 'grayscale(0.8) brightness(0.3)',
+                      willChange: 'transform',
+                      transitionDelay: `${(imgIndex * 50) + (colIndex * 100)}ms`,
+                    }}
+                  />
                 </div>
               ))}
             </div>
