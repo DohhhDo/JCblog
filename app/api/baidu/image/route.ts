@@ -1,4 +1,4 @@
-import { advancedGeneralRecognize } from '~/lib/baidu'
+import { getAltForImage } from '~/lib/alt'
 
 export async function POST(req: Request) {
   try {
@@ -14,8 +14,17 @@ export async function POST(req: Request) {
       })
     }
 
-    const result = await advancedGeneralRecognize({ imageUrl, imageBase64 })
-    return new Response(JSON.stringify(result), {
+    if (imageUrl) {
+      const { alt, raw } = await getAltForImage(imageUrl, { maxLength: 16 })
+      return new Response(JSON.stringify({ alt, raw }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    // fallback: base64 path (no URL cache key)
+    const { alt, raw } = await getAltForImage(imageBase64!, { maxLength: 16 })
+    return new Response(JSON.stringify({ alt, raw }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
