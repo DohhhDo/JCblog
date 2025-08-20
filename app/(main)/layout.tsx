@@ -25,27 +25,29 @@ export default function BlogLayout({
       {/* Right Sidebar - Entire Page */}
       <div className="hidden xl:block fixed right-0 top-0 z-10 w-64 h-full bg-zinc-50/90 ring-1 ring-zinc-100 dark:bg-zinc-900/80 dark:ring-zinc-400/20 pointer-events-none animate-[fadeOut_10s_ease-in-out_forwards]" />
 
-      <div className="fixed inset-0 z-40 flex justify-center sm:px-8 pointer-events-none">
-        <div className="flex w-full max-w-7xl lg:px-8">
-          <div className="w-full bg-zinc-50 ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-400/20" />
-        </div>
-      </div>
+      {/* moved center opaque background inside content stacking context below */}
 
       <QueryProvider>
-        <div className="relative z-50 text-zinc-800 dark:text-zinc-200">
+        <div className="relative z-[110] text-zinc-800 dark:text-zinc-200">
           <Header />
+          {/* Center Opaque Background: above waterfalls (z-30), below content (z-50) */}
+          <div className="fixed inset-0 z-[100] flex justify-center sm:px-8">
+            <div className="flex w-full max-w-7xl lg:px-8 h-full">
+              <div className="w-full h-full bg-zinc-50 ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-400/20" />
+            </div>
+          </div>
           
           {/* Left Sidebar Waterfall Photos */}
-          <div className="hidden xl:block fixed left-0 top-0 w-64 h-full pointer-events-auto z-30">
+          <div className="hidden xl:block fixed left-0 top-0 w-64 h-full pointer-events-auto z-20">
             <SidebarWaterfall position="left" />
           </div>
           
           {/* Right Sidebar Waterfall Photos */}
-          <div className="hidden xl:block fixed right-0 top-0 w-64 h-full pointer-events-auto z-30">
+          <div className="hidden xl:block fixed right-0 top-0 w-64 h-full pointer-events-auto z-20">
             <SidebarWaterfall position="right" />
           </div>
           
-          <main className="relative z-40">{children}</main>
+          <main className="relative z-[110]">{children}</main>
           <Suspense>
             <Footer />
           </Suspense>
