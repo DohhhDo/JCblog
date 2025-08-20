@@ -1,11 +1,11 @@
 "use client"
 
-import React from 'react'
-import Image from 'next/image'
-import * as Dialog from '@radix-ui/react-dialog'
-import { AnimatePresence, motion } from 'framer-motion'
 import { type PortableTextComponentProps } from '@portabletext/react'
+import * as Dialog from '@radix-ui/react-dialog'
 import { clsxm } from '@zolplay/utils'
+import { AnimatePresence, motion } from 'framer-motion'
+import Image from 'next/image'
+import React from 'react'
 
 import { useAltTextContext } from '~/components/AltTextContext'
 import { ClientOnly } from '~/components/ClientOnly'
