@@ -1,8 +1,9 @@
 "use client"
 
-import React from 'react'
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
+import React from 'react'
 
+import { AltTextProvider } from '~/components/AltTextContext'
 import { PeekabooLink } from '~/components/links/PeekabooLink'
 import {
   PortableTextBlocksBlockquote,
@@ -17,7 +18,6 @@ import { PortableTextCodeBlock } from '~/components/portable-text/PortableTextCo
 import { PortableTextExternalImage } from '~/components/portable-text/PortableTextExternalImage'
 import { PortableTextImage } from '~/components/portable-text/PortableTextImage'
 import { PortableTextTweet } from '~/components/portable-text/PortableTextTweet'
-import { AltTextProvider } from '~/components/AltTextContext'
 
 const components: PortableTextComponents = {
   block: {
@@ -71,7 +71,7 @@ export function PostPortableText(props: {
 
     // 过滤和清理数据，移除无效的块
     const cleanedValue = (props.value as unknown[]).filter((block: unknown) => {
-      if (!block || typeof block !== 'object' || !('_type' in (block as any))) {
+      if (!block || typeof block !== 'object' || !('_type' in (block as Record<string, unknown>))) {
         console.warn('PostPortableText: 移除无效块', block)
         return false
       }

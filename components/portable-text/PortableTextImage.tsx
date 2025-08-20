@@ -1,15 +1,15 @@
 "use client"
 
 import React from 'react'
-import { type PortableTextComponentProps } from '@portabletext/react'
+import Image from 'next/image'
 import * as Dialog from '@radix-ui/react-dialog'
 import { AnimatePresence, motion } from 'framer-motion'
-import Image from 'next/image'
+import { type PortableTextComponentProps } from '@portabletext/react'
 import { clsxm } from '@zolplay/utils'
 
+import { useAltTextContext } from '~/components/AltTextContext'
 import { ClientOnly } from '~/components/ClientOnly'
 import { Commentable } from '~/components/Commentable'
-import { useAltTextContext } from '~/components/AltTextContext'
 
 export function PortableTextImage({
   value,

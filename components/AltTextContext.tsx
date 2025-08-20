@@ -15,7 +15,7 @@ export function AltTextProvider({
   children,
 }: {
   value: AltTextContextValue
-  children: React.ReactNode
+  children?: React.ReactNode
 }) {
   return (
     <AltTextContext.Provider value={value}>{children}</AltTextContext.Provider>
