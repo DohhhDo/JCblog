@@ -25,14 +25,14 @@ export default function BlogLayout({
       {/* Right Sidebar - Entire Page */}
       <div className="hidden xl:block fixed right-0 top-0 z-10 w-64 h-full bg-zinc-50/90 ring-1 ring-zinc-100 dark:bg-zinc-900/80 dark:ring-zinc-400/20 pointer-events-none animate-[fadeOut_10s_ease-in-out_forwards]" />
 
-      <div className="fixed inset-0 z-0 flex justify-center sm:px-8">
+      <div className="fixed inset-0 z-40 flex justify-center sm:px-8 pointer-events-none">
         <div className="flex w-full max-w-7xl lg:px-8">
-          <div className="w-full bg-zinc-50/90 ring-1 ring-zinc-100 dark:bg-zinc-900/80 dark:ring-zinc-400/20" />
+          <div className="w-full bg-zinc-50 ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-400/20" />
         </div>
       </div>
 
       <QueryProvider>
-        <div className="relative z-40 text-zinc-800 dark:text-zinc-200">
+        <div className="relative z-50 text-zinc-800 dark:text-zinc-200">
           <Header />
           
           {/* Left Sidebar Waterfall Photos */}
