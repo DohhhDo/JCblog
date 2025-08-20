@@ -2,11 +2,11 @@ import { type Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { BlogPostPage } from '~/app/(main)/blog/BlogPostPage'
+import { getAltForImage } from '~/lib/alt'
+import { url } from '~/lib'
 import { kvKeys } from '~/config/kv'
 import { env } from '~/env.mjs'
-import { url } from '~/lib'
 import { redis } from '~/lib/redis'
-import { getAltForImage } from '~/lib/alt'
 import { getBlogPost } from '~/sanity/queries'
 
 export const generateMetadata = async ({
@@ -165,7 +165,7 @@ export default async function BlogPage({
         const type = b['_type']
         // 适配自定义的 image / externalImage 两种块
         if ((type === 'image' || type === 'externalImage') && !b['alt']) {
-          const urlStr = typeof b['url'] === 'string' ? (b['url'] as string) : ''
+          const urlStr = typeof b['url'] === 'string' ? b['url'] : ''
           if (urlStr) {
             try {
               const { alt } = await getAltForImage(urlStr, { maxLength: 16 })
