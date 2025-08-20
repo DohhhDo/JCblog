@@ -1,6 +1,7 @@
 "use client"
 
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
+import type { TypedObject } from '@portabletext/types'
 import React from 'react'
 
 import { AltTextProvider } from '~/components/AltTextContext'
@@ -70,7 +71,7 @@ export function PostPortableText(props: {
     }
 
     // 过滤和清理数据，移除无效的块
-    const cleanedValue = (props.value as unknown[]).filter((block: unknown) => {
+    const cleanedUnknown = (props.value as unknown[]).filter((block: unknown) => {
       if (!block || typeof block !== 'object' || !('_type' in (block as Record<string, unknown>))) {
         console.warn('PostPortableText: 移除无效块', block)
         return false
@@ -87,6 +88,7 @@ export function PostPortableText(props: {
       
       return true
     })
+    const cleanedValue = cleanedUnknown as unknown as TypedObject[]
 
     // 依据正文内容计算关键词（简单词频法），供图片 alt 回退使用
     const textContent: string = (cleanedValue as PortableBlock[])
