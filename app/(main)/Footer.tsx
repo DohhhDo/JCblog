@@ -111,7 +111,7 @@ export async function Footer() {
     .where(isNotNull(subscribers.subscribedAt))
 
   return (
-    <footer className="mt-32">
+    <footer className="mt-32 relative z-[50]">
       <Container.Outer>
         <div className="border-t border-zinc-100 pb-16 pt-10 dark:border-zinc-700/40">
           <Container.Inner>
