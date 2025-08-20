@@ -22,12 +22,14 @@ export async function POST(req: Request) {
       })
     }
 
-    // fallback: base64 path (no URL cache key)
-    const { alt, raw } = await getAltForImage(imageBase64 as string, { maxLength: 16 })
-    return new Response(JSON.stringify({ alt, raw }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    if (imageBase64) {
+      // base64 input
+      const { alt, raw } = await getAltForImage(imageBase64, { maxLength: 16, isBase64: true })
+      return new Response(JSON.stringify({ alt, raw }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
   } catch (error) {
     return new Response(JSON.stringify({ error: String(error) }), {
       status: 500,
