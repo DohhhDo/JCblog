@@ -1,7 +1,7 @@
 "use client"
 
-import React from 'react'
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
+import React from 'react'
 
 import { AltTextProvider } from '~/components/AltTextContext'
 import { PeekabooLink } from '~/components/links/PeekabooLink'
