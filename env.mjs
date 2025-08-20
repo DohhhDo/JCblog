@@ -14,6 +14,9 @@ const server = z.object({
   SITE_NOTIFICATION_EMAIL_TO: z.string().optional(),
   ADMIN_EMAILS: z.string().optional(), // 逗号分隔的管理员邮箱列表
   INDEXNOW_KEY: z.string().min(1),
+  // Baidu AIP credentials
+  BAIDU_AIP_CLIENT_ID: z.string().min(1),
+  BAIDU_AIP_CLIENT_SECRET: z.string().min(1),
 })
 
 const client = z.object({
@@ -48,6 +51,8 @@ const processEnv = {
   SITE_NOTIFICATION_EMAIL_TO: process.env.SITE_NOTIFICATION_EMAIL_TO,
   ADMIN_EMAILS: process.env.ADMIN_EMAILS,
   INDEXNOW_KEY: process.env.INDEXNOW_KEY,
+  BAIDU_AIP_CLIENT_ID: process.env.BAIDU_AIP_CLIENT_ID,
+  BAIDU_AIP_CLIENT_SECRET: process.env.BAIDU_AIP_CLIENT_SECRET,
 }
 
 // Don't touch the part below
