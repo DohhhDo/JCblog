@@ -32,7 +32,7 @@ export default function BlogLayout({
       </div>
 
       <QueryProvider>
-        <div className="relative z-20 text-zinc-800 dark:text-zinc-200">
+        <div className="relative z-40 text-zinc-800 dark:text-zinc-200">
           <Header />
           
           {/* Left Sidebar Waterfall Photos */}
@@ -45,7 +45,7 @@ export default function BlogLayout({
             <SidebarWaterfall position="right" />
           </div>
           
-          <main>{children}</main>
+          <main className="relative z-40">{children}</main>
           <Suspense>
             <Footer />
           </Suspense>
