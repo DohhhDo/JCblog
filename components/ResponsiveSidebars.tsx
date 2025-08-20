@@ -128,12 +128,12 @@ export function ResponsiveSidebars() {
 
       {/* Left Sidebar Waterfall Photos */}
       <div className="fixed left-0 top-0 w-64 h-full pointer-events-auto z-[60]">
-        <SidebarWaterfall position="left" autoHide={false} />
+        <SidebarWaterfall position="left" />
       </div>
 
       {/* Right Sidebar Waterfall Photos */}
       <div className="fixed right-0 top-0 w-64 h-full pointer-events-auto z-[60]">
-        <SidebarWaterfall position="right" autoHide={false} />
+        <SidebarWaterfall position="right" />
       </div>
     </>
   )
