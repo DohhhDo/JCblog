@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   description: seo.description,
   keywords: 'JCblog,博客,技术,文章,项目',
   manifest: '/site.webmanifest',
+  icons: {
+    icon: '/favicon.ico',
+  },
   robots: {
     index: true,
     follow: true,

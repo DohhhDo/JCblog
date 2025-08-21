@@ -71,13 +71,11 @@ export function Headline() {
           >
             Arch
           </span>
-          <span className="inline">
-            <span className="group-hover:hidden">er</span>
-            <span
-              className="hidden group-hover:inline bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-400 bg-[length:320%_320%] bg-clip-text text-transparent animate-[gradientFlow_1.6s_linear_infinite]"
-            >
-              &nbsp;&nbsp;User
-            </span>
+          <span className="inline">er</span>
+          <span
+            className="inline-block bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-400 bg-[length:320%_320%] bg-clip-text text-transparent opacity-0 translate-x-1 transition-[opacity,transform] duration-300 group-hover:opacity-100 group-hover:translate-x-0 group-hover:animate-[gradientFlow_1.6s_linear_infinite]"
+          >
+            &nbsp;&nbsp;user
           </span>
           ，
         </span>
