@@ -67,14 +67,17 @@ export function Headline() {
         <OCD />，
         <span className="group inline-flex">
           <span
-            className="bg-gradient-to-r from-blue-500 via-sky-500 to-emerald-400 bg-[length:200%_200%] bg-clip-text transition-colors group-hover:text-transparent group-hover:animate-[gradientFlow_2s_linear_infinite]"
+            className="bg-gradient-to-r from-blue-500 via-cyan-500 to-emerald-500 bg-[length:320%_320%] bg-clip-text transition-colors group-hover:text-transparent group-hover:animate-[gradientFlow_1.6s_linear_infinite]"
           >
             Arch
           </span>
-          <span
-            className="bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 bg-[length:200%_200%] bg-clip-text transition-colors group-hover:text-transparent group-hover:animate-[gradientFlow_2s_linear_infinite]"
-          >
-            er
+          <span className="inline">
+            <span className="group-hover:hidden">er</span>
+            <span
+              className="hidden group-hover:inline bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-400 bg-[length:320%_320%] bg-clip-text text-transparent animate-[gradientFlow_1.6s_linear_infinite]"
+            >
+              &nbsp;&nbsp;User
+            </span>
           </span>
           ，
         </span>
