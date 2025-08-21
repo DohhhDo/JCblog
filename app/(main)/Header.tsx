@@ -124,10 +124,15 @@ export function Header() {
       setProperty('--avatar-border-opacity', scale === toScale ? '1' : '0')
     }
 
+    let rafId = 0
     function updateStyles() {
-      updateHeaderStyles()
-      updateAvatarStyles()
-      isInitial.current = false
+      if (rafId) return
+      rafId = requestAnimationFrame(() => {
+        updateHeaderStyles()
+        updateAvatarStyles()
+        isInitial.current = false
+        rafId = 0
+      })
     }
 
     updateStyles()
@@ -137,6 +142,7 @@ export function Header() {
     return () => {
       window.removeEventListener('scroll', updateStyles)
       window.removeEventListener('resize', updateStyles)
+      if (rafId) cancelAnimationFrame(rafId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHomePage])

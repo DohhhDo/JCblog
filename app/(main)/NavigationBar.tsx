@@ -48,19 +48,42 @@ function Desktop({
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const radius = useMotionValue(0)
+  const navRef = React.useRef<HTMLDivElement>(null)
+  const boundsRef = React.useRef<DOMRect | null>(null)
+
+  const recalcBounds = React.useCallback(() => {
+    if (navRef.current) {
+      boundsRef.current = navRef.current.getBoundingClientRect()
+      const b = boundsRef.current
+      radius.set(Math.sqrt(b.width ** 2 + b.height ** 2) / 2.5)
+    }
+  }, [radius])
+
+  const handleMouseEnter = React.useCallback(() => {
+    if (!boundsRef.current) recalcBounds()
+  }, [recalcBounds])
+
   const handleMouseMove = React.useCallback(
-    ({ clientX, clientY, currentTarget }: React.MouseEvent) => {
-      const bounds = currentTarget.getBoundingClientRect()
-      mouseX.set(clientX - bounds.left)
-      mouseY.set(clientY - bounds.top)
-      radius.set(Math.sqrt(bounds.width ** 2 + bounds.height ** 2) / 2.5)
+    ({ clientX, clientY }: React.MouseEvent) => {
+      const b = boundsRef.current
+      if (!b) return
+      mouseX.set(clientX - b.left)
+      mouseY.set(clientY - b.top)
     },
-    [mouseX, mouseY, radius]
+    [mouseX, mouseY]
   )
+
+  React.useEffect(() => {
+    recalcBounds()
+    window.addEventListener('resize', recalcBounds)
+    return () => window.removeEventListener('resize', recalcBounds)
+  }, [recalcBounds])
   const background = useMotionTemplate`radial-gradient(${radius}px circle at ${mouseX}px ${mouseY}px, var(--spotlight-color) 0%, transparent 65%)`
 
   return (
     <nav
+      ref={navRef}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       className={clsxm(
         'group relative',

@@ -74,15 +74,32 @@ export function GeometryAnimation() {
     setShapes(newShapes)
   }, [isVisible, colors])
 
+  // 缓存容器尺寸，避免每帧读取布局
+  const containerRectRef = React.useRef<DOMRect | null>(null)
+  React.useEffect(() => {
+    if (!isVisible || !containerRef.current) return
+    const el = containerRef.current
+    const recalc = () => {
+      containerRectRef.current = el.getBoundingClientRect()
+    }
+    recalc()
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(recalc) : undefined
+    if (ro) ro.observe(el)
+    return () => {
+      if (ro) ro.disconnect()
+    }
+  }, [isVisible])
+
   // 动画循环
   React.useEffect(() => {
     if (!isVisible || shapes.length === 0 || !containerRef.current) return
 
     const animate = () => {
-      const container = containerRef.current
-      if (!container) return
-
-      const containerRect = container.getBoundingClientRect()
+      const containerRect = containerRectRef.current
+      if (!containerRect) {
+        animationRef.current = requestAnimationFrame(animate)
+        return
+      }
       const centerWidth = Math.min(1200, containerRect.width * 0.7)
       const sideWidth = (containerRect.width - centerWidth) / 2
       const leftBoundary = sideWidth
