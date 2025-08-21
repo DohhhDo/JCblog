@@ -67,39 +67,46 @@ export function BlogPostTableOfContents({ headings }: { headings: Node[] }) {
   >(null)
 
   React.useEffect(() => {
-    const handleScroll = () => {
-      const articleElement = document.querySelector<HTMLElement>(
-        'article[data-postid]'
-      )
-      const outlineYs = outline.map((node) => {
-        const el = document.querySelector<HTMLAnchorElement>(
+    const headings = outline
+      .map((node) =>
+        document.querySelector<HTMLAnchorElement>(
           `article ${node.style}:where([id="${node.id}"]) > a`
         )
-        if (!el) return 0
+      )
+      .filter(Boolean) as HTMLAnchorElement[]
 
-        return el.getBoundingClientRect().top
-      })
+    if (headings.length === 0) return
 
-      if (articleElement) {
-        if (scrollY.get() > articleElement.scrollHeight) {
-          setHighlightedHeadingId(null)
-        } else {
-          const idx = outlineYs.findIndex((y) => y > 0)
-          if (idx === -1) {
-            setHighlightedHeadingId(outline[outline.length - 1]?.id ?? null)
-          } else {
-            setHighlightedHeadingId(outline[idx]?.id ?? null)
-          }
+    let lastVisibleId: string | null = null
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        // 取视口内顶部最近的标题
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => (a.boundingClientRect.top || 0) - (b.boundingClientRect.top || 0))
+
+        if (visible[0]) {
+          const el = visible[0].target as HTMLAnchorElement
+          const id = el.parentElement?.id ?? null
+          lastVisibleId = id
+          setHighlightedHeadingId(id)
+        } else if (lastVisibleId) {
+          // 保持上一次的高亮，避免滚动抖动
+          setHighlightedHeadingId(lastVisibleId)
         }
+      },
+      {
+        // 提前 20% 触发，增强可见性判断
+        rootMargin: '0px 0px -80% 0px',
+        threshold: [0, 1],
       }
-    }
+    )
 
-    window.addEventListener('scroll', handleScroll)
+    headings.forEach((el) => io.observe(el))
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [outline, scrollY])
+    return () => io.disconnect()
+  }, [outline])
 
   return (
     <motion.ul
