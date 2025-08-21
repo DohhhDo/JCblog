@@ -73,7 +73,7 @@ export function Headline() {
           </span>
           <span className="inline">er</span>
           <span
-            className="inline-block bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-400 bg-[length:320%_320%] bg-clip-text text-transparent opacity-0 translate-x-1 transition-[opacity,transform] duration-300 group-hover:opacity-100 group-hover:translate-x-0 group-hover:animate-[gradientFlow_1.6s_linear_infinite]"
+            className="inline-block overflow-hidden align-baseline max-w-0 opacity-0 translate-x-1 transition-[max-width,opacity,transform] duration-400 group-hover:max-w-[6ch] group-hover:opacity-100 group-hover:translate-x-0 bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-400 bg-[length:320%_320%] bg-clip-text text-transparent group-hover:animate-[gradientFlow_1.6s_linear_infinite]"
           >
             &nbsp;&nbsp;user
           </span>
