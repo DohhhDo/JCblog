@@ -5,18 +5,31 @@ import { getLatestBlogPostsWithBody } from '~/sanity/queries'
 
 export const revalidate = 60 * 60 // 1 hour
 
-function blocksToPlainText(blocks: any[]): string {
+type PortableTextSpan = { text?: string }
+type PortableTextBlock = { _type?: string; children?: PortableTextSpan[] }
+
+function isPortableTextBlock(value: unknown): value is PortableTextBlock {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    // @ts-expect-error narrow optional
+    (value._type === 'block' || typeof value._type === 'undefined')
+  )
+}
+
+function blocksToPlainText(blocks: PortableTextBlock[]): string {
   try {
     if (!Array.isArray(blocks)) return ''
     return blocks
-      .map((block: any) => {
-        if (block?._type === 'block' && Array.isArray(block.children)) {
+      .map((block) => {
+        if (isPortableTextBlock(block) && Array.isArray(block.children)) {
           return block.children
-            .map((child: any) => (typeof child?.text === 'string' ? child.text : ''))
+            .map((child) => (typeof child?.text === 'string' ? child.text : ''))
             .join('')
         }
         return ''
       })
+      .filter(Boolean)
       .join('\n\n')
   } catch {
     return ''
@@ -40,7 +53,10 @@ export async function GET() {
   }
 
   data.forEach((post) => {
-    const content = blocksToPlainText(post.body as any[])
+    const body: PortableTextBlock[] = Array.isArray(post.body)
+      ? (post.body as unknown as PortableTextBlock[])
+      : []
+    const content = blocksToPlainText(body)
     const description = post.description || content.slice(0, 200)
 
     feed.item({
