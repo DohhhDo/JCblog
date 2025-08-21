@@ -1,10 +1,12 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useMotionOnFirstInteraction } from '~/lib/motion'
 import Image from 'next/image'
 import React from 'react'
 
 export function Photos({ photos }: { photos: string[] }) {
+  const motionEnabled = useMotionOnFirstInteraction({ idleDelayMs: 1500 })
   const [width, setWidth] = React.useState(0)
   const [isCompact, setIsCompact] = React.useState(false)
   const expandedWidth = React.useMemo(() => width * 1.38, [width])
@@ -31,8 +33,8 @@ export function Photos({ photos }: { photos: string[] }) {
   return (
     <motion.div
       className="mt-16 sm:mt-20"
-      initial={{ opacity: 0, scale: 0.925, y: 16 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
+      initial={motionEnabled ? { opacity: 0, scale: 0.925, y: 16 } : false}
+      animate={motionEnabled ? { opacity: 1, scale: 1, y: 0 } : false}
       transition={{
         delay: 0.5,
         type: 'spring',
@@ -43,22 +45,26 @@ export function Photos({ photos }: { photos: string[] }) {
           <motion.div
             key={idx}
             className="relative h-40 flex-none shrink-0 snap-start overflow-hidden rounded-xl bg-zinc-100 ring-2 ring-blue-800/20 dark:bg-zinc-800 dark:ring-blue-300/10 md:h-72 md:rounded-3xl"
-            animate={{
-              width,
-              opacity: isCompact ? 1 : 0.85,
-              filter: isCompact ? 'grayscale(0)' : 'grayscale(0.5)',
-              rotate: idx % 2 === 0 ? 2 : -1,
-            }}
+            animate={
+              motionEnabled
+                ? {
+                    width,
+                    opacity: isCompact ? 1 : 0.85,
+                    filter: isCompact ? 'grayscale(0)' : 'grayscale(0.5)',
+                    rotate: idx % 2 === 0 ? 2 : -1,
+                  }
+                : { width }
+            }
             whileHover={
-              isCompact
-                ? {}
-                : {
+              motionEnabled && !isCompact
+                ? {
                     width: expandedWidth,
                     opacity: 1,
                     filter: 'grayscale(0)',
                   }
+                : {}
             }
-            layout
+            layout={motionEnabled}
           >
             <Image
               src={image}
