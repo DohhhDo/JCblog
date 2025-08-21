@@ -1,8 +1,8 @@
 'use client'
 
+import Balancer from 'react-wrap-balancer'
 import { motion } from 'framer-motion'
 import { useMotionOnFirstInteraction } from '~/lib/motion'
-import Balancer from 'react-wrap-balancer'
 
 import { ScriptIcon, SparkleIcon } from '~/assets'
 import { SocialLink } from '~/components/links/SocialLink'

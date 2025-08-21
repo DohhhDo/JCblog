@@ -1,4 +1,5 @@
-// @ts-nocheck
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - in app dir React is globally available, types are resolved at usage sites
 import * as React from 'react'
 
 /**
@@ -34,15 +35,22 @@ export function useMotionOnFirstInteraction(options?: { idleDelayMs?: number }) 
     events.forEach((e) => document.addEventListener(e, enable, opts))
 
     const useRIC = 'requestIdleCallback' in window
-    const idleId = useRIC
-      ? (window as any).requestIdleCallback(() => enable())
-      : window.setTimeout(() => enable(), idleDelayMs)
+    let idleId: number
+    if (useRIC) {
+      idleId = (window as unknown as { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback(
+        () => enable()
+      )
+    } else {
+      idleId = window.setTimeout(() => enable(), idleDelayMs)
+    }
 
     function cleanup() {
       events.forEach((e) => document.removeEventListener(e, enable))
       if (!useRIC) window.clearTimeout(idleId)
-      else if ('cancelIdleCallback' in window)
-        (window as any).cancelIdleCallback(idleId)
+      else
+        (window as unknown as { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback?.(
+          idleId
+        )
     }
 
     return cleanup

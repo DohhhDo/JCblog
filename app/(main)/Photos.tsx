@@ -1,9 +1,9 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useMotionOnFirstInteraction } from '~/lib/motion'
-import Image from 'next/image'
 import React from 'react'
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+import { useMotionOnFirstInteraction } from '~/lib/motion'
 
 export function Photos({ photos }: { photos: string[] }) {
   const motionEnabled = useMotionOnFirstInteraction({ idleDelayMs: 1500 })
