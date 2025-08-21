@@ -45,15 +45,42 @@ const nextConfig = {
       config.optimization.splitChunks = {
         ...config.optimization.splitChunks,
         maxAsyncRequests: 30,
-        maxInitialRequests: 30,
+        maxInitialRequests: 15, // Reduced from 30
         cacheGroups: {
           ...config.optimization.splitChunks.cacheGroups,
-          // Create separate chunks for Sanity Studio
+          // Create separate chunks for Sanity Studio (only async)
           sanity: {
             test: /[\\/]node_modules[\\/](@sanity|sanity)[\\/]/,
             name: 'sanity',
-            chunks: 'all',
+            chunks: 'async', // Changed from 'all' to 'async'
             priority: 30,
+            reuseExistingChunk: true,
+            enforce: true,
+          },
+          // Separate chunk for Tremor (admin only)
+          tremor: {
+            test: /[\\/]node_modules[\\/]@tremor[\\/]/,
+            name: 'tremor',
+            chunks: 'async',
+            priority: 28,
+            reuseExistingChunk: true,
+            enforce: true,
+          },
+          // Separate chunk for React Query
+          reactQuery: {
+            test: /[\\/]node_modules[\\/]react-query[\\/]/,
+            name: 'react-query',
+            chunks: 'async',
+            priority: 27,
+            reuseExistingChunk: true,
+            enforce: true,
+          },
+          // Separate chunk for framer-motion
+          framerMotion: {
+            test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
+            name: 'framer-motion',
+            chunks: 'async',
+            priority: 26,
             reuseExistingChunk: true,
             enforce: true,
           },
@@ -61,12 +88,12 @@ const nextConfig = {
           markdown: {
             test: /[\\/]node_modules[\\/](.*markdown.*|.*editor.*|codemirror|prosemirror|slate)[\\/]/,
             name: 'markdown',
-            chunks: 'all',
+            chunks: 'async',
             priority: 25,
             reuseExistingChunk: true,
             enforce: true,
           },
-          // Separate React and React-DOM
+          // Separate React and React-DOM (keep in main bundle for SSR)
           react: {
             test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
             name: 'react',
@@ -74,14 +101,23 @@ const nextConfig = {
             priority: 25,
             reuseExistingChunk: true,
           },
-          // Common vendor libraries
+          // UI Libraries
+          ui: {
+            test: /[\\/]node_modules[\\/](@headlessui|@radix-ui)[\\/]/,
+            name: 'ui',
+            chunks: 'async',
+            priority: 20,
+            reuseExistingChunk: true,
+            maxSize: 150000, // ~150KB
+          },
+          // Common vendor libraries (smaller chunks)
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendor',
-            chunks: 'all',
+            chunks: 'initial', // Only for initial chunks
             priority: 10,
             reuseExistingChunk: true,
-            maxSize: 244000, // ~240KB
+            maxSize: 200000, // Reduced from 244KB to 200KB
           },
         },
       }
@@ -89,6 +125,12 @@ const nextConfig = {
       // Improve chunk loading resilience
       config.optimization.chunkIds = 'deterministic'
       config.optimization.moduleIds = 'deterministic'
+      
+      // Add module concatenation for better tree shaking
+      config.optimization.concatenateModules = true
+      
+      // Enable side effects false for better tree shaking
+      config.optimization.sideEffects = false
     }
     return config
   },

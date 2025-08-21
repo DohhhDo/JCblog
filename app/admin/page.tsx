@@ -1,7 +1,7 @@
-import { Card, Grid, Metric, Text, Title } from '@tremor/react'
 import { sql } from 'drizzle-orm'
 import React from 'react'
 
+import { LazyTremor } from '~/components/admin/LazyTremor'
 import { db } from '~/db'
 
 export default async function AdminPage() {
@@ -20,25 +20,25 @@ export default async function AdminPage() {
 
   return (
     <>
-      <Title>后台仪表盘</Title>
+      <LazyTremor.Title>后台仪表盘</LazyTremor.Title>
 
-      <Grid numItemsMd={2} numItemsLg={3} className="mt-6 gap-6">
-        <Card>
-          <Text>总评论</Text>
+      <LazyTremor.Grid numItemsMd={2} numItemsLg={3} className="mt-6 gap-6">
+        <LazyTremor.Card>
+          <LazyTremor.Text>总评论</LazyTremor.Text>
 
-          {count && 'comments' in count && <Metric>{count.comments}</Metric>}
-        </Card>
-        <Card>
-          <Text>总订阅</Text>
+          {count && 'comments' in count && <LazyTremor.Metric>{count.comments}</LazyTremor.Metric>}
+        </LazyTremor.Card>
+        <LazyTremor.Card>
+          <LazyTremor.Text>总订阅</LazyTremor.Text>
           {count && 'subscribers' in count && (
-            <Metric>{count.subscribers}</Metric>
+            <LazyTremor.Metric>{count.subscribers}</LazyTremor.Metric>
           )}
-        </Card>
-        <Card>
-          <Text>总留言</Text>
-          {count && 'guestbook' in count && <Metric>{count.guestbook}</Metric>}
-        </Card>
-      </Grid>
+        </LazyTremor.Card>
+        <LazyTremor.Card>
+          <LazyTremor.Text>总留言</LazyTremor.Text>
+          {count && 'guestbook' in count && <LazyTremor.Metric>{count.guestbook}</LazyTremor.Metric>}
+        </LazyTremor.Card>
+      </LazyTremor.Grid>
     </>
   )
 }
