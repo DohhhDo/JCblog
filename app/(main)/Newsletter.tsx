@@ -3,13 +3,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import va from '@vercel/analytics'
 import { clsxm } from '@zolplay/utils'
-import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useReward } from 'react-rewards'
 import { z } from 'zod'
 
 import { TiltedSendIcon } from '~/assets'
+import { LazyMotion } from '~/components/LazyMotion'
 import { Button } from '~/components/ui/Button'
 
 const formId = '5108903'
@@ -91,13 +91,13 @@ export function Newsletter({ subCount }: { subCount?: string }) {
         )}
         <span>每月一封，随时可以取消订阅。</span>
       </p>
-      <AnimatePresence mode="wait">
+      <LazyMotion.AnimatePresence mode="wait">
         {!isSubscribed ? (
-          <motion.div
+          <LazyMotion.div
             className="mt-6 flex h-10"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit="initial"
+            exit={{ opacity: 0, y: 10 }}
           >
             <input
               type="email"
@@ -114,18 +114,18 @@ export function Newsletter({ subCount }: { subCount?: string }) {
             >
               订阅
             </Button>
-          </motion.div>
+          </LazyMotion.div>
         ) : (
-          <motion.p
+          <LazyMotion.p
             className="mt-6 h-10 text-center text-lg text-zinc-700 dark:text-zinc-300"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit="initial"
+            exit={{ opacity: 0, y: 10 }}
           >
             请查收订阅确认邮件 🥳
-          </motion.p>
+          </LazyMotion.p>
         )}
-      </AnimatePresence>
+      </LazyMotion.AnimatePresence>
       <span id="newsletter-rewards" className="relative h-0 w-0" />
       {errors.email && (
         <p className="mt-2 text-xs font-medium text-red-600 dark:text-red-400">

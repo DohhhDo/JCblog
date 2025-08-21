@@ -1,13 +1,11 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import React from 'react'
 
-import { useMotionOnFirstInteraction } from '~/lib/motion'
+import { LazyMotion } from '~/components/LazyMotion'
 
 export function Photos({ photos }: { photos: string[] }) {
-  const motionEnabled = useMotionOnFirstInteraction({ idleDelayMs: 1500 })
   const [width, setWidth] = React.useState(0)
   const [isCompact, setIsCompact] = React.useState(false)
   const expandedWidth = React.useMemo(() => width * 1.38, [width])
@@ -32,10 +30,10 @@ export function Photos({ photos }: { photos: string[] }) {
   }, [photos.length])
 
   return (
-    <motion.div
+    <LazyMotion.div
       className="mt-16 sm:mt-20"
-      initial={motionEnabled ? { opacity: 0, scale: 0.925, y: 16 } : false}
-      animate={motionEnabled ? { opacity: 1, scale: 1, y: 0 } : false}
+      initial={{ opacity: 0, scale: 0.925, y: 16 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{
         delay: 0.5,
         type: 'spring',
@@ -43,21 +41,17 @@ export function Photos({ photos }: { photos: string[] }) {
     >
       <div className="-my-4 flex w-full snap-x snap-proximity scroll-pl-4 justify-start gap-4 overflow-x-auto px-4 py-4 sm:gap-6 md:justify-center md:overflow-x-hidden md:px-0">
         {photos.map((image, idx) => (
-          <motion.div
+          <LazyMotion.div
             key={idx}
             className="relative h-40 flex-none shrink-0 snap-start overflow-hidden rounded-xl bg-zinc-100 ring-2 ring-blue-800/20 dark:bg-zinc-800 dark:ring-blue-300/10 md:h-72 md:rounded-3xl"
-            animate={
-              motionEnabled
-                ? {
-                    width,
-                    opacity: isCompact ? 1 : 0.85,
-                    filter: isCompact ? 'grayscale(0)' : 'grayscale(0.5)',
-                    rotate: idx % 2 === 0 ? 2 : -1,
-                  }
-                : { width }
-            }
+            animate={{
+              width,
+              opacity: isCompact ? 1 : 0.85,
+              filter: isCompact ? 'grayscale(0)' : 'grayscale(0.5)',
+              rotate: idx % 2 === 0 ? 2 : -1,
+            }}
             whileHover={
-              motionEnabled && !isCompact
+              !isCompact
                 ? {
                     width: expandedWidth,
                     opacity: 1,
@@ -65,7 +59,7 @@ export function Photos({ photos }: { photos: string[] }) {
                   }
                 : {}
             }
-            layout={motionEnabled}
+            layout
           >
             <Image
               src={image}
@@ -76,9 +70,9 @@ export function Photos({ photos }: { photos: string[] }) {
               className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
               priority
             />
-          </motion.div>
+          </LazyMotion.div>
         ))}
       </div>
-    </motion.div>
+    </LazyMotion.div>
   )
 }

@@ -1,11 +1,10 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Balancer from 'react-wrap-balancer'
 
 import { ScriptIcon, SparkleIcon } from '~/assets'
+import { LazyMotion } from '~/components/LazyMotion'
 import { SocialLink } from '~/components/links/SocialLink'
-import { useMotionOnFirstInteraction } from '~/lib/motion'
 
 function Developer() {
   return (
@@ -50,13 +49,12 @@ function Founder() {
 }
 
 export function Headline() {
-  const motionEnabled = useMotionOnFirstInteraction({ idleDelayMs: 1500 })
   return (
     <div className="max-w-2xl">
-      <motion.h1
+      <LazyMotion.h1
         className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl"
-        initial={motionEnabled ? { opacity: 0, y: 30 } : false}
-        animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{
           type: 'spring',
           damping: 25,
@@ -82,11 +80,11 @@ export function Headline() {
           ，
         </span>
         <Founder />
-      </motion.h1>
-      <motion.p
+      </LazyMotion.h1>
+      <LazyMotion.p
         className="mt-6 text-base text-zinc-600 dark:text-zinc-400"
-        initial={motionEnabled ? { opacity: 0, y: 20 } : false}
-        animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{
           type: 'spring',
           damping: 30,
@@ -99,11 +97,11 @@ export function Headline() {
           我是 Jcyf1987，
           我热爱开发，设计，创新，享受生活，以及在未知领域中探索。
         </Balancer>
-      </motion.p>
-      <motion.div
+      </LazyMotion.p>
+      <LazyMotion.div
         className="mt-6 flex gap-6"
-        initial={motionEnabled ? { opacity: 0, y: 10 } : false}
-        animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{
           type: 'spring',
           damping: 50,
@@ -138,7 +136,7 @@ export function Headline() {
           aria-label="我的邮箱"
           platform="mail"
         />
-      </motion.div>
+      </LazyMotion.div>
     </div>
   )
 }
