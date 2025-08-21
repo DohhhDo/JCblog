@@ -29,12 +29,13 @@ interface MotionPProps extends React.HTMLAttributes<HTMLParagraphElement>, Motio
 const LazyMotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
   ({ initial, animate, transition, exit, layout, layoutId, whileHover, children, ...props }, ref) => {
     const motionEnabled = useMotionOnFirstInteraction({ idleDelayMs: 1500 })
-    const [MotionComponent, setMotionComponent] = React.useState<React.ComponentType<MotionDivProps> | null>(null)
+    const [MotionComponent, setMotionComponent] = React.useState<React.ComponentType<any> | null>(null)
 
     React.useEffect(() => {
       if (motionEnabled && !MotionComponent) {
         void import('framer-motion').then(({ motion }) => {
-          setMotionComponent(() => motion.div)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setMotionComponent(() => motion.div as any)
         })
       }
     }, [motionEnabled, MotionComponent])
@@ -70,12 +71,13 @@ LazyMotionDiv.displayName = 'LazyMotionDiv'
 const LazyMotionH1 = React.forwardRef<HTMLHeadingElement, MotionH1Props>(
   ({ initial, animate, transition, children, ...props }, ref) => {
     const motionEnabled = useMotionOnFirstInteraction({ idleDelayMs: 1500 })
-    const [MotionComponent, setMotionComponent] = React.useState<React.ComponentType<MotionH1Props> | null>(null)
+    const [MotionComponent, setMotionComponent] = React.useState<React.ComponentType<any> | null>(null)
 
     React.useEffect(() => {
       if (motionEnabled && !MotionComponent) {
         void import('framer-motion').then(({ motion }) => {
-          setMotionComponent(() => motion.h1)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setMotionComponent(() => motion.h1 as any)
         })
       }
     }, [motionEnabled, MotionComponent])
@@ -107,12 +109,13 @@ LazyMotionH1.displayName = 'LazyMotionH1'
 const LazyMotionP = React.forwardRef<HTMLParagraphElement, MotionPProps>(
   ({ initial, animate, transition, exit, children, ...props }, ref) => {
     const motionEnabled = useMotionOnFirstInteraction({ idleDelayMs: 1500 })
-    const [MotionComponent, setMotionComponent] = React.useState<React.ComponentType<MotionPProps> | null>(null)
+    const [MotionComponent, setMotionComponent] = React.useState<React.ComponentType<any> | null>(null)
 
     React.useEffect(() => {
       if (motionEnabled && !MotionComponent) {
         void import('framer-motion').then(({ motion }) => {
-          setMotionComponent(() => motion.p)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setMotionComponent(() => motion.p as any)
         })
       }
     }, [motionEnabled, MotionComponent])
@@ -149,12 +152,13 @@ interface LazyAnimatePresenceProps {
 
 const LazyAnimatePresence: React.FC<LazyAnimatePresenceProps> = ({ mode, children }) => {
   const motionEnabled = useMotionOnFirstInteraction({ idleDelayMs: 1500 })
-  const [AnimatePresenceComponent, setAnimatePresenceComponent] = React.useState<React.ComponentType<LazyAnimatePresenceProps> | null>(null)
+  const [AnimatePresenceComponent, setAnimatePresenceComponent] = React.useState<React.ComponentType<any> | null>(null)
 
   React.useEffect(() => {
     if (motionEnabled && !AnimatePresenceComponent) {
       void import('framer-motion').then(({ AnimatePresence }) => {
-        setAnimatePresenceComponent(() => AnimatePresence)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setAnimatePresenceComponent(() => AnimatePresence as any)
       })
     }
   }, [motionEnabled, AnimatePresenceComponent])
