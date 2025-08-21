@@ -3,14 +3,14 @@
     "short_name": "JCblog",
     "icons": [
         {
-            "src": "/favicon.ico",
+            "src": "/icon.png",
             "sizes": "192x192",
-            "type": "image/x-icon"
+            "type": "image/png"
         },
         {
-            "src": "/favicon.ico",
+            "src": "/apple-icon.png",
             "sizes": "512x512",
-            "type": "image/x-icon"
+            "type": "image/png"
         }
     ],
     "theme_color": "#ffffff",
