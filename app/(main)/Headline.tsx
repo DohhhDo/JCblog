@@ -64,7 +64,12 @@ export function Headline() {
       >
         <Developer />，<Designer />，
         <span className="block h-2" />
-        <OCD />，<Founder />
+        <OCD />，
+        <span className="group inline-flex">
+          <span className="transition-colors group-hover:text-blue-500">Arch</span>
+          <span className="transition-colors group-hover:text-green-500">er</span>，
+        </span>
+        <Founder />
       </motion.h1>
       <motion.p
         className="mt-6 text-base text-zinc-600 dark:text-zinc-400"
