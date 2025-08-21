@@ -147,6 +147,14 @@ const nextConfig = {
         source: '/rss.xml',
         destination: '/feed.xml',
       },
+      {
+        source: '/feed-full',
+        destination: '/feed-full.xml',
+      },
+      {
+        source: '/rss-full',
+        destination: '/feed-full.xml',
+      },
     ]
   },
 

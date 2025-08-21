@@ -50,6 +50,37 @@ export const getLatestBlogPostsQuery = ({
 export const getLatestBlogPosts = (options: GetBlogPostsOptions) =>
   client.fetch<Post[] | null>(getLatestBlogPostsQuery(options))
 
+export const getLatestBlogPostsWithBodyQuery = ({
+  limit = 5,
+}: { limit?: number }) =>
+  groq`
+  *[_type == "post" && !(_id in path("drafts.**")) && publishedAt <= "${getDate().toISOString()}"
+  && defined(slug.current)] | order(publishedAt desc)[0...${limit}] {
+    _id,
+    title,
+    "slug": slug.current,
+    description,
+    publishedAt,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url + "?auto=format",
+        "lqip": asset->metadata.lqip,
+        "dimensions": asset->metadata.dimensions,
+        ...
+      }
+    },
+    mainImage {
+      _ref,
+      asset->{
+        "url": url + "?auto=format"
+      }
+    }
+  }`
+
+export const getLatestBlogPostsWithBody = (options: { limit?: number }) =>
+  client.fetch<PostDetail[] | null>(getLatestBlogPostsWithBodyQuery(options))
+
 export const getBlogPostQuery = groq`
   *[_type == "post" && slug.current == $slug && !(_id in path("drafts.**"))][0] {
     _id,
