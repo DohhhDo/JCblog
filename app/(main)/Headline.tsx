@@ -66,10 +66,11 @@ export function Headline() {
         <span className="block h-2" />
         <OCD />，
         <span className="group inline-flex">
+          <span className="text-blue-500 dark:text-blue-400 bg-gradient-to-r from-blue-500 via-sky-500 to-blue-400 bg-[length:200%_200%] bg-clip-text group-hover:text-transparent group-hover:animate-[gradientFlow_2s_linear_infinite]">Arch</span>
           <span
-            className="bg-gradient-to-r from-blue-500 via-sky-500 to-emerald-500 bg-[length:200%_200%] bg-clip-text transition-colors group-hover:text-transparent group-hover:animate-[gradientFlow_2s_linear_infinite]"
+            className="bg-gradient-to-r from-cyan-400 via-cyan-500 to-emerald-400 bg-[length:200%_200%] bg-clip-text transition-colors group-hover:text-transparent group-hover:animate-[gradientFlow_2s_linear_infinite]"
           >
-            Archer
+            er
           </span>
           ，
         </span>
