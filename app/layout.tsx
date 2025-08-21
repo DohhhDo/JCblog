@@ -1,6 +1,4 @@
 import './globals.css'
-import './clerk.css'
-import './prism.css'
 
 import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata, Viewport } from 'next'
