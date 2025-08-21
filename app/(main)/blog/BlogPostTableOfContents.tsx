@@ -1,7 +1,7 @@
 'use client'
 
 import { clsxm } from '@zolplay/utils'
-import { motion, useScroll, type Variants } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import React from 'react'
 
 interface HeadingNode {
@@ -61,7 +61,6 @@ const itemVariants = {
 
 export function BlogPostTableOfContents({ headings }: { headings: Node[] }) {
   const outline = parseOutline(headings)
-  const { scrollY } = useScroll()
   const [highlightedHeadingId, setHighlightedHeadingId] = React.useState<
     string | null
   >(null)
@@ -73,7 +72,7 @@ export function BlogPostTableOfContents({ headings }: { headings: Node[] }) {
           `article ${node.style}:where([id="${node.id}"]) > a`
         )
       )
-      .filter(Boolean) as HTMLAnchorElement[]
+      .filter((el): el is HTMLAnchorElement => !!el)
 
     if (headings.length === 0) return
 
