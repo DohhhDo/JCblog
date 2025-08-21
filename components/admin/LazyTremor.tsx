@@ -27,11 +27,12 @@ interface LazyMetricProps {
 }
 
 const LazyCard: React.FC<LazyCardProps> = ({ children, className }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [TremorCard, setTremorCard] = React.useState<React.ComponentType<any> | null>(null)
 
   React.useEffect(() => {
     void import('@tremor/react').then(({ Card }) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
       setTremorCard(() => Card as any)
     })
   }, [])
@@ -52,11 +53,12 @@ const LazyCard: React.FC<LazyCardProps> = ({ children, className }) => {
 }
 
 const LazyGrid: React.FC<LazyGridProps> = ({ children, numItemsMd, numItemsLg, className }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [TremorGrid, setTremorGrid] = React.useState<React.ComponentType<any> | null>(null)
 
   React.useEffect(() => {
     void import('@tremor/react').then(({ Grid }) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
       setTremorGrid(() => Grid as any)
     })
   }, [])
@@ -77,11 +79,12 @@ const LazyGrid: React.FC<LazyGridProps> = ({ children, numItemsMd, numItemsLg, c
 }
 
 const LazyTitle: React.FC<LazyTitleProps> = ({ children }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [TremorTitle, setTremorTitle] = React.useState<React.ComponentType<any> | null>(null)
 
   React.useEffect(() => {
     void import('@tremor/react').then(({ Title }) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
       setTremorTitle(() => Title as any)
     })
   }, [])
@@ -94,11 +97,12 @@ const LazyTitle: React.FC<LazyTitleProps> = ({ children }) => {
 }
 
 const LazyText: React.FC<LazyTextProps> = ({ children }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [TremorText, setTremorText] = React.useState<React.ComponentType<any> | null>(null)
 
   React.useEffect(() => {
     void import('@tremor/react').then(({ Text }) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
       setTremorText(() => Text as any)
     })
   }, [])
@@ -111,11 +115,12 @@ const LazyText: React.FC<LazyTextProps> = ({ children }) => {
 }
 
 const LazyMetric: React.FC<LazyMetricProps> = ({ children }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [TremorMetric, setTremorMetric] = React.useState<React.ComponentType<any> | null>(null)
 
   React.useEffect(() => {
     void import('@tremor/react').then(({ Metric }) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
       setTremorMetric(() => Metric as any)
     })
   }, [])

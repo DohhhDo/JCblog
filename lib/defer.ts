@@ -14,10 +14,12 @@ export function deferExecution<T extends (...args: any[]) => any>(
       if ('requestIdleCallback' in window) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).requestIdleCallback(() => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           resolve(fn(...args))
         })
       } else {
         setTimeout(() => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           resolve(fn(...args))
         }, delay)
       }
@@ -30,6 +32,7 @@ export function deferComponent<P extends Record<string, any>>(
   importFn: () => Promise<{ default: React.ComponentType<P> }>,
   fallback?: React.ComponentType<P>
 ): React.ComponentType<P> {
+  // eslint-disable-next-line react/display-name
   return (props: P) => {
     const [Component, setComponent] = React.useState<React.ComponentType<P> | null>(null)
     

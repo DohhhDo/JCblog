@@ -2,7 +2,9 @@
 
 import React from 'react'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let QueryClientProvider: React.ComponentType<any> | null = null
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let queryClient: any = null
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
