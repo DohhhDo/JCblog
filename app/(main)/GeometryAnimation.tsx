@@ -73,6 +73,15 @@ export function GeometryAnimation() {
             }
             
             setShapes(newShapes)
+            
+            // 立即更新容器尺寸缓存，确保动画能正常运行
+            containerRectRef.current = containerRect
+            
+            // 强制重启动画循环
+            if (animationRef.current) {
+              cancelAnimationFrame(animationRef.current)
+              animationRef.current = undefined
+            }
           }
         }, 500) // 增加延迟时间
       }
