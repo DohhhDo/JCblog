@@ -73,7 +73,9 @@ export function DailyWaifu() {
       <div className="mt-4 flex-1 relative overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
         {!hasStarted ? (
           <div className="flex h-full items-center justify-center">
-            <div className="anime-question-mark"></div>
+            <div className="anime-question-mark">
+              <div className="question-dot"></div>
+            </div>
           </div>
         ) : isLoading ? (
           <div className="flex h-full items-center justify-center">
