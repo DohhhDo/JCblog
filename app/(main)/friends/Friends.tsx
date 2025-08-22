@@ -1,5 +1,6 @@
 import { FriendCard } from '~/app/(main)/friends/FriendCard'
 import { getSettings } from '~/sanity/queries'
+import type { Friend } from '~/sanity/schemas/friend'
 
 // 默认友链数据，当Sanity中没有数据时使用
 const defaultFriends = [
@@ -9,6 +10,7 @@ const defaultFriends = [
     description: '一个专注于代码质量和开发者成长的技术社区',
     url: 'https://codecitizen.org',
     logo: {
+      _type: 'image',
       _ref: '',
       asset: { url: '/avatars/avatar_1.png' }
     }
@@ -19,6 +21,7 @@ const defaultFriends = [
     description: '全球最大的代码托管平台',
     url: 'https://github.com',
     logo: {
+      _type: 'image',
       _ref: '',
       asset: { url: '/favicons/github.png' }
     }
@@ -29,17 +32,18 @@ const defaultFriends = [
     description: 'React 框架，用于生产环境的完整解决方案',
     url: 'https://nextjs.org',
     logo: {
+      _type: 'image',
       _ref: '',
       asset: { url: '/favicons/nextjs.png' }
     }
   }
-] as const
+]
 
 export async function Friends() {
   // 临时使用默认数据来确保页面能正常显示
   // 一旦Sanity中配置了friends数据，下面的代码会自动使用Sanity数据
   
-  let friends = defaultFriends
+  let friends: Friend[] = defaultFriends
   
   try {
     const settings = await getSettings()
