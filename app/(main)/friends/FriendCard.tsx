@@ -11,17 +11,11 @@ import React from 'react'
 
 import { ExternalLinkIcon } from '~/assets'
 import { Card } from '~/components/ui/Card'
-
-interface Friend {
-  _id: string
-  name: string
-  description: string
-  url: string
-  avatar: string
-}
+import { urlForImage } from '~/sanity/lib/image'
+import type { Friend } from '~/sanity/schemas/friend'
 
 export function FriendCard({ friend }: { friend: Friend }) {
-  const { _id, url, avatar, name, description } = friend
+  const { _id, url, logo, name, description } = friend
 
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
@@ -47,14 +41,20 @@ export function FriendCard({ friend }: { friend: Friend }) {
       onMouseLeave={() => setIsHovering(false)}
     >
       <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-        <Image
-          src={avatar}
-          alt={`${name} 头像`}
-          width={36}
-          height={36}
-          className="h-9 w-9 rounded-full object-cover"
-          unoptimized
-        />
+        {logo ? (
+          <Image
+            src={urlForImage(logo)?.url() || ''}
+            alt={`${name} Logo`}
+            width={36}
+            height={36}
+            className="h-9 w-9 rounded-full object-cover"
+            unoptimized
+          />
+        ) : (
+          <div className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold text-sm">
+            {name.charAt(0).toUpperCase()}
+          </div>
+        )}
       </div>
       <h2 className="mt-6 text-base font-bold text-zinc-800 dark:text-zinc-100">
         <Card.Link href={url} target="_blank">

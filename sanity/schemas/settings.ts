@@ -17,6 +17,14 @@ export default defineType({
     }),
 
     defineField({
+      name: 'friends',
+      title: '友链展示列表',
+      description: '在 `/friends` 页面展示的友链列表',
+      type: 'array',
+      of: [{ type: 'reference', to: { type: 'friend' } }],
+    }),
+
+    defineField({
       name: 'heroPhotos',
       title: '首页图片',
       description: '首页顶部的几张图片（推荐设置 6 张）',

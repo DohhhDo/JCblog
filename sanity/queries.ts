@@ -4,6 +4,7 @@ import { getDate } from '~/lib/date'
 import { client } from '~/sanity/lib/client'
 import { type Post, type PostDetail } from '~/sanity/schemas/post'
 import { type Project } from '~/sanity/schemas/project'
+import { type Friend } from '~/sanity/schemas/friend'
 
 export const getAllLatestBlogPostSlugsQuery = () =>
   groq`
@@ -140,6 +141,14 @@ export const getSettingsQuery = () =>
       description,
       icon
     },
+    "friends": friends[]->{
+      _id,
+      name,
+      url,
+      description,
+      email,
+      logo
+    },
     "heroPhotos": heroPhotos[].asset->url + "?auto=format",
     "resume": resume[]{
       company,
@@ -152,6 +161,7 @@ export const getSettingsQuery = () =>
 export const getSettings = () =>
   client.fetch<{
     projects: Project[] | null
+    friends: Friend[] | null
     heroPhotos?: string[] | null
     resume?:
       | {
