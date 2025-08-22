@@ -49,7 +49,7 @@ export default function FriendsPage() {
               <p><strong>博客名称：</strong>间窗的博客 Jcblog</p>
               <p><strong>博客URL：</strong>www.jcblog.com.cn</p>
               <p><strong>博客Logo：</strong>可以使用外链喔。</p>
-              <p><strong>邮箱：</strong>(可选) 208179652@qq.com <span className="text-xs text-zinc-500">// 我的qq也是这个，友友欢迎来做朋友。</span></p>
+              <p><strong>邮箱：</strong>(可选) 208179652@qq.com <span className="text-xs text-zinc-500">我的qq也是这个，友友欢迎来做朋友。</span></p>
               <p><strong>博客简介：</strong>这是间窗的博客，是你可以随时来的地方。</p>
             </div>
           </div>
