@@ -17,11 +17,14 @@ function NavItem({
   children: React.ReactNode
 }) {
   const isActive = usePathname() === href
+  const isExternal = href.startsWith('http')
 
   return (
     <li>
       <Link
         href={href}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
         className={clsxm(
           'relative block whitespace-nowrap px-3 py-2 transition',
           isActive
