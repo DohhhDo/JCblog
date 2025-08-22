@@ -46,7 +46,6 @@ export function FriendCard({ friend }: { friend: Friend }) {
             src={
               logo.asset?.url || 
               urlForImage(logo)?.url() || 
-              (typeof logo === 'string' ? logo : '') ||
               ''
             }
             alt={`${name} Logo`}

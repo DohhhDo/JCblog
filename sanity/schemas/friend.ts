@@ -10,11 +10,9 @@ export const Friend = z.object({
   description: z.string(),
   email: z.string().email().optional(),
   logo: z.object({
+    _type: z.string(),
     _ref: z.string(),
-    asset: z.object({
-      _id: z.string().optional(),
-      url: z.string().optional(),
-    }).optional(),
+    asset: z.any(),
   }).optional(),
 })
 export type Friend = z.infer<typeof Friend>
