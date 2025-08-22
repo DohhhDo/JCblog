@@ -7,16 +7,19 @@ import { SparkleIcon } from '~/assets'
 
 export function DailyWaifu() {
   const [imageUrl, setImageUrl] = React.useState<string>('')
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [isLoading, setIsLoading] = React.useState(false)
   const [error, setError] = React.useState(false)
+  const [hasStarted, setHasStarted] = React.useState(false)
   const [refreshKey, setRefreshKey] = React.useState(0)
   const [showToast, setShowToast] = React.useState(false)
 
   React.useEffect(() => {
+    if (!hasStarted) return
+    
     setIsLoading(true)
     setError(false)
-    // 直接使用API URL，添加时间戳避免缓存
-    const apiUrl = `https://app.zichen.zone/api/acg/api.php?t=${Date.now()}&r=${refreshKey}`
+    // 使用新的 pixiv API
+    const apiUrl = `https://rpic.origz.com/api.php?category=pixiv&t=${Date.now()}&r=${refreshKey}`
     setImageUrl(apiUrl)
     
     // 简单的预加载检测
@@ -29,9 +32,15 @@ export function DailyWaifu() {
       setIsLoading(false)
     }
     img.src = apiUrl
-  }, [refreshKey])
+  }, [refreshKey, hasStarted])
 
   const handleRefresh = () => {
+    if (!hasStarted) {
+      setHasStarted(true)
+      setRefreshKey(prev => prev + 1)
+      return
+    }
+    
     // 显示提示消息
     setShowToast(true)
     
@@ -62,7 +71,11 @@ export function DailyWaifu() {
       </p>
       
       <div className="mt-4 flex-1 relative overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
-        {isLoading ? (
+        {!hasStarted ? (
+          <div className="flex h-full items-center justify-center">
+            <div className="anime-question-mark"></div>
+          </div>
+        ) : isLoading ? (
           <div className="flex h-full items-center justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-600 dark:border-zinc-600 dark:border-t-zinc-300" />
           </div>
@@ -85,14 +98,14 @@ export function DailyWaifu() {
         )}
       </div>
       
-      {!isLoading && !error && (
+      {(!isLoading && !error) || !hasStarted ? (
         <button
           onClick={handleRefresh}
           className="mt-3 w-full rounded-lg bg-zinc-100 px-3 py-2 text-xs font-medium text-zinc-700 transition hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
         >
-          换一张
+          {!hasStarted ? '点击开始' : '换一张'}
         </button>
-      )}
+      ) : null}
       </div>
     </>
   )
