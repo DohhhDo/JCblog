@@ -72,7 +72,10 @@ export function GuestbookInput() {
       
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ error: 'Network error' }))
-        throw new Error(errorData.error || `HTTP error! status: ${res.status}`)
+        const errorMessage = typeof errorData?.error === 'string' 
+          ? errorData.error 
+          : `HTTP error! status: ${res.status}`
+        throw new Error(errorMessage)
       }
       
       const data: GuestbookDto = await res.json()
