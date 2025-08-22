@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { pictureList } from '~/lib/pictureList'
+import { waterfallController, type WaterfallState } from '~/lib/waterfallController'
 
 interface SidebarWaterfallProps {
   position: 'left' | 'right';
@@ -58,12 +59,15 @@ function prepareImagesForColumn(): {
 
 export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallProps) {
   const [paused, setPaused] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [countdown, setCountdown] = useState(10);
+  const [isVisible, setIsVisible] = useState(false); // 默认不可见，等待手动触发
+  const [waterfallState, setWaterfallState] = useState<WaterfallState>({
+    isActive: false,
+    isLoading: false,
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const frameRef = useRef<number>();
+  const animationStartTime = useRef<number>(0);
   
   // 初始化图片列配置
   const [imageColumns] = useState<string[][]>(() => {
@@ -80,10 +84,30 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
   // 跟踪当前显示的部分
   const currentSetRef = useRef(0);
   const itemsPerSet = Math.floor(imageColumns[0].length / 3);
+
+  // 监听瀑布流控制器状态
+  useEffect(() => {
+    const unsubscribe = waterfallController.subscribe((state) => {
+      setWaterfallState(state);
+      
+      if (state.isActive && !isVisible) {
+        // 开始动画
+        setIsVisible(true);
+        animationStartTime.current = Date.now();
+      } else if (!state.isActive && isVisible) {
+        // 停止动画
+        setIsVisible(false);
+        offsetRef.current = 0;
+        currentSetRef.current = 0;
+      }
+    });
+    
+    return unsubscribe;
+  }, [isVisible]);
   
   // 处理滚动动画
   const updateScroll = useCallback(() => {
-    if (!containerRef.current || paused) return;
+    if (!containerRef.current || paused || !waterfallState.isActive) return;
     
     offsetRef.current += SCROLL_SPEED;
     const singleSetHeight = IMAGE_HEIGHT * itemsPerSet;
@@ -107,34 +131,19 @@ export function SidebarWaterfall({ position, onImageLeave }: SidebarWaterfallPro
     containerRef.current.style.transform = `translateY(-${displayOffset}px)`;
     
     frameRef.current = requestAnimationFrame(updateScroll);
-  }, [paused, position, onImageLeave, itemsPerSet]);
+  }, [paused, position, onImageLeave, itemsPerSet, waterfallState.isActive]);
 
   // 启动动画
   useEffect(() => {
+    if (!waterfallState.isActive) return;
+    
     frameRef.current = requestAnimationFrame(updateScroll);
     return () => {
       if (frameRef.current) {
         cancelAnimationFrame(frameRef.current);
       }
     };
-  }, [updateScroll]);
-
-  // 第十秒后开始消失动画
-  useEffect(() => {
-    const countdownTimer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          setIsVisible(false);
-          // 通知父组件这个栏位已经消失
-          onImageLeave?.(position);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(countdownTimer);
-  }, [position, onImageLeave]);
+  }, [updateScroll, waterfallState.isActive]);
 
   return (
     <div 

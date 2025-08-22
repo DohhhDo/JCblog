@@ -2,6 +2,8 @@
 
 import React from 'react'
 
+import { waterfallController } from '~/lib/waterfallController'
+
 interface Shape {
   id: number
   x: number
@@ -15,6 +17,7 @@ interface Shape {
 
 export function GeometryAnimation() {
   const [isVisible, setIsVisible] = React.useState(false)
+  const [isPaused, setIsPaused] = React.useState(false)
   const [shapes, setShapes] = React.useState<Shape[]>([])
   const animationRef = React.useRef<number>()
   const containerRef = React.useRef<HTMLDivElement>(null)
@@ -28,6 +31,12 @@ export function GeometryAnimation() {
     'rgba(148, 163, 184, 0.6)', // slate-400
     'rgba(203, 213, 225, 0.6)', // slate-300
   ], [])
+
+  // 监听瀑布流控制器的暂停状态
+  React.useEffect(() => {
+    const unsubscribe = waterfallController.subscribeGeometryPause(setIsPaused)
+    return unsubscribe
+  }, [])
 
   // 13秒后显示动画
   React.useEffect(() => {
@@ -92,7 +101,7 @@ export function GeometryAnimation() {
 
   // 动画循环
   React.useEffect(() => {
-    if (!isVisible || shapes.length === 0 || !containerRef.current) return
+    if (!isVisible || isPaused || shapes.length === 0 || !containerRef.current) return
 
     const animate = () => {
       const containerRect = containerRectRef.current
@@ -171,7 +180,7 @@ export function GeometryAnimation() {
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [isVisible, shapes.length])
+  }, [isVisible, isPaused, shapes.length])
 
   // 渲染几何形状
   const renderShape = (shape: Shape) => {

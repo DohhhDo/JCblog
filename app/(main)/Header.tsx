@@ -19,6 +19,7 @@ import React from 'react'
 
 import { NavigationBar } from '~/app/(main)/NavigationBar'
 import { ThemeSwitcher } from '~/app/(main)/ThemeSwitcher'
+import { WaterfallTrigger } from '~/app/(main)/WaterfallTrigger'
 import {
   GitHubBrandIcon,
   GoogleBrandIcon,
@@ -282,6 +283,9 @@ export function Header() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
               >
                 <UserInfo />
+                <div className="pointer-events-auto">
+                  <WaterfallTrigger />
+                </div>
                 <div className="pointer-events-auto">
                   <ThemeSwitcher />
                 </div>
