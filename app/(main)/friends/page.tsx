@@ -65,4 +65,4 @@ export default function FriendsPage() {
   )
 }
 
-export const revalidate = 3600
+export const revalidate = 0 // 临时禁用缓存进行调试

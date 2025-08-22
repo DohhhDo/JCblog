@@ -139,7 +139,14 @@ export const getSettingsQuery = () =>
       name,
       url,
       description,
-      icon
+      icon {
+        _type,
+        _ref,
+        asset->{
+          _id,
+          url
+        }
+      }
     },
     "friends": friends[]->{
       _id,
