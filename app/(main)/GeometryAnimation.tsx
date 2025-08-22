@@ -34,9 +34,36 @@ export function GeometryAnimation() {
 
   // 监听瀑布流控制器的暂停状态
   React.useEffect(() => {
-    const unsubscribe = waterfallController.subscribeGeometryPause(setIsPaused)
+    const unsubscribe = waterfallController.subscribeGeometryPause((paused) => {
+      setIsPaused(paused)
+      
+      // 当从暂停状态恢复时，重新初始化几何形状
+      if (!paused && isPaused) {
+        setShapes([])
+        // 触发重新初始化
+        setTimeout(() => {
+          if (containerRef.current) {
+            const container = containerRef.current
+            const rect = container.getBoundingClientRect()
+            
+            const newShapes: Shape[] = Array.from({ length: 15 }, (_, i) => ({
+              id: i,
+              x: Math.random() * rect.width,
+              y: Math.random() * rect.height,
+              vx: (Math.random() - 0.5) * 2,
+              vy: (Math.random() - 0.5) * 2,
+              size: Math.random() * 30 + 10,
+              color: colors[Math.floor(Math.random() * colors.length)],
+              type: ['circle', 'square', 'triangle'][Math.floor(Math.random() * 3)] as Shape['type'],
+            }))
+            
+            setShapes(newShapes)
+          }
+        }, 100)
+      }
+    })
     return unsubscribe
-  }, [])
+  }, [isPaused, colors])
 
   // 13秒后显示动画
   React.useEffect(() => {
