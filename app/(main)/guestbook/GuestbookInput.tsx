@@ -29,6 +29,7 @@ export function GuestbookInput() {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
   const [message, setMessage] = React.useState('')
   const [isPreviewing, setIsPreviewing] = React.useState(false)
+  const [submitStatus, setSubmitStatus] = React.useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
 
   const { reward } = useReward(REWARDS_ID, 'emoji', {
     position: 'absolute',
@@ -68,21 +69,53 @@ export function GuestbookInput() {
           message,
         }),
       })
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Network error' }))
+        throw new Error(errorData.error || `HTTP error! status: ${res.status}`)
+      }
+      
       const data: GuestbookDto = await res.json()
       return data
     },
     {
+      onMutate: () => {
+        setSubmitStatus('submitting')
+      },
       onSuccess: (data) => {
         setMessage('')
         setIsPreviewing(false)
+        setSubmitStatus('success')
         reward()
         signBook(data)
+        
+        // 重置状态
+        setTimeout(() => setSubmitStatus('idle'), 2000)
+      },
+      onError: (error) => {
+        console.error('Failed to sign guestbook:', error)
+        setSubmitStatus('error')
+        alert('留言发送失败，请稍后重试')
+        
+        // 重置状态
+        setTimeout(() => setSubmitStatus('idle'), 3000)
       },
     }
   )
 
   const onClickSend = () => {
     if (isLoading) {
+      return
+    }
+
+    // 验证消息长度
+    if (!message.trim()) {
+      alert('请输入留言内容')
+      return
+    }
+
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      alert(`留言内容不能超过 ${MAX_MESSAGE_LENGTH} 个字符`)
       return
     }
 
@@ -249,16 +282,34 @@ export function GuestbookInput() {
                   </motion.button>
                 </ElegantTooltip>
 
-                <ElegantTooltip content="发送">
+                <ElegantTooltip content={
+                  submitStatus === 'submitting' ? '发送中...' :
+                  submitStatus === 'success' ? '发送成功!' :
+                  submitStatus === 'error' ? '发送失败' :
+                  '发送'
+                }>
                   <motion.button
                     className="appearance-none"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     type="button"
-                    disabled={isLoading}
+                    disabled={isLoading || !message.trim() || message.length > MAX_MESSAGE_LENGTH}
                     onClick={onClickSend}
                   >
-                    <TiltedSendIcon className="h-5 w-5 text-zinc-800 dark:text-zinc-200" />
+                    {submitStatus === 'submitting' ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-zinc-400 border-t-zinc-800 dark:border-zinc-600 dark:border-t-zinc-200" />
+                    ) : submitStatus === 'success' ? (
+                      <div className="h-5 w-5 text-green-600 dark:text-green-400">✓</div>
+                    ) : submitStatus === 'error' ? (
+                      <div className="h-5 w-5 text-red-600 dark:text-red-400">✕</div>
+                    ) : (
+                      <TiltedSendIcon className={clsxm(
+                        "h-5 w-5 transition-colors",
+                        isLoading || !message.trim() || message.length > MAX_MESSAGE_LENGTH
+                          ? "text-zinc-400 dark:text-zinc-600"
+                          : "text-zinc-800 dark:text-zinc-200"
+                      )} />
+                    )}
                   </motion.button>
                 </ElegantTooltip>
               </motion.aside>

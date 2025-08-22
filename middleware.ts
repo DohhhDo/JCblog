@@ -9,13 +9,16 @@ import { getIP } from '~/lib/ip'
 import { redis } from '~/lib/redis'
 
 export const config = {
-  // 仅对 /studio 相关路径及基础页面启用，以减少不必要开销
+  // 对需要认证的路径启用中间件
   matcher: [
     '/studio',
     '/studio/(.*)',
-    // 仅在必要的受限区域启用鉴权，中间件不再作用于公开页面，避免爬虫被 401 影响索引
     '/admin',
-    '/admin/(.*)'
+    '/admin/(.*)',
+    '/api/guestbook',
+    '/api/comments',
+    '/api/reactions',
+    '/api/newsletter'
   ],
 }
 
@@ -63,8 +66,14 @@ export default authMiddleware({
   beforeAuth: beforeAuthMiddleware,
   publicRoutes: [
     '/',
-    // Studio 不公开
-    '/api(.*)',
+    '/api/activity',
+    '/api/baidu',
+    '/api/indexnow',
+    '/api/indexnow-key',
+    '/api/link-preview',
+    '/api/songci',
+    '/api/tweet',
+    '/api/favicon(.*)',
     '/blog(.*)',
     '/confirm(.*)',
     '/friends',

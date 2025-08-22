@@ -44,14 +44,15 @@ export async function POST(req: NextRequest) {
 
   const { success } = await ratelimit.limit(getKey(user.id))
   if (!success) {
-    return new Response('Too Many Requests', {
-      status: 429,
-    })
+    return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 })
   }
 
   try {
     const data = await req.json()
+    console.log('Received guestbook data:', data)
+    
     const { message } = SignGuestbookSchema.parse(data)
+    console.log('Validated message:', message)
 
     const guestbookData = {
       userId: user.id,
@@ -62,6 +63,8 @@ export async function POST(req: NextRequest) {
         imageUrl: user.imageUrl,
       },
     }
+    
+    console.log('Prepared guestbook data:', guestbookData)
 
     if (env.NODE_ENV === 'production' && env.SITE_NOTIFICATION_EMAIL_TO) {
       await resend.emails.send({
@@ -78,12 +81,15 @@ export async function POST(req: NextRequest) {
       })
     }
 
+    console.log('Inserting into database...')
     const [newGuestbook] = await db
       .insert(guestbook)
       .values(guestbookData)
       .returning({
         newId: guestbook.id,
       })
+    
+    console.log('Database insert result:', newGuestbook)
 
     return NextResponse.json(
       {
@@ -96,6 +102,18 @@ export async function POST(req: NextRequest) {
       }
     )
   } catch (error) {
-    return NextResponse.json({ error }, { status: 400 })
+    console.error('Guestbook POST error:', error)
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: '输入数据格式不正确', details: error.errors },
+        { status: 400 }
+      )
+    }
+    
+    return NextResponse.json(
+      { error: '服务器内部错误，请稍后重试' },
+      { status: 500 }
+    )
   }
 }
