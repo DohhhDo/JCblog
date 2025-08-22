@@ -40,26 +40,41 @@ export function GeometryAnimation() {
       // 当从暂停状态恢复时，重新初始化几何形状
       if (!paused && isPaused) {
         setShapes([])
-        // 触发重新初始化
+        // 延迟更长时间确保容器尺寸正确获取
         setTimeout(() => {
           if (containerRef.current) {
             const container = containerRef.current
-            const rect = container.getBoundingClientRect()
+            const containerRect = container.getBoundingClientRect()
+            const centerWidth = Math.min(1200, containerRect.width * 0.7) // 中间内容区域宽度
+            const sideWidth = (containerRect.width - centerWidth) / 2 // 每侧空白区域宽度
+
+            if (sideWidth < 100) return // 如果侧边区域太小就不显示
+
+            const newShapes: Shape[] = []
             
-            const newShapes: Shape[] = Array.from({ length: 15 }, (_, i) => ({
-              id: i,
-              x: Math.random() * rect.width,
-              y: Math.random() * rect.height,
-              vx: (Math.random() - 0.5) * 2,
-              vy: (Math.random() - 0.5) * 2,
-              size: Math.random() * 30 + 10,
-              color: colors[Math.floor(Math.random() * colors.length)],
-              type: ['circle', 'square', 'triangle'][Math.floor(Math.random() * 3)] as Shape['type'],
-            }))
+            // 在左右两侧各创建3-5个几何形状，使用与原始初始化相同的逻辑
+            for (let side = 0; side < 2; side++) {
+              const shapeCount = 3 + Math.floor(Math.random() * 3)
+              for (let i = 0; i < shapeCount; i++) {
+                const shape: Shape = {
+                  id: side * 10 + i,
+                  x: side === 0 
+                    ? Math.random() * (sideWidth - 60) + 30
+                    : containerRect.width - sideWidth + Math.random() * (sideWidth - 60) + 30,
+                  y: Math.random() * (containerRect.height - 60) + 30,
+                  vx: (Math.random() - 0.5) * 2,
+                  vy: (Math.random() - 0.5) * 2,
+                  size: 20 + Math.random() * 30,
+                  color: colors[Math.floor(Math.random() * colors.length)],
+                  type: ['circle', 'square', 'triangle'][Math.floor(Math.random() * 3)] as Shape['type'],
+                }
+                newShapes.push(shape)
+              }
+            }
             
             setShapes(newShapes)
           }
-        }, 100)
+        }, 500) // 增加延迟时间
       }
     })
     return unsubscribe
