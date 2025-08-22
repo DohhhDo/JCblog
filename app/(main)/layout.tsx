@@ -6,9 +6,8 @@ import { Suspense } from 'react'
 import { Footer } from '~/app/(main)/Footer'
 import { GeometryAnimation } from '~/app/(main)/GeometryAnimation'
 import { Header } from '~/app/(main)/Header'
-import { QueryProvider } from '~/app/QueryProvider'
-import { SidebarWaterfall } from '~/components/SidebarWaterfall'
 import { WaterfallLayout } from '~/app/(main)/WaterfallLayout'
+import { QueryProvider } from '~/app/QueryProvider'
 
 export default function BlogLayout({
   children,

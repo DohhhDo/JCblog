@@ -25,7 +25,7 @@ export function WaterfallTrigger() {
 
   const handleClick = React.useCallback(() => {
     if (state.isActive || state.isLoading) return
-    waterfallController.start()
+    void waterfallController.start()
   }, [state.isActive, state.isLoading])
 
   if (!mounted) {
