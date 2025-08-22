@@ -229,7 +229,7 @@ export function GeometryAnimation() {
     return <div key={shape.id} style={style} />
   }
 
-  if (!isVisible) return null
+  if (!isVisible || isPaused) return null
 
   return (
     <div
