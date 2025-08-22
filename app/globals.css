@@ -89,27 +89,27 @@ html.dark {
 }
 
 .anime-question-mark .circle:nth-child(1) {
-  background: linear-gradient(45deg, #ff69b4, #ff1493);
+  background: #374151; /* zinc-700，深灰色接近黑色 */
   animation-delay: 0s;
 }
 
 .anime-question-mark .circle:nth-child(2) {
-  background: linear-gradient(45deg, #ff1493, #9370db);
+  background: #374151;
   animation-delay: 0.1s;
 }
 
 .anime-question-mark .circle:nth-child(3) {
-  background: linear-gradient(45deg, #9370db, #4169e1);
+  background: #374151;
   animation-delay: 0.2s;
 }
 
 .anime-question-mark .circle:nth-child(4) {
-  background: linear-gradient(45deg, #4169e1, #00bfff);
+  background: #374151;
   animation-delay: 0.3s;
 }
 
 .anime-question-mark .circle:nth-child(5) {
-  background: linear-gradient(45deg, #00bfff, #00ced1);
+  background: #374151;
   animation-delay: 0.4s;
 }
 

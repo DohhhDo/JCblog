@@ -148,6 +148,7 @@ export const getSettingsQuery = () =>
       description,
       email,
       logo {
+        _type,
         _ref,
         asset->{
           _id,
