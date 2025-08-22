@@ -1,6 +1,7 @@
 import { type Metadata } from 'next'
 
 import { FriendRequestButton } from '~/app/(main)/friends/FriendRequestButton'
+import { Projects } from '~/app/(main)/friends/Projects'
 import { Container } from '~/components/ui/Container'
 
 const title = '友链'
@@ -55,6 +56,10 @@ export default function FriendsPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-16 sm:mt-20">
+        <Projects />
       </div>
     </Container>
   )
