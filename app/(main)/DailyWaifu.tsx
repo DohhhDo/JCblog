@@ -74,7 +74,11 @@ export function DailyWaifu() {
         {!hasStarted ? (
           <div className="flex h-full items-center justify-center">
             <div className="anime-question-mark">
-              <div className="question-dot"></div>
+              <div className="circle"></div>
+              <div className="circle"></div>
+              <div className="circle"></div>
+              <div className="circle"></div>
+              <div className="circle"></div>
             </div>
           </div>
         ) : isLoading ? (

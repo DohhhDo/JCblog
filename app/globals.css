@@ -67,144 +67,84 @@ html.dark {
   }
 }
 
-/* 二次元风格问号图标 */
+/* 五个跳跃的圆 */
 .anime-question-mark {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 40px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  animation: animeFloat 2s ease-in-out infinite;
+  justify-content: space-between;
+  gap: 4px;
 }
 
-/* 问号的主体部分 - 弯曲的上半部分 */
-.anime-question-mark::before {
-  content: '';
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  border: 6px solid transparent;
-  border-radius: 32px 32px 0 32px;
-  border-top: 6px solid #ff69b4;
-  border-right: 6px solid #ff1493;
-  border-bottom: 6px solid #9370db;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, 
-    rgba(255, 105, 180, 0.2) 0%,
-    rgba(255, 20, 147, 0.2) 50%,
-    rgba(147, 112, 219, 0.2) 100%);
-  box-shadow: 
-    0 0 20px rgba(255, 105, 180, 0.5),
-    inset 0 0 10px rgba(255, 255, 255, 0.2);
-  animation: gradientRotate 3s ease-in-out infinite, glowPulse 2s ease-in-out infinite;
-}
-
-/* 问号的下半部分 - 竖直线 */
-.anime-question-mark::after {
-  content: '';
-  position: absolute;
-  width: 6px;
-  height: 16px;
-  background: linear-gradient(180deg, #9370db, #4169e1);
-  border-radius: 3px;
-  top: 36px;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 
-    0 0 15px rgba(147, 112, 219, 0.6),
-    inset 0 0 5px rgba(255, 255, 255, 0.3);
-  animation: glowPulse 2s ease-in-out infinite;
-}
-
-/* 问号的点 */
-.anime-question-mark .question-dot {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background: linear-gradient(45deg, #4169e1, #00bfff);
+.anime-question-mark .circle {
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
   box-shadow: 
-    0 0 15px rgba(65, 105, 225, 0.8),
-    inset 0 0 5px rgba(255, 255, 255, 0.4);
-  animation: dotPulse 1.5s ease-in-out infinite;
+    0 0 10px rgba(255, 255, 255, 0.3),
+    inset 0 0 5px rgba(255, 255, 255, 0.2);
+  animation: circleJump 1.5s ease-in-out infinite;
 }
 
-@keyframes animeFloat {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+.anime-question-mark .circle:nth-child(1) {
+  background: linear-gradient(45deg, #ff69b4, #ff1493);
+  animation-delay: 0s;
 }
 
-@keyframes gradientRotate {
-  0%, 100% {
-    border-top-color: #ff69b4;
-    border-right-color: #ff1493;
-    border-bottom-color: #9370db;
-  }
-  33% {
-    border-top-color: #ff1493;
-    border-right-color: #9370db;
-    border-bottom-color: #4169e1;
-  }
-  66% {
-    border-top-color: #9370db;
-    border-right-color: #4169e1;
-    border-bottom-color: #ff69b4;
-  }
+.anime-question-mark .circle:nth-child(2) {
+  background: linear-gradient(45deg, #ff1493, #9370db);
+  animation-delay: 0.1s;
 }
 
-@keyframes glowPulse {
-  0%, 100% {
-    box-shadow: 
-      0 0 20px rgba(255, 105, 180, 0.5),
-      inset 0 0 10px rgba(255, 255, 255, 0.2);
-  }
-  50% {
-    box-shadow: 
-      0 0 30px rgba(255, 105, 180, 0.8),
-      inset 0 0 15px rgba(255, 255, 255, 0.4);
-  }
+.anime-question-mark .circle:nth-child(3) {
+  background: linear-gradient(45deg, #9370db, #4169e1);
+  animation-delay: 0.2s;
 }
 
-@keyframes dotPulse {
-  0%, 100% {
-    transform: translateX(-50%) scale(1);
+.anime-question-mark .circle:nth-child(4) {
+  background: linear-gradient(45deg, #4169e1, #00bfff);
+  animation-delay: 0.3s;
+}
+
+.anime-question-mark .circle:nth-child(5) {
+  background: linear-gradient(45deg, #00bfff, #00ced1);
+  animation-delay: 0.4s;
+}
+
+@keyframes circleJump {
+  0%, 60%, 100% {
+    transform: translateY(0) scale(1);
     box-shadow: 
-      0 0 15px rgba(65, 105, 225, 0.8),
-      inset 0 0 5px rgba(255, 255, 255, 0.4);
+      0 0 10px rgba(255, 255, 255, 0.3),
+      inset 0 0 5px rgba(255, 255, 255, 0.2);
   }
-  50% {
-    transform: translateX(-50%) scale(1.2);
+  30% {
+    transform: translateY(-15px) scale(1.1);
     box-shadow: 
-      0 0 25px rgba(65, 105, 225, 1),
-      inset 0 0 8px rgba(255, 255, 255, 0.6);
+      0 0 20px rgba(255, 255, 255, 0.5),
+      inset 0 0 8px rgba(255, 255, 255, 0.4);
   }
 }
 
 /* 暗色模式下的调整 */
-html.dark .anime-question-mark::before {
-  border-top-color: #ff69b4;
-  border-right-color: #da70d6;
-  border-bottom-color: #87ceeb;
-  background: linear-gradient(135deg, 
-    rgba(255, 105, 180, 0.3) 0%,
-    rgba(218, 112, 214, 0.3) 50%,
-    rgba(135, 206, 235, 0.3) 100%);
+html.dark .anime-question-mark .circle:nth-child(1) {
+  background: linear-gradient(45deg, #ff69b4, #ff1493);
 }
 
-html.dark .anime-question-mark::after {
-  background: linear-gradient(180deg, #da70d6, #87ceeb);
+html.dark .anime-question-mark .circle:nth-child(2) {
+  background: linear-gradient(45deg, #da70d6, #9370db);
 }
 
-html.dark .anime-question-mark .question-dot {
-  background: linear-gradient(45deg, #87ceeb, #00bfff);
+html.dark .anime-question-mark .circle:nth-child(3) {
+  background: linear-gradient(45deg, #9370db, #6a5acd);
+}
+
+html.dark .anime-question-mark .circle:nth-child(4) {
+  background: linear-gradient(45deg, #87ceeb, #4169e1);
+}
+
+html.dark .anime-question-mark .circle:nth-child(5) {
+  background: linear-gradient(45deg, #00bfff, #40e0d0);
 }
