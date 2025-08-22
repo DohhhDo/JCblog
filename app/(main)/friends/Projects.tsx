@@ -42,7 +42,7 @@ export async function Projects() {
       )
       
       if (validProjects.length > 0) {
-        projects = validProjects as Project[]
+        projects = validProjects
         console.log('✅ 使用 Sanity 项目数据:', projects)
       } else {
         console.log('📝 Sanity 项目数据格式无效，使用默认数据')
