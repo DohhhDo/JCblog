@@ -59,7 +59,7 @@ export function GuestbookInput() {
 
   const { mutate: signGuestbook, isLoading } = useMutation(
     ['guestbook'],
-    async () => {
+    async (): Promise<GuestbookDto> => {
       const res = await fetch('/api/guestbook', {
         method: 'POST',
         headers: {
@@ -71,15 +71,20 @@ export function GuestbookInput() {
       })
       
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: 'Network error' }))
-        const errorMessage = typeof errorData?.error === 'string' 
-          ? errorData.error 
-          : `HTTP error! status: ${res.status}`
+        let errorMessage = `HTTP error! status: ${res.status}`
+        try {
+          const errorData = await res.json()
+          if (errorData && typeof errorData.error === 'string') {
+            errorMessage = errorData.error
+          }
+        } catch {
+          errorMessage = 'Network error'
+        }
         throw new Error(errorMessage)
       }
       
-      const data: GuestbookDto = await res.json()
-      return data
+      const data = await res.json()
+      return data as GuestbookDto
     },
     {
       onMutate: () => {
