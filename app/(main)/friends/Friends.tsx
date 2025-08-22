@@ -36,33 +36,31 @@ const defaultFriends = [
 ] as const
 
 export async function Friends() {
+  // 临时使用默认数据来确保页面能正常显示
+  // 一旦Sanity中配置了friends数据，下面的代码会自动使用Sanity数据
+  
+  let friends = defaultFriends
+  
   try {
     const settings = await getSettings()
-    const friends = settings?.friends && settings.friends.length > 0 
-      ? settings.friends 
-      : defaultFriends
-    
-    return (
-      <ul
-        role="list"
-        className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {friends.map((friend) => (
-          <FriendCard friend={friend} key={friend._id} />
-        ))}
-      </ul>
-    )
+    if (settings?.friends && Array.isArray(settings.friends) && settings.friends.length > 0) {
+      friends = settings.friends
+      console.log('Using Sanity friends data:', friends)
+    } else {
+      console.log('No friends found in Sanity, using default friends')
+    }
   } catch (error) {
-    console.error('Failed to load friends:', error)
-    return (
-      <ul
-        role="list"
-        className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {defaultFriends.map((friend) => (
-          <FriendCard friend={friend} key={friend._id} />
-        ))}
-      </ul>
-    )
+    console.error('Failed to load friends from Sanity, using defaults:', error)
   }
+  
+  return (
+    <ul
+      role="list"
+      className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {friends.map((friend) => (
+        <FriendCard friend={friend} key={friend._id} />
+      ))}
+    </ul>
+  )
 }

@@ -147,7 +147,13 @@ export const getSettingsQuery = () =>
       url,
       description,
       email,
-      logo
+      logo {
+        _ref,
+        asset->{
+          _id,
+          url
+        }
+      }
     },
     "heroPhotos": heroPhotos[].asset->url + "?auto=format",
     "resume": resume[]{

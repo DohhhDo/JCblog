@@ -43,12 +43,18 @@ export function FriendCard({ friend }: { friend: Friend }) {
       <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
         {logo ? (
           <Image
-            src={logo.asset?.url || urlForImage(logo)?.url() || ''}
+            src={
+              logo.asset?.url || 
+              urlForImage(logo)?.url() || 
+              (typeof logo === 'string' ? logo : '') ||
+              ''
+            }
             alt={`${name} Logo`}
             width={36}
             height={36}
             className="h-9 w-9 rounded-full object-cover"
             unoptimized
+            onError={() => console.log(`Failed to load image for ${name}`)}
           />
         ) : (
           <div className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold text-sm">
