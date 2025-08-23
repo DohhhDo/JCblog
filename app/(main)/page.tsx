@@ -39,4 +39,4 @@ export default async function BlogHomePage() {
   )
 }
 
-export const revalidate = 60
+export const revalidate = 3600 // 主页缓存1小时，减少服务端渲染频率

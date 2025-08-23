@@ -6,9 +6,22 @@ import { BlogPostPage } from '~/app/(main)/blog/BlogPostPage'
 import { kvKeys } from '~/config/kv'
 import { env } from '~/env.mjs'
 import { url } from '~/lib'
-import { getAltForImage } from '~/lib/alt'
+
 import { redis } from '~/lib/redis'
-import { getBlogPost } from '~/sanity/queries'
+import { getBlogPost, getAllLatestBlogPostSlugs } from '~/sanity/queries'
+
+// 预生成所有博客页面的静态参数，确保热门页面在构建时预生成
+export async function generateStaticParams() {
+  try {
+    const slugs = await getAllLatestBlogPostSlugs()
+    return slugs.map((slug) => ({
+      slug,
+    }))
+  } catch (error) {
+    console.error('Failed to generate static params:', error)
+    return []
+  }
+}
 
 export const generateMetadata = async ({
   params,
@@ -119,75 +132,44 @@ export default async function BlogPage({
     notFound()
   }
 
-  let views: number
-  if (env.VERCEL_ENV === 'production') {
-    views = await redis.incr(kvKeys.postViews(post._id))
-  } else {
-    views = 30578
-  }
+  // 并行处理所有数据获取操作以减少总体耗时
+  const [views, reactions, relatedViews] = await Promise.allSettled([
+    // 获取页面浏览量
+    env.VERCEL_ENV === 'production' 
+      ? redis.incr(kvKeys.postViews(post._id)) 
+      : Promise.resolve(30578),
+    
+    // 获取反应数据 
+    env.VERCEL_ENV === 'production'
+      ? fetch(url(`/api/reactions?id=${post._id}`), { 
+          cache: 'force-cache' // 使用缓存减少API调用
+        }).then(res => res.json()).then(data => Array.isArray(data) ? data : [])
+      : Promise.resolve(Array.from({ length: 4 }, () => Math.floor(Math.random() * 50000))),
+    
+    // 获取相关文章浏览量
+    (typeof post.related !== 'undefined' && post.related.length > 0)
+      ? env.VERCEL_ENV === 'development'
+        ? Promise.resolve(post.related.map(() => Math.floor(Math.random() * 1000)))
+        : redis.mget<number[]>(...post.related.map(({ _id }) => kvKeys.postViews(_id)))
+      : Promise.resolve([])
+  ])
 
-  let reactions: number[] = []
-  try {
-    if (env.VERCEL_ENV === 'production') {
-      const res = await fetch(url(`/api/reactions?id=${post._id}`))
-      const data = await res.json()
-      if (Array.isArray(data)) {
-        reactions = data
-      }
-    } else {
-      reactions = Array.from({ length: 4 }, () =>
-        Math.floor(Math.random() * 50000)
-      )
-    }
-  } catch (error) {
-    console.error(error)
-  }
+  // 提取结果，失败时使用默认值
+  const finalViews = views.status === 'fulfilled' ? views.value : 0
+  const finalReactions = reactions.status === 'fulfilled' ? reactions.value : []
+  const finalRelatedViews = relatedViews.status === 'fulfilled' ? relatedViews.value : []
 
-  let relatedViews: number[] = []
-  if (typeof post.related !== 'undefined' && post.related.length > 0) {
-    if (env.VERCEL_ENV === 'development') {
-      relatedViews = post.related.map(() => Math.floor(Math.random() * 1000))
-    } else {
-      const postIdKeys = post.related.map(({ _id }) => kvKeys.postViews(_id))
-      relatedViews = await redis.mget<number[]>(...postIdKeys)
-    }
-  }
-
-  // 在服务端为缺失 alt 的图片补全简要描述（<=16 字）
-  async function enrichBodyWithAlt(body: unknown): Promise<unknown> {
-    if (!Array.isArray(body)) return body
-    const tasks = (body as unknown[]).map(async (block) => {
-      if (block && typeof block === 'object') {
-        const b = block as Record<string, unknown>
-        const type = b['_type']
-        // 适配自定义的 image / externalImage 两种块
-        if ((type === 'image' || type === 'externalImage') && !b['alt']) {
-          const urlStr = typeof b['url'] === 'string' ? b['url'] : ''
-          if (urlStr) {
-            try {
-              const { alt } = await getAltForImage(urlStr, { maxLength: 16 })
-              return { ...b, alt }
-            } catch {
-              return block
-            }
-          }
-        }
-      }
-      return block
-    })
-    return Promise.all(tasks)
-  }
-
-  const enrichedBody = await enrichBodyWithAlt(post.body)
+  // 直接使用原始的 body 内容，不再进行 alt 文本处理以节省计算资源
+  const enrichedBody = post.body
 
   return (
     <BlogPostPage
       post={{ ...post, body: enrichedBody }}
-      views={views}
-      relatedViews={relatedViews}
-      reactions={reactions.length > 0 ? reactions : undefined}
+      views={finalViews}
+      relatedViews={finalRelatedViews}
+      reactions={finalReactions.length > 0 ? finalReactions : undefined}
     />
   )
 }
 
-export const revalidate = 60
+export const revalidate = 3600 // 缓存1小时，减少服务端渲染频率以节省计算资源

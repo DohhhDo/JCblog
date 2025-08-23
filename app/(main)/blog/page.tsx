@@ -42,4 +42,4 @@ export default function BlogPage() {
   )
 }
 
-export const revalidate = 60
+export const revalidate = 3600 // 缓存1小时，减少服务端渲染频率以节省计算资源

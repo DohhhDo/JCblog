@@ -42,3 +42,6 @@ export default async function GuestBookPage() {
     </Container>
   )
 }
+
+// 留言墙10分钟更新一次，平衡实时性和性能
+export const revalidate = 600
