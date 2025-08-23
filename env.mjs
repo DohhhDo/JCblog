@@ -6,6 +6,8 @@ import { z } from 'zod'
 const server = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']),
   DATABASE_URL: z.string().min(1),
+  NETLIFY_DATABASE_URL: z.string().optional(),
+  NETLIFY_DATABASE_URL_UNPOOLED: z.string().optional(),
   RESEND_API_KEY: z.string().min(1),
   VERCEL_ENV: z.enum(['development', 'preview', 'production']).default('development'),
   UPSTASH_REDIS_REST_URL: z.string().min(1),
@@ -37,6 +39,8 @@ const client = z.object({
 const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
   DATABASE_URL: process.env.DATABASE_URL,
+  NETLIFY_DATABASE_URL: process.env.NETLIFY_DATABASE_URL,
+  NETLIFY_DATABASE_URL_UNPOOLED: process.env.NETLIFY_DATABASE_URL_UNPOOLED,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   VERCEL_ENV: process.env.VERCEL_ENV,
   UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
