@@ -143,7 +143,7 @@ export default async function BlogPage({
     env.VERCEL_ENV === 'production'
       ? fetch(url(`/api/reactions?id=${post._id}`), { 
           cache: 'force-cache' // 使用缓存减少API调用
-        }).then(res => res.json()).then(data => Array.isArray(data) ? data : [])
+        }).then(res => res.json()).then((data: unknown) => Array.isArray(data) ? data as number[] : [])
       : Promise.resolve(Array.from({ length: 4 }, () => Math.floor(Math.random() * 50000))),
     
     // 获取相关文章浏览量
