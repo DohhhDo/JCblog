@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: url('/sitemap.xml').href,
+    sitemap: url('/google-sitemap.xml').href,
     host: url('/').origin,
   }
 }
