@@ -251,7 +251,7 @@ export function Header() {
                 'var(--header-inner-position)' as React.CSSProperties['position'],
             }}
           >
-            <div className="relative flex gap-4">
+            <div className="relative flex gap-4 items-center min-w-0">
               <motion.div
                 className="flex flex-1"
                 initial={{ opacity: 0, y: 15 }}
@@ -281,18 +281,20 @@ export function Header() {
                 <NavigationBar.Desktop className="pointer-events-auto relative z-50 hidden md:block" />
               </div>
               <motion.div
-                className="flex justify-end gap-3 md:flex-1"
+                className="flex items-center justify-end gap-3 md:flex-1 min-w-0 flex-shrink-0"
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
               >
-                <UserInfo />
-                <div className="pointer-events-auto">
+                <div className="pointer-events-auto flex-shrink-0">
+                  <UserInfo />
+                </div>
+                <div className="pointer-events-auto flex-shrink-0">
                   <WaterfallTrigger />
                 </div>
-                <div className="pointer-events-auto">
+                <div className="pointer-events-auto flex-shrink-0">
                   <ThemeSwitcher />
                 </div>
-                <div className="pointer-events-auto">
+                <div className="pointer-events-auto flex-shrink-0">
                   <TravellingButton />
                 </div>
               </motion.div>
@@ -347,7 +349,7 @@ function UserInfo() {
     <AnimatePresence>
       <SignedIn key="user-info">
         <motion.div
-          className="pointer-events-auto relative flex h-10 items-center"
+          className="relative flex items-center"
           initial={{ opacity: 0, x: 25 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 25 }}
@@ -356,7 +358,8 @@ function UserInfo() {
             afterSignOutUrl={url(pathname).href}
             appearance={{
               elements: {
-                avatarBox: 'w-9 h-9 ring-2 ring-white/20',
+                avatarBox: 'w-10 h-10 ring-2 ring-white/20',
+                userButtonBox: 'flex items-center justify-center',
               },
             }}
           />
@@ -369,7 +372,7 @@ function UserInfo() {
       </SignedIn>
       <SignedOut key="sign-in">
         <motion.div
-          className="pointer-events-auto"
+          className="flex items-center"
           initial={{ opacity: 0, x: 25 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 25 }}

@@ -42,6 +42,8 @@ function AvatarImage({
       <Image
         src={alt ? portraitAltImage : portraitImage}
         alt={alt ? "Alternative portrait" : "Portrait"}
+        width={large ? 64 : 36}
+        height={large ? 64 : 36}
         sizes={large ? '4rem' : '2.25rem'}
         className={clsxm(
           'rounded-full bg-zinc-100 object-cover dark:bg-zinc-800',
