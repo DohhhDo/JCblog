@@ -27,7 +27,7 @@ export default function FriendsPage() {
     <Container className="mt-16 sm:mt-32">
       <header className="max-w-2xl">
         <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-          我的朋友们。
+          我的朋友们
         </h1>
         <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
           这里是我认识的一些优秀的朋友们，他们都是在各自领域中非常出色的<b>开发者</b>、<b>设计师</b>
@@ -44,11 +44,11 @@ export default function FriendsPage() {
                 友链交换
               </h2>
               <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-2">
-                <p><span className="font-medium">博客名称：</span>间窗的博客 Jcblog</p>
-                <p><span className="font-medium">博客URL：</span>www.jcblog.com.cn</p>
-                <p><span className="font-medium">博客Logo：</span>可以使用外链</p>
-                <p><span className="font-medium">邮箱：</span>208179652@qq.com</p>
-                <p><span className="font-medium">博客简介：</span>这是间窗的博客，是你可以随时来的地方。</p>
+                <p><span className="font-medium">网站名称：</span>间窗的博客</p>
+                <p><span className="font-medium">网站地址：</span>https://www.jcblog.com.cn</p>
+                <p><span className="font-medium">头像地址：</span>https://gitee.com/jcyf1987/picgo/raw/master/a.png</p>
+                <p><span className="font-medium">RSS地址：</span>https://www.jcblog.com.cn/feed.xml</p>
+                <p><span className="font-medium">网站描述：</span>窗外是蓝天白云，心里是小杏扉间。</p>
               </div>
             </div>
             <div className="ml-6 flex-shrink-0">
