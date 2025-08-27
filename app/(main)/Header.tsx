@@ -1,9 +1,9 @@
 'use client'
 
 import {
+  SignInButton,
   SignedIn,
   SignedOut,
-  SignInButton,
   UserButton,
   useUser,
 } from '@clerk/nextjs'
@@ -18,8 +18,8 @@ import { usePathname } from 'next/navigation'
 import React from 'react'
 
 import { NavigationBar } from '~/app/(main)/NavigationBar'
-import { TravellingButton } from '~/app/(main)/TravellingButton'
 import { ThemeSwitcher } from '~/app/(main)/ThemeSwitcher'
+import { TravellingButton } from '~/app/(main)/TravellingButton'
 import { WaterfallTrigger } from '~/app/(main)/WaterfallTrigger'
 import {
   GitHubBrandIcon,
