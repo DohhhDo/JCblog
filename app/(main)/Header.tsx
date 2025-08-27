@@ -18,6 +18,7 @@ import { usePathname } from 'next/navigation'
 import React from 'react'
 
 import { NavigationBar } from '~/app/(main)/NavigationBar'
+import { TravellingButton } from '~/app/(main)/TravellingButton'
 import { ThemeSwitcher } from '~/app/(main)/ThemeSwitcher'
 import { WaterfallTrigger } from '~/app/(main)/WaterfallTrigger'
 import {
@@ -288,6 +289,9 @@ export function Header() {
                 </div>
                 <div className="pointer-events-auto">
                   <ThemeSwitcher />
+                </div>
+                <div className="pointer-events-auto">
+                  <TravellingButton />
                 </div>
               </motion.div>
               {/* 
