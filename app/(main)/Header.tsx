@@ -1,5 +1,7 @@
 'use client'
 
+/* eslint-disable simple-import-sort/imports */
+
 import {
   SignInButton,
   SignedIn,
