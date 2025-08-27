@@ -10,21 +10,35 @@ export function TravellingIcon(props: IconProps = {}) {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g transform="translate(12, 12) scale(0.28) translate(-39.8, -33.7)">
-        <g transform="translate(-115.428 -111.112)">
-          <path
-            d="m114.5 172.5 69.159 1"
+      <g transform="translate(12, 12) scale(0.18) translate(-49.9, -56.2)">
+        <g transform="translate(-225.103 -56)">
+          <rect
+            x="232"
+            y="56"
+            width="86"
+            height="96"
+            rx="30"
             stroke="currentColor"
-            strokeWidth="7.14"
+            strokeWidth="11.1"
+            fill="none"
+          />
+          <path
+            d="M244 142.5 232 161.5"
+            stroke="currentColor"
+            strokeWidth="11.1"
             strokeLinecap="round"
           />
           <path
-            d="M33.159 0S10.713-1.9-5.379 7.55s-25.833 30.264-25.833 30.264h64.371"
-            transform="translate(150.5 116.192)"
+            d="m318 161.5-12-19"
             stroke="currentColor"
-            strokeWidth="7.14"
+            strokeWidth="11.1"
             strokeLinecap="round"
-            strokeLinejoin="round"
+          />
+          <path
+            d="M258 124.5h34"
+            stroke="currentColor"
+            strokeWidth="11.1"
+            strokeLinecap="round"
           />
         </g>
       </g>
