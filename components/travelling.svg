@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="79.635" height="67.46" viewBox="0 0 79.635 67.46">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-width: 10px;
+      }
+    </style>
+  </defs>
+  <g id="组_1" data-name="组 1" transform="translate(-109.428 -111.112)">
+    <line id="直线_1" data-name="直线 1" class="cls-1" x2="69.159" y2="1" transform="translate(114.5 172.5)"/>
+    <path id="路径_2" data-name="路径 2" class="cls-1" d="M33.159,0S10.713-1.9-5.379,7.55-31.212,37.814-31.212,37.814H33.159" transform="translate(150.5 116.192)"/>
+  </g>
+</svg>
