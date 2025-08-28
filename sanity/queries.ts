@@ -24,11 +24,12 @@ type GetBlogPostsOptions = {
 }
 export const getLatestBlogPostsQuery = ({
   limit = 5,
+  offset = 0,
   forDisplay = true,
 }: GetBlogPostsOptions) =>
   groq`
   *[_type == "post" && !(_id in path("drafts.**")) && publishedAt <= "${getDate().toISOString()}"
-  && defined(slug.current)] | order(publishedAt desc)[0...${limit}] {
+  && defined(slug.current)] | order(publishedAt desc)[${offset}...${offset + limit}] {
     _id,
     title,
     "slug": slug.current,
@@ -50,6 +51,15 @@ export const getLatestBlogPostsQuery = ({
   }`
 export const getLatestBlogPosts = (options: GetBlogPostsOptions) =>
   client.fetch<Post[] | null>(getLatestBlogPostsQuery(options))
+
+export const getBlogPostsCountQuery = () =>
+  groq`
+  count(*[_type == "post" && !(_id in path("drafts.**")) && publishedAt <= "${getDate().toISOString()}"
+  && defined(slug.current)])
+  `
+
+export const getBlogPostsCount = () =>
+  client.fetch<number>(getBlogPostsCountQuery())
 
 export const getLatestBlogPostsWithBodyQuery = ({
   limit = 5,

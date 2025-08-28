@@ -2,8 +2,10 @@ import Balancer from 'react-wrap-balancer'
 
 import { SocialLink } from '~/components/links/SocialLink'
 import { Container } from '~/components/ui/Container'
+import { Pagination } from '~/components/ui/Pagination'
 
 import { BlogPosts } from './BlogPosts'
+import { getBlogPostsCount } from '~/sanity/queries'
 
 const description = '这里是主要的内容展示，包括技术分享，浅浅的历史解析，北史知识库。'
 export const metadata = {
@@ -20,8 +22,16 @@ export const metadata = {
   },
 }
 
-// TODO: add pagination or infinite scroll
-export default function BlogPage() {
+const POSTS_PER_PAGE = 10
+
+interface BlogPageProps {
+  searchParams: { page?: string }
+}
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const currentPage = Number(searchParams.page) || 1
+  const offset = (currentPage - 1) * POSTS_PER_PAGE
+
   return (
     <Container className="mt-16 sm:mt-24">
       <header className="max-w-2xl">
@@ -36,9 +46,29 @@ export default function BlogPage() {
         </p>
       </header>
       <div className="mt-12 grid grid-cols-1 gap-6 sm:mt-20 lg:grid-cols-2 lg:gap-8">
-        <BlogPosts limit={20} />
+        <BlogPosts limit={POSTS_PER_PAGE} offset={offset} />
       </div>
+      <BlogPostsPagination currentPage={currentPage} postsPerPage={POSTS_PER_PAGE} />
     </Container>
+  )
+}
+
+async function BlogPostsPagination({ 
+  currentPage, 
+  postsPerPage 
+}: { 
+  currentPage: number
+  postsPerPage: number 
+}) {
+  const totalPosts = await getBlogPostsCount().catch(() => 50) // 如果查询失败，使用默认值
+  const totalPages = Math.ceil(totalPosts / postsPerPage)
+
+  return (
+    <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      basePath="/blog"
+    />
   )
 }
 
