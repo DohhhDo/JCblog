@@ -3,9 +3,9 @@ import Balancer from 'react-wrap-balancer'
 import { SocialLink } from '~/components/links/SocialLink'
 import { Container } from '~/components/ui/Container'
 import { Pagination } from '~/components/ui/Pagination'
+import { getBlogPostsCount } from '~/sanity/queries'
 
 import { BlogPosts } from './BlogPosts'
-import { getBlogPostsCount } from '~/sanity/queries'
 
 const description = '这里是主要的内容展示，包括技术分享，浅浅的历史解析，北史知识库。'
 export const metadata = {
@@ -28,7 +28,7 @@ interface BlogPageProps {
   searchParams: { page?: string }
 }
 
-export default async function BlogPage({ searchParams }: BlogPageProps) {
+export default function BlogPage({ searchParams }: BlogPageProps) {
   const currentPage = Number(searchParams.page) || 1
   const offset = (currentPage - 1) * POSTS_PER_PAGE
 

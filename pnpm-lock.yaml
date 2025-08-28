@@ -26,6 +26,9 @@ importers:
       '@portabletext/react':
         specifier: ^3.0.11
         version: 3.2.4(react@18.3.1)
+      '@portabletext/types':
+        specifier: ^2.0.15
+        version: 2.0.15
       '@radix-ui/react-dialog':
         specifier: ^1.0.5
         version: 1.1.15(@types/react-dom@18.3.7(@types/react@18.2.65))(@types/react@18.2.65)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -270,6 +273,9 @@ importers:
       eslint-plugin-simple-import-sort:
         specifier: ^12.0.0
         version: 12.1.1(eslint@8.57.1)
+      eslint-plugin-turbo:
+        specifier: ^2.5.6
+        version: 2.5.6(eslint@8.57.1)(turbo@1.13.4)
       eslint-plugin-unused-imports:
         specifier: ^3.1.0
         version: 3.2.0(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.9.2))(eslint@8.57.1)(typescript@5.9.2))(eslint@8.57.1)
@@ -5495,6 +5501,12 @@ packages:
     resolution: {integrity: sha512-82GfMzrewI/DJB92Bbch239GWbGx4j1zvjk1lqb06lxIlMPnVwUHVwPbAnLfyLG3JuhLv9whxGkO/q1CL18JTg==}
     peerDependencies:
       eslint: '>6.6.0'
+
+  eslint-plugin-turbo@2.5.6:
+    resolution: {integrity: sha512-KUDE23aP2JV8zbfZ4TeM1HpAXzMM/AYG/bJam7P4AalUxas8Pd/lS/6R3p4uX91qJcH1LwL4h0ED48nDe8KorQ==}
+    peerDependencies:
+      eslint: '>6.6.0'
+      turbo: '>2.0.0'
 
   eslint-plugin-unused-imports@2.0.0:
     resolution: {integrity: sha512-3APeS/tQlTrFa167ThtP0Zm0vctjr4M44HMpeg1P4bK6wItarumq0Ma82xorMKdFsWpphQBlRPzw/pxiVELX1A==}
@@ -15491,6 +15503,12 @@ snapshots:
     dependencies:
       dotenv: 16.0.3
       eslint: 8.57.1
+
+  eslint-plugin-turbo@2.5.6(eslint@8.57.1)(turbo@1.13.4):
+    dependencies:
+      dotenv: 16.0.3
+      eslint: 8.57.1
+      turbo: 1.13.4
 
   eslint-plugin-unused-imports@2.0.0(@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.1)(typescript@4.9.5))(eslint@8.57.1)(typescript@4.9.5))(eslint@8.57.1):
     dependencies:
