@@ -370,7 +370,7 @@ module.exports = {
       },
 
       fontFamily: {
-        sans: ['var(--font-sans)', ...fontFamily.sans],
+        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif', 'var(--font-sans)', ...fontFamily.sans],
       },
 
       animation: {

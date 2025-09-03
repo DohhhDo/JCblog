@@ -6,6 +6,9 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Disable font optimization to prevent CSS issues
+  optimizeFonts: false,
+  
   images: {
     remotePatterns: [
       {
